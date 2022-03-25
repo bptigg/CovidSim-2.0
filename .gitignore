@@ -32,6 +32,6 @@
 *.app
 
 #Folders
-/logs/
-/Debug/
-/.vs/
+logs/
+Debug/
+.vs/
