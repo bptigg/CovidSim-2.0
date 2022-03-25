@@ -47,6 +47,15 @@ int main()
 	unsigned int count = 0;
 	unsigned int max_count = 7 * CONSTANTS::DAY_LENGTH;
 
+	
+#if DEBUG
+	Log::info("DEBUG BUILD");
+#elif !DEBUG
+	Log::info("RELEASE BUILD");
+#endif
+
+	Log::info("Model starts");
+
 	while (count <= max_count)
 	{
 		for (int i = 0; i < agents.size(); i++)
