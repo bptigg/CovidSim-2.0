@@ -41,9 +41,10 @@ void Log::output(const std::string& type, const char* message, const char* filep
 	std::cout << "[" << type << "] " << message;
 	if (line != -1)
 	{
-		std::cout << " " << filepath << " : " << line;
+		std::cout << ", " << filepath << " : " << line;
 	}
 	set_terminal_colour(Terminal_colours::Reset);
+	std::cout << std::endl;
 
 #endif 
 	std::ofstream file;
