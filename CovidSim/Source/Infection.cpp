@@ -55,6 +55,7 @@ void Infection::update_infected_vector()
 		if (latent_agents[index]->get_infected_time() == latent_agents[index]->get_latent_time())
 		{
 			infected_agents.push_back(latent_agents[index]);
+			latent_agents[index]->set_infection_state(Agent::infection_state::INFECTED);
 			latent_agents.erase(std::remove(latent_agents.begin(), latent_agents.end(), latent_agents[index]));
 			removed++;
 		}
@@ -103,6 +104,7 @@ void Infection::run_infection(Infection::infection_type type)
 	default:
 		break;
 	}
+	update_infected_vector();
 }
 
 void Infection::set_radius(unsigned int radius)

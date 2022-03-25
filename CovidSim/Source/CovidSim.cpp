@@ -45,9 +45,9 @@ int main()
 	infect.set_infection_vector(std::vector<Agent*>{agents[0]});
 
 	unsigned int count = 0;
+	unsigned int max_count = 7 * CONSTANTS::DAY_LENGTH;
 
-
-	while (count < 101)
+	while (count <= max_count)
 	{
 		for (int i = 0; i < agents.size(); i++)
 		{

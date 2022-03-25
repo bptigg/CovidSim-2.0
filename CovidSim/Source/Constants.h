@@ -7,4 +7,6 @@ namespace CONSTANTS
 	const unsigned int MAX_LATENT_TIME = 4320;
 
 	const double INFECTION_PROBABILTY = 0.1; //for now until actual data is obtained
+
+	const unsigned int DAY_LENGTH = 1440;
 }
