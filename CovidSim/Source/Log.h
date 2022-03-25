@@ -98,7 +98,7 @@ public:
 
 	static std::string current_time()
 	{
-		get().get_current_time();
+		return get().get_current_time();
 	}
 
 };
