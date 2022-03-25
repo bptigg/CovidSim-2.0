@@ -56,7 +56,7 @@ int main()
 		infect.run_infection(Infection::infection_type::OUTDOORS);
 		count++;
 	}
-	std::cin.get();
+	Log::info("DONE");
 	
 	agents.clear();
 	delete[] agent;

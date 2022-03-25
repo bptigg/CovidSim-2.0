@@ -49,7 +49,7 @@ void Log::output(const std::string& type, const char* message, const char* filep
 #endif 
 	std::ofstream file;
 	file.open(log_file, std::ios_base::app);
-	file << "[" << type << "] " << message;
+	file << get_current_time() <<  ": [" << type << "] " << message;
 	if (line != -1)
 	{
 		file << " " << filepath << " : " << line;
