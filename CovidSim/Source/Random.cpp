@@ -63,6 +63,7 @@ unsigned int random::Normal_distribution(unsigned int mean, unsigned int standar
 {
 	std::default_random_engine ngen;
 	std::normal_distribution<double> dist(mean, standard_dev);
+	ngen.seed(std::random_device{}());
 	unsigned int result = (unsigned int)dist(ngen);
 	return result;
 }

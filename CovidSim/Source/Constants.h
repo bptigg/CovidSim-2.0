@@ -13,6 +13,7 @@ namespace CONSTANTS
 	const unsigned int INFECTION_SD = 2400;
 	const unsigned int AVG_INFECTION_TIME = 14400;
 	const unsigned int REINFECTION_TIME = 20160;
+	const double REINFECTION_PROBABILITY = 0.4;
 
 	const unsigned int DAY_LENGTH = 1440;
 }

@@ -25,11 +25,18 @@ public:
 	};
 public:
 	Infection(Enviroment* world);
+	~Infection();
 
 	void run_infection(infection_type type);
 	void set_radius(unsigned int radius);
 
 	void set_infection_vector(std::vector<Agent*> infected);
+
+	//for output
+	const unsigned int num_sucept();
+	const unsigned int num_latent();
+	const unsigned int num_infected();
+	const unsigned int num_recovered();
 private:
 	bool collision_detection(Agent* infected_agent, Agent* target_agent);
 	double get_distance(const int x_1, const int x_2, const int y_1, const int y_2);
@@ -38,6 +45,7 @@ private:
 	void update_infected_vector();
 	
 	void update_infected();
+	void update_recovered_vector();
 	
 
 	std::vector<Agent*> get_sample(Agent*& target_agent); 

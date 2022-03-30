@@ -1,8 +1,9 @@
 #include "Enviroment.h"
 
-Enviroment::Enviroment(unsigned int size)
+Enviroment::Enviroment(unsigned int size, unsigned int num_agents)
 {
 	m_grid_size = size;
+	m_num_agents = num_agents;
 	//Points* points = new Points[m_grid_size * m_grid_size];
 	int position = 0;
 	for (int i = 0; i < m_grid_size; i++)
@@ -68,4 +69,9 @@ unsigned int Enviroment::get_size()
 const Enviroment::Points* Enviroment::pass_grid(unsigned int index_1, unsigned int index_2)
 {
 	return grid[index_1][index_2];
+}
+
+unsigned int Enviroment::get_num_agents()
+{
+	return m_num_agents;
 }

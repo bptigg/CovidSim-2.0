@@ -28,6 +28,27 @@ void Infection::set_infection_vector(std::vector<Agent*> infected)
 	infected_agents = infected;
 }
 
+const unsigned int Infection::num_latent()
+{
+	return latent_agents.size();
+}
+
+const unsigned int Infection::num_infected()
+{
+	return infected_agents.size();
+}
+
+const unsigned int Infection::num_recovered()
+{
+	return recovered_agents.size();
+}
+
+const unsigned int Infection::num_sucept()
+{
+	return m_world->get_num_agents() - num_latent() - num_infected() - num_recovered();
+}
+
+
 void Infection::update_latent_vector(std::vector<Agent*> infected_vec)
 {
 	m_infection_lock.lock();
@@ -77,7 +98,7 @@ void Infection::update_infected()
 		{
 			recovered_agents.push_back(infected_agents[index]);
 			infected_agents[index]->set_infection_state(Agent::infection_state::REMOVED);
-			infected_agents.erase(std::remove(latent_agents.begin(), latent_agents.end(), latent_agents[index]));
+			infected_agents.erase(std::remove(infected_agents.begin(), infected_agents.end(), infected_agents[index]));
 			removed++;
 		}
 		else
@@ -87,9 +108,38 @@ void Infection::update_infected()
 	}
 }
 
+void Infection::update_recovered_vector()
+{
+	int removed = 0;
+	for (int i = 0; i < recovered_agents.size(); i++)
+	{
+		int index = i - removed;
+		if (recovered_agents[index]->get_recoverd_time() == CONSTANTS::REINFECTION_TIME)
+		{
+			std::vector<double> weights = { CONSTANTS::REINFECTION_PROBABILITY, 1 - CONSTANTS::REINFECTION_PROBABILITY };
+			if (random::Discrete_distribution(weights, 1, true)[0] == 0)
+			{
+				recovered_agents[index]->set_infection_state(Agent::infection_state::SUCEPTIBLE);
+				recovered_agents.erase(std::remove(recovered_agents.begin(), recovered_agents.end(), recovered_agents[index]));
+				removed++;
+			}
+			else
+			{
+				recovered_agents[index]->set_recovered_time(recovered_agents[index]->get_recoverd_time() + 1);
+			}
+		}
+	}
+}
+
 Infection::Infection(Enviroment* world)
 	:m_world(world)
 {
+}
+
+Infection::~Infection()
+{
+	std::cout <<"Infected: " <<  infected_agents.size() << std::endl;
+	std::cout <<"Recovered: " <<  recovered_agents.size() << std::endl;
 }
 
 void Infection::run_infection(Infection::infection_type type)
@@ -126,6 +176,8 @@ void Infection::run_infection(Infection::infection_type type)
 		break;
 	}
 	update_infected_vector();
+	update_infected();
+	update_recovered_vector();
 }
 
 void Infection::set_radius(unsigned int radius)
