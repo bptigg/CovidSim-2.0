@@ -15,6 +15,7 @@ private:
 
 	std::vector<Agent*> infected_agents;
 	std::vector<Agent*> latent_agents;
+	std::vector<Agent*> recovered_agents;
 
 	std::mutex m_infection_lock;
 public:
@@ -35,6 +36,9 @@ private:
 
 	void update_latent_vector(std::vector<Agent*> infected_vec);
 	void update_infected_vector();
+	
+	void update_infected();
+	
 
 	std::vector<Agent*> get_sample(Agent*& target_agent); 
 

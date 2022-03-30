@@ -48,9 +48,9 @@ int main()
 	unsigned int max_count = 7 * CONSTANTS::DAY_LENGTH;
 
 	
-#if DEBUG
+#if _DEBUG
 	Log::info("DEBUG BUILD");
-#elif !DEBUG
+#elif !_DEBUG
 	Log::info("RELEASE BUILD");
 #endif
 

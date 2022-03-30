@@ -59,6 +59,14 @@ unsigned int random::Random_number(int min, int max, std::vector<int> used)
 	return 0;
 }
 
+unsigned int random::Normal_distribution(unsigned int mean, unsigned int standard_dev)
+{
+	std::default_random_engine ngen;
+	std::normal_distribution<double> dist(mean, standard_dev);
+	unsigned int result = (unsigned int)dist(ngen);
+	return result;
+}
+
 
 
 

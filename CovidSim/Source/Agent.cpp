@@ -25,6 +25,26 @@ void Agent::set_infected_time(unsigned int time)
 	m_infected_time = time;
 }
 
+unsigned int Agent::get_recovery_time()
+{
+	return m_revovery_time;
+}
+
+void Agent::set_recovery_time(unsigned int time)
+{
+	m_revovery_time = time;
+}
+
+unsigned int Agent::get_recoverd_time()
+{
+	return m_recovered_time;
+}
+
+void Agent::set_recovered_time(unsigned int time)
+{
+	m_recovered_time = time;
+}
+
 void Agent::set_latent_time(unsigned int time)
 {
 	m_latent_time = time;

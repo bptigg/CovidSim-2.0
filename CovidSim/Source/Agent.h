@@ -20,8 +20,11 @@ private:
 
 	infection_state m_i_state = infection_state::SUCEPTIBLE;
 	task_state m_t_state = task_state::IDLE;
+	
 	unsigned int m_latent_time = 0;
 	unsigned int m_infected_time = 0;
+	unsigned int m_revovery_time = 0;
+	unsigned int m_recovered_time = 0;
 
 public:
 	Agent::infection_state get_infection_state();
@@ -32,6 +35,12 @@ public:
 
 	unsigned int get_infected_time();
 	void set_infected_time(unsigned int time);
+
+	unsigned int get_recovery_time();
+	void set_recovery_time(unsigned int time);
+
+	unsigned int get_recoverd_time();
+	void set_recovered_time(unsigned int time);
 
 	Agent::task_state get_task_state();
 	void set_task_state(task_state state);

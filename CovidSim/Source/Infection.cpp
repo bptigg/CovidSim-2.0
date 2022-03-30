@@ -40,6 +40,7 @@ void Infection::update_latent_vector(std::vector<Agent*> infected_vec)
 			infected_vec[i]->set_infection_state(Agent::infection_state::LATENT);
 			latent_agents.push_back(infected_vec[i]);
 			infected_vec[i]->set_latent_time(random::Random_number(CONSTANTS::MIN_lATENT_TIME, CONSTANTS::MAX_LATENT_TIME));
+			infected_vec[i]->set_recovery_time(random::Normal_distribution(CONSTANTS::AVG_INFECTION_TIME, CONSTANTS::INFECTION_SD));
 		}
 	}
 	
@@ -62,6 +63,26 @@ void Infection::update_infected_vector()
 		else
 		{
 			latent_agents[index]->set_infected_time(latent_agents[index]->get_infected_time() + 1);
+		}
+	}
+}
+
+void Infection::update_infected()
+{
+	int removed = 0;
+	for (int i = 0; i < infected_agents.size(); i++)
+	{
+		int index = i - removed;
+		if (infected_agents[index]->get_infected_time() == infected_agents[index]->get_recovery_time())
+		{
+			recovered_agents.push_back(infected_agents[index]);
+			infected_agents[index]->set_infection_state(Agent::infection_state::REMOVED);
+			infected_agents.erase(std::remove(latent_agents.begin(), latent_agents.end(), latent_agents[index]));
+			removed++;
+		}
+		else
+		{
+			infected_agents[index]->set_infected_time(infected_agents[index]->get_infected_time() + 1);
 		}
 	}
 }
