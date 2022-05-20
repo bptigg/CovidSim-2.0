@@ -34,12 +34,14 @@ int main()
 		agent[i].set_location(std::make_pair(x,y));
 		Sleep(1);
 	}
+
+	//agent[0].set_target_location(std::make_pair(20,30));
 	
 	Enviroment world(40,200);
 	world.initilise_agent_location(agents);
 	
 	Movement move(40, &world);
-	Infection infect(&world);
+	Infection infect(&world,1);
 	infect.set_radius(2);
 
 	output data_out(output::DATA::ON, output::DATA::OFF, output::DATA::ON, output::DATA::ON, &infect);

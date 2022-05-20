@@ -2,7 +2,18 @@
 
 double calculations::basic_reproductive_number(unsigned int previous, unsigned int now)
 {
-	return now / previous;
+	if (now > 0 && previous == 0)
+	{
+		Log::error("VALUE OF R_0 UNDEFINED, DUE TO INFINITE INFECTION", "Calculations.cpp", 7);
+		return 0;
+	}
+	else if(now > 0 && previous > 0)
+	{
+		return now / previous;
+	}
+
+	return 0;
+
 }
 
 double calculations::effective_reproductive_number(double basic_r, double sucept_frac)

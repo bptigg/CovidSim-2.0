@@ -19,7 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Calculations.cpp" />
+    <ClCompile Include="Source\Buildings.cpp" />
+    <ClCompile Include="Source\Calculations.cpp" />
     <ClCompile Include="Source\Infection.cpp" />
     <ClCompile Include="Source\Enviroment.cpp" />
     <ClCompile Include="Source\Movement.cpp" />
@@ -30,7 +31,7 @@
     <ClCompile Include="Source\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Calculations.h" />
+    <ClInclude Include="Source\Calculations.h" />
     <ClInclude Include="Source\Constants.h" />
     <ClInclude Include="Source\Infection.h" />
     <ClInclude Include="Source\Enviroment.h" />

@@ -18,6 +18,9 @@ private:
 	int m_x = 0;
 	int m_y = 0;
 
+	int m_target_x = 0;
+	int m_target_y = 0;
+
 	infection_state m_i_state = infection_state::SUCEPTIBLE;
 	task_state m_t_state = task_state::IDLE;
 	
@@ -47,6 +50,10 @@ public:
 
 	void set_location(const std::pair<unsigned int, unsigned int>& location);
 	std::pair<unsigned int, unsigned int> get_location();
+
+	void set_target_location(const std::pair<unsigned int, unsigned int>& location);
+	std::pair<unsigned int, unsigned int> get_target_location();
+	
 
 };
 

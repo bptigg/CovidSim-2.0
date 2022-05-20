@@ -70,3 +70,14 @@ std::pair<unsigned int, unsigned int> Agent::get_location()
 {
 	return std::pair<unsigned int, unsigned int>(m_x, m_y);
 }
+
+void Agent::set_target_location(const std::pair<unsigned int, unsigned int>& location)
+{
+	m_target_x = location.first;
+	m_target_y = location.second;
+}
+
+std::pair<unsigned int, unsigned int> Agent::get_target_location()
+{
+	return std::pair<unsigned int, unsigned int>(m_target_x,m_target_y);
+}

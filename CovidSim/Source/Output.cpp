@@ -50,6 +50,8 @@ void output::output_data(bool* write, bool* kill)
 		unsigned int lat = m_infection->num_latent();
 		unsigned int inf = m_infection->num_infected();
 		unsigned int rec = m_infection->num_recovered();
+		
+		auto [previous, current] = m_infection->get_infected_numbers();
 
 		if (m_suceptible == output::DATA::ON)
 		{

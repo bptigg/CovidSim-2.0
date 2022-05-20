@@ -131,9 +131,15 @@ void Infection::update_recovered_vector()
 	}
 }
 
-Infection::Infection(Enviroment* world)
-	:m_world(world)
+std::pair<unsigned int, unsigned int> Infection::get_infected_numbers()
 {
+	return std::make_pair(m_infected_previous, m_infected_current);
+}
+
+Infection::Infection(Enviroment* world, unsigned int starting_infected)
+{
+	m_world = world;
+	m_infected_current = starting_infected;
 }
 
 Infection::~Infection()
@@ -175,6 +181,9 @@ void Infection::run_infection(Infection::infection_type type)
 	default:
 		break;
 	}
+	m_infected_previous = m_infected_current;
+	m_infected_current = o_infected.size();
+
 	update_infected_vector();
 	update_infected();
 	update_recovered_vector();
