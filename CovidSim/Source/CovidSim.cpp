@@ -63,18 +63,22 @@ int main()
 
 	Log::info("Model starts");
 
-	std::thread data_output(&output::output_data, data_out, &write_to_file, &kill_output);
+	Output_Lock_Guard olg;
+
+	std::thread data_output(&output::output_data, data_out, &olg);
 	while (count <= max_count)
 	{
 		for (int i = 0; i < agents.size(); i++)
 		{
 			move.update_agent(agents[i]);
 		}
+		while (olg.data_collected == false);
 		infect.run_infection(Infection::infection_type::OUTDOORS);
+		olg.modify_dc(false);
 		count++;
-		write_to_file = true;
+		olg.modify_write(true);
 	}
-	kill_output = true;
+	olg.modify_kill(true);
 	data_output.join();
 	Log::info("DONE");
 	

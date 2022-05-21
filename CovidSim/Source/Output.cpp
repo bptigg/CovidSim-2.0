@@ -40,16 +40,17 @@ void output::recovered(unsigned int num)
 	recovered.close();
 }
 
-void output::output_data(bool* write, bool* kill)
+void output::output_data(Output_Lock_Guard* olg)
 {
-	while (*kill == false)
+	while (olg->kill == false)
 	{
-		while (*write == false);
+		while (olg->write == false);
 
 		unsigned int suc = m_infection->num_sucept();
 		unsigned int lat = m_infection->num_latent();
 		unsigned int inf = m_infection->num_infected();
 		unsigned int rec = m_infection->num_recovered();
+		olg->modify_dc(true);
 		
 		auto [previous, current] = m_infection->get_infected_numbers();
 
@@ -70,7 +71,7 @@ void output::output_data(bool* write, bool* kill)
 			recovered(rec);
 		}
 
-		*write = false;
+		olg->modify_write(false);
 
 	}
 }
