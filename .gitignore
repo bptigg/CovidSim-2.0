@@ -1,6 +1,5 @@
 # Prerequisites
 *.d
-*.pdb
 
 # Compiled Object files
 *.slo
@@ -38,3 +37,6 @@ Debug/
 .vs/
 Release/
 Output/
+
+#Other Files
+*.pdb
