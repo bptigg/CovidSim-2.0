@@ -9,12 +9,12 @@ class Output_Lock_Guard
 	bool m_write = false;
 	bool m_kill = false;
 	bool m_data_collected = true;
+
+	std::mutex m_output_lock;
 public:
 	const bool& write = m_write;
 	const bool& kill = m_kill;
 	const bool& data_collected = m_data_collected;
-
-	std::mutex m_output_lock;
 
 	void modify_write(bool state)
 	{

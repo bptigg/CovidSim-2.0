@@ -8,6 +8,7 @@
 
 #include "Agent.h"
 #include "Matrix.h"
+//#include "Building types/public_buildings.h"
 
 #include "Constants.h"
 
@@ -18,6 +19,9 @@ public:
 	{
 		std::vector<Agent*> agents = {};
 	};
+
+	CONSTANTS::DAY_OF_THE_WEEK m_day; // temp
+
 private:
 	unsigned int m_grid_size = 0;
 	unsigned int m_num_agents = 0;
@@ -30,6 +34,7 @@ public:
 	void initilise_agent_location(std::vector<Agent*> locations);
 
 	void edit_agent_location(const std::pair<unsigned int, unsigned int>& new_location, Agent* target_agent);
+	//void update_public_building(int count, std::unique_ptr<public_buildings>& building); // will probably need to change 
 
 	unsigned int get_size();
 	const Enviroment::Points* pass_grid(unsigned int index_1, unsigned int index_2);

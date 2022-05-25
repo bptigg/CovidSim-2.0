@@ -8,6 +8,36 @@
 #include "Output.h"
 #include <Windows.h>
 
+//This is testing enviroment
+
+class Control_model_threads
+{
+private:
+	bool m_kill_model = false;
+
+	std::mutex m_model_lock;
+public: 
+	const bool& kill_model = m_kill_model;
+
+	void modify_kill(bool state)
+	{
+		m_model_lock.lock();
+		m_kill_model = state;
+		m_model_lock.unlock();
+	}
+};
+
+void esc_check(Control_model_threads* cmt)
+{
+	while (GetAsyncKeyState(VK_ESCAPE) == 0 || cmt->kill_model == true)
+	{
+
+	}
+
+	Log::warning("MODEL ENDED BY USER");
+	cmt->modify_kill(true);
+};
+
 int main() 
 {
 	//Log::info("Hello world");
@@ -52,8 +82,17 @@ int main()
 
 	unsigned int count = 0;
 	unsigned int max_count = 21 * CONSTANTS::DAY_LENGTH;
-	bool write_to_file = false;
-	bool kill_output = false;
+
+	//{
+	//	public_buildings* test = new public_buildings;
+	//	test->intilize_building();
+	//
+	//	std::unique_ptr<public_buildings> test_ptr(test);
+	//
+	//	world.update_public_building(420, test_ptr);
+	//	world.update_public_building(800, test_ptr);
+	//}
+
 	
 #if _DEBUG
 	Log::info("DEBUG BUILD");
@@ -61,12 +100,15 @@ int main()
 	Log::info("RELEASE BUILD");
 #endif
 
-	Log::info("Model starts");
+	Log::info("MODEL STARTS");
 
 	Output_Lock_Guard olg;
-
+	Control_model_threads cmt; 
 	std::thread data_output(&output::output_data, data_out, &olg);
-	while (count <= max_count)
+	std::thread check_esc(&esc_check, &cmt);
+
+
+	while (count <= max_count and cmt.kill_model == false)
 	{
 		for (int i = 0; i < agents.size(); i++)
 		{
@@ -79,10 +121,13 @@ int main()
 		olg.modify_write(true);
 	}
 	olg.modify_kill(true);
+	cmt.modify_kill(true);
 	data_output.join();
+	check_esc.join();
 	Log::info("DONE");
 	
 	agents.clear();
 	delete[] agent;
 	
 }
+

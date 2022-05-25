@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Buildings.cpp" />
     <ClCompile Include="Source\Calculations.cpp" />
     <ClCompile Include="Source\Infection.cpp" />
     <ClCompile Include="Source\Enviroment.cpp" />

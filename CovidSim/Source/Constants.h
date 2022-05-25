@@ -2,6 +2,10 @@
 
 namespace CONSTANTS
 {
+	enum class DAY_OF_THE_WEEK
+	{
+		MONDAY = 0, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+	};
 
 	const unsigned int MIN_lATENT_TIME = 2880; //counts - 1 count = 1 minute
 	const unsigned int MAX_LATENT_TIME = 4320;

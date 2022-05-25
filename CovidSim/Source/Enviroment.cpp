@@ -61,6 +61,19 @@ void Enviroment::edit_agent_location(const std::pair<unsigned int, unsigned int>
 	m_position_lock.unlock();
 }
 
+//void Enviroment::update_public_building(int count, std::unique_ptr<public_buildings>& p_building)
+//{
+//	std::pair<int, int> hours = p_building->get_opening_hours(m_day);
+//	if ((count < hours.first || count > hours.second) && p_building->closed == false)
+//	{
+//		p_building->modify_closed(true);
+//	}
+//	else if (p_building->closed == true)
+//	{
+//		p_building->modify_closed(false);
+//	}
+//}
+
 unsigned int Enviroment::get_size()
 {
 	return m_grid_size;
