@@ -1,6 +1,6 @@
 #include "Movement.h"
 
-void Movement::update_agent(Agent* target_agent)
+void Movement::update_agent(std::shared_ptr<Agent> target_agent)
 {
 	Agent::task_state mode = target_agent->get_task_state();
 	std::pair<unsigned int, unsigned int> new_location;
@@ -26,12 +26,12 @@ void Movement::update_agent(Agent* target_agent)
 	}
 }
 
-Movement::Movement(unsigned int grid, Enviroment* world)
+Movement::Movement(unsigned int grid, std::shared_ptr<Enviroment> world)
 	:m_grid_size(grid), m_world(world)
 {
 }
 
-std::pair<unsigned int, unsigned int> Movement::agent_random_walk(Agent*& target_agent)
+std::pair<unsigned int, unsigned int> Movement::agent_random_walk(std::shared_ptr<Agent>& target_agent)
 {
 	Matrix<double> random_move(1, 4, 0.25);
 	random_move = generate_move_matrix(target_agent, true);
@@ -89,7 +89,7 @@ std::pair<unsigned int, unsigned int> Movement::agent_random_walk(Agent*& target
 	return std::make_pair(x, y);
 }
 
-std::pair<unsigned int, unsigned int> Movement::agent_weighted_walk(Agent*& target_agent)
+std::pair<unsigned int, unsigned int> Movement::agent_weighted_walk(std::shared_ptr<Agent>& target_agent)
 {
 	Matrix<double> weighted_move(1, 4, 0);
 	weighted_move = generate_move_matrix(target_agent);
@@ -147,7 +147,7 @@ std::pair<unsigned int, unsigned int> Movement::agent_weighted_walk(Agent*& targ
 	return std::make_pair(x, y);
 }
 
-Matrix<double> Movement::generate_move_matrix(Agent* target_agent, bool random)
+Matrix<double> Movement::generate_move_matrix(std::shared_ptr<Agent> target_agent, bool random)
 {
 	Matrix<double> move_matrix(1, 4, 0);
 	if (random == true)

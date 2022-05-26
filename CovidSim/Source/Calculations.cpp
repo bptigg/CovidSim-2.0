@@ -4,7 +4,7 @@ double calculations::basic_reproductive_number(unsigned int previous, unsigned i
 {
 	if (now > 0 && previous == 0)
 	{
-		Log::error("VALUE OF R_0 UNDEFINED, DUE TO INFINITE INFECTION", "Calculations.cpp", 7);
+		Log::error("VALUE OF R_0 UNDEFINED, DUE TO INFINITE INFECTION", __FILE__, __LINE__);
 		return 0;
 	}
 	else if(now > 0 && previous > 0)

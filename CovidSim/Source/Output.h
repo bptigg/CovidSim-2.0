@@ -59,7 +59,7 @@ private:
 	DATA m_infected;
 	DATA m_recovered;
 
-	Infection* m_infection;
+	std::shared_ptr<Infection> m_infection;
 private:
 	void suceptible(unsigned int num);
 	void latent(unsigned int num);
@@ -68,5 +68,5 @@ private:
 public:
 	void output_data(Output_Lock_Guard* olg);
 	
-	output(DATA s, DATA l, DATA i, DATA r, Infection* infection);
+	output(DATA s, DATA l, DATA i, DATA r, std::shared_ptr<Infection> infection);
 };

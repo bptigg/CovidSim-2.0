@@ -1,5 +1,5 @@
 #pragma once
-
+#include <iostream>
 #include <tuple>
 
 class Agent
@@ -30,6 +30,9 @@ private:
 	unsigned int m_recovered_time = 0;
 
 public:
+
+	~Agent();
+
 	Agent::infection_state get_infection_state();
 	void set_infection_state(infection_state state);
 

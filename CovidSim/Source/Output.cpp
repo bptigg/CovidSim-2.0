@@ -76,7 +76,7 @@ void output::output_data(Output_Lock_Guard* olg)
 	}
 }
 
-output::output(DATA s, DATA l, DATA i, DATA r, Infection* infection)
+output::output(DATA s, DATA l, DATA i, DATA r, std::shared_ptr<Infection> infection)
 {
 	m_filepath = "Output/" + Log::current_time();
 	m_suceptible = s;

@@ -1,5 +1,10 @@
 #include "Agent.h"
 
+Agent::~Agent()
+{
+	//std::cout << "Agent deleted" << std::endl;
+}
+
 Agent::infection_state Agent::get_infection_state()
 {
 	return m_i_state;

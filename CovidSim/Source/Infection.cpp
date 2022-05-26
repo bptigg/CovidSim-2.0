@@ -1,6 +1,6 @@
 #include "Infection.h"
 
-bool Infection::collision_detection(Agent* infected_agent, Agent* target_agent)
+bool Infection::collision_detection(std::shared_ptr<Agent>& infected_agent, std::shared_ptr<Agent>& target_agent)
 {
 	std::pair<unsigned int, unsigned int> agent_1 = infected_agent->get_location();
 	std::pair<unsigned int, unsigned int> agent_2 = infected_agent->get_location();
@@ -23,7 +23,7 @@ double Infection::get_distance(const int x_1, const int x_2, const int y_1, cons
 	return std::sqrt(delta_x * delta_x + delta_y * delta_y);
 }
 
-void Infection::set_infection_vector(std::vector<Agent*> infected)
+void Infection::set_infection_vector(std::vector<std::shared_ptr<Agent>> infected)
 {
 	infected_agents = infected;
 }
@@ -49,7 +49,7 @@ const unsigned int Infection::num_sucept()
 }
 
 
-void Infection::update_latent_vector(std::vector<Agent*> infected_vec)
+void Infection::update_latent_vector(std::vector<std::shared_ptr<Agent>> infected_vec)
 {
 	m_infection_lock.lock();
 
@@ -136,7 +136,7 @@ std::pair<unsigned int, unsigned int> Infection::get_infected_numbers()
 	return std::make_pair(m_infected_previous, m_infected_current);
 }
 
-Infection::Infection(Enviroment* world, unsigned int starting_infected)
+Infection::Infection(std::shared_ptr<Enviroment> world, unsigned int starting_infected)
 {
 	m_world = world;
 	m_infected_current = starting_infected;
@@ -150,7 +150,7 @@ Infection::~Infection()
 
 void Infection::run_infection(Infection::infection_type type)
 {
-	std::vector<Agent*> o_infected = {};
+	std::vector<std::shared_ptr<Agent>> o_infected = {};
 	unsigned int num_infected = infected_agents.size();
 	switch (type)
 	{
@@ -159,7 +159,7 @@ void Infection::run_infection(Infection::infection_type type)
 		{
 			if (infected_agents[i]->get_infection_state() == Agent::infection_state::INFECTED)
 			{
-				std::vector<Agent*> sample = get_sample(infected_agents[i]);
+				std::vector<std::shared_ptr<Agent>> sample = get_sample(infected_agents[i]);
 				for (int e = 0; e < sample.size(); e++)
 				{
 					if (infected_agents[i] == sample[e])
@@ -194,9 +194,9 @@ void Infection::set_radius(unsigned int radius)
 	m_infection_radius = radius;
 }
 
-std::vector<Agent*> Infection::get_sample(Agent*& target_agent)
+std::vector<std::shared_ptr<Agent>> Infection::get_sample(std::shared_ptr<Agent>& target_agent)
 {
-	std::vector<Agent*> sample = {};
+	std::vector<std::shared_ptr<Agent>> sample = {};
 	std::pair<unsigned int, unsigned int> centre_point = target_agent->get_location();
 
 	int min_x = centre_point.first - m_infection_radius;
@@ -206,10 +206,10 @@ std::vector<Agent*> Infection::get_sample(Agent*& target_agent)
 
 	min_x = (min_x < 0) ? 0 : min_x;
 	max_x = (max_x > m_world->get_size()) ? m_world->get_size() : max_x;
-	min_y = (min_y < 0) ? 0 : min_x;
+	min_y = (min_y < 0) ? 0 : min_y;
 	max_y = (max_y > m_world->get_size()) ? m_world->get_size() : max_y;
 
-	for (int i = min_x; i < max_y; i++)
+	for (int i = min_x; i < max_x; i++)
 	{
 		for (int e = min_y; e < max_y; e++)
 		{

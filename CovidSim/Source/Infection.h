@@ -11,11 +11,11 @@ class Infection
 {
 private:
 	unsigned int m_infection_radius = 0;
-	Enviroment* m_world = NULL;
+	std::shared_ptr<Enviroment> m_world = NULL;
 
-	std::vector<Agent*> infected_agents;
-	std::vector<Agent*> latent_agents;
-	std::vector<Agent*> recovered_agents;
+	std::vector<std::shared_ptr<Agent>> infected_agents;
+	std::vector<std::shared_ptr<Agent>> latent_agents;
+	std::vector<std::shared_ptr<Agent>> recovered_agents;
 
 	std::mutex m_infection_lock;
 
@@ -27,13 +27,13 @@ public:
 		OUTDOORS = 1
 	};
 public:
-	Infection(Enviroment* world, unsigned int starting_infected);
+	Infection(std::shared_ptr<Enviroment> world, unsigned int starting_infected);
 	~Infection();
 
 	void run_infection(infection_type type);
 	void set_radius(unsigned int radius);
 
-	void set_infection_vector(std::vector<Agent*> infected);
+	void set_infection_vector(std::vector<std::shared_ptr<Agent>> infected);
 
 	//for output
 	const unsigned int num_sucept();
@@ -43,16 +43,16 @@ public:
 
 	std::pair<unsigned int, unsigned int> get_infected_numbers();
 private:
-	bool collision_detection(Agent* infected_agent, Agent* target_agent);
+	bool collision_detection(std::shared_ptr<Agent>& infected_agent, std::shared_ptr<Agent>& target_agent);
 	double get_distance(const int x_1, const int x_2, const int y_1, const int y_2);
 
-	void update_latent_vector(std::vector<Agent*> infected_vec);
+	void update_latent_vector(std::vector<std::shared_ptr<Agent>> infected_vec);
 	void update_infected_vector();
 	
 	void update_infected();
 	void update_recovered_vector();
 
-	std::vector<Agent*> get_sample(Agent*& target_agent); 
+	std::vector<std::shared_ptr<Agent>> get_sample(std::shared_ptr<Agent>& target_agent); 
 
 };
 

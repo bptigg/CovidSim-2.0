@@ -8,6 +8,8 @@
 #include "Output.h"
 #include <Windows.h>
 
+//#include "Building.h"
+#include "Building types/public_building.h"
 //This is testing enviroment
 
 class Control_model_threads
@@ -54,47 +56,51 @@ int main()
 	//auto row = test_matrix(2);
 
 
-	std::vector<Agent*> agents = {};
-	Agent* agent = new Agent[200];
+	std::vector<std::shared_ptr<Agent>> agents = {};
 	for (int i = 0; i < 200; i++)
 	{
-		agents.push_back(&agent[i]);
+		std::shared_ptr<Agent> agent(new Agent);
+		agents.push_back(std::move(agent));
 		int x = random::Random_number(0, 40);
 		int y = random::Random_number(0, 40, std::vector<int>{x});
-		agent[i].set_location(std::make_pair(x,y));
+		agents[i]->set_location(std::make_pair(x,y));
 		Sleep(1);
 	}
 
 	//agent[0].set_target_location(std::make_pair(20,30));
 	
-	Enviroment world(40,200);
-	world.initilise_agent_location(agents);
+	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY));
+	world->initilise_agent_location(agents);
 	
-	Movement move(40, &world);
-	Infection infect(&world,1);
-	infect.set_radius(2);
+	std::shared_ptr<Movement> move(new Movement(40, world));
+	std::shared_ptr<Infection> infect(new Infection(world,1));
+	infect->set_radius(2);
 
-	output data_out(output::DATA::ON, output::DATA::OFF, output::DATA::ON, output::DATA::ON, &infect);
+	output data_out(output::DATA::ON, output::DATA::OFF, output::DATA::ON, output::DATA::ON, infect);
 
 	agents[0]->set_infection_state(Agent::infection_state::INFECTED);
 	agents[0]->set_recovery_time(random::Normal_distribution(CONSTANTS::AVG_INFECTION_TIME, CONSTANTS::INFECTION_SD));
-	infect.set_infection_vector(std::vector<Agent*>{agents[0]});
+	infect->set_infection_vector(std::vector<std::shared_ptr<Agent>>{agents[0]});
 
 	unsigned int count = 0;
 	unsigned int max_count = 21 * CONSTANTS::DAY_LENGTH;
 
-	//{
-	//	public_buildings* test = new public_buildings;
-	//	test->intilize_building();
-	//
-	//	std::unique_ptr<public_buildings> test_ptr(test);
-	//
-	//	world.update_public_building(420, test_ptr);
-	//	world.update_public_building(800, test_ptr);
-	//}
+	//std::shared_ptr<Agent> test(agents[0]);
+
+	//public_building* pb_test = new public_building;
+	//std::vector<std::pair<CONSTANTS::DAY_OF_THE_WEEK, std::pair<int, int>>> hours = { std::make_pair(CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::make_pair(480,1080)) };
+	//pb_test->update_opening_hours(hours);
+	//pb_test->add_to_building(test);
+	//pb_test->add_to_building(test);
+	//pb_test->get_occupant(test);
+	//pb_test->remove_from_building(test);
+	//pb_test->get_occupant(test);
+	//pb_test->update_building(500, CONSTANTS::DAY_OF_THE_WEEK::MONDAY);
+	//pb_test->update_building(1200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY);
+	// pb_test;
 
 	
-#if _DEBUG
+#if _DEBUG 
 	Log::info("DEBUG BUILD");
 #elif !_DEBUG
 	Log::info("RELEASE BUILD");
@@ -104,7 +110,7 @@ int main()
 
 	Output_Lock_Guard olg;
 	Control_model_threads cmt; 
-	std::thread data_output(&output::output_data, data_out, &olg);
+	std::thread data_output(&output::output_data, &data_out, &olg);
 	std::thread check_esc(&esc_check, &cmt);
 
 
@@ -112,10 +118,10 @@ int main()
 	{
 		for (int i = 0; i < agents.size(); i++)
 		{
-			move.update_agent(agents[i]);
+			move->update_agent(agents[i]);
 		}
 		while (olg.data_collected == false);
-		infect.run_infection(Infection::infection_type::OUTDOORS);
+		infect->run_infection(Infection::infection_type::OUTDOORS);
 		olg.modify_dc(false);
 		count++;
 		olg.modify_write(true);
@@ -127,7 +133,7 @@ int main()
 	Log::info("DONE");
 	
 	agents.clear();
-	delete[] agent;
+	//delete[] agent;
 	
 }
 

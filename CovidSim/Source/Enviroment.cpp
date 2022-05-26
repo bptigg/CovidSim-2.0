@@ -1,18 +1,19 @@
 #include "Enviroment.h"
 
-Enviroment::Enviroment(unsigned int size, unsigned int num_agents)
+Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day)
 {
 	m_grid_size = size;
 	m_num_agents = num_agents;
+	m_day = day;
 	//Points* points = new Points[m_grid_size * m_grid_size];
 	int position = 0;
 	for (int i = 0; i < m_grid_size; i++)
 	{
-		std::vector<Points*> temp = {};
+		std::vector<std::shared_ptr<Points>> temp = {};
 		for (int e = 0; e < m_grid_size; e++)
 		{
-			Points* point = new Points;
-			temp.push_back(point);
+			std::shared_ptr<Points> point(new Points);
+			temp.push_back(std::move(point));
 			position++;
 		}
 		grid.push_back(temp);
@@ -23,15 +24,11 @@ Enviroment::~Enviroment()
 {
 	for (int i = 0; i < m_grid_size; i++)
 	{
-		for (std::vector<Points*>::iterator it = grid[i].begin(); it != grid[i].end(); ++it)
-		{
-			delete *it;
-		}
 		grid[i].clear();
 	}
 }
 
-void Enviroment::initilise_agent_location(std::vector<Agent*> locations)
+void Enviroment::initilise_agent_location(std::vector<std::shared_ptr<Agent>> locations)
 {
 	for (int i = 0; i < locations.size(); i++)
 	{
@@ -41,7 +38,7 @@ void Enviroment::initilise_agent_location(std::vector<Agent*> locations)
 	}
 }
 
-void Enviroment::edit_agent_location(const std::pair<unsigned int, unsigned int>& new_location, Agent* target_agent)
+void Enviroment::edit_agent_location(const std::pair<unsigned int, unsigned int>& new_location, std::shared_ptr<Agent> target_agent)
 {
 	m_position_lock.lock();
 
@@ -79,7 +76,7 @@ unsigned int Enviroment::get_size()
 	return m_grid_size;
 }
 
-const Enviroment::Points* Enviroment::pass_grid(unsigned int index_1, unsigned int index_2)
+const std::shared_ptr<Enviroment::Points> Enviroment::pass_grid(unsigned int index_1, unsigned int index_2)
 {
 	return grid[index_1][index_2];
 }
