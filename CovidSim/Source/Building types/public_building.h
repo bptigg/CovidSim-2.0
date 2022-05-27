@@ -29,12 +29,13 @@ protected:
 	std::mutex m_staff_lock;
 protected:
 	void update_open_status(int time, CONSTANTS::DAY_OF_THE_WEEK key);
+	virtual void update_agent_amount() override;
 	const unsigned int get_default_capacity(pb_type type, base_building::SIZE bsize);
 public:
 	public_building();
-	~public_building();
+	virtual ~public_building();
 
-	void update_building(int time, CONSTANTS::DAY_OF_THE_WEEK DAY);
+	virtual void update_building(int time, CONSTANTS::DAY_OF_THE_WEEK DAY);
 	void update_opening_hours(std::vector<std::pair<CONSTANTS::DAY_OF_THE_WEEK, std::pair<int, int>>> hours);
 
 	std::vector<std::shared_ptr<Agent>> get_staff();

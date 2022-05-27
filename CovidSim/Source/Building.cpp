@@ -26,17 +26,11 @@ base_building::base_building()
     m_x = 0;
     m_y = 0;
     m_closed = true;
-    m_active_tasks = 0;
+    m_agent_amount = 0;
     m_in_building = {};
     m_capacity = 0;
 }
 
-void base_building::modify_active_tasks(int tasks)
-{
-    m_active_task_lock.lock();
-    m_active_tasks = tasks;
-    m_active_task_lock.unlock();
-}
 
 base_building::~base_building()
 {

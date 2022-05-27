@@ -12,14 +12,14 @@ protected:
 	int m_y;
 
 	bool m_closed;
-	int m_active_tasks;
+	int m_agent_amount;
 
 	int m_capacity;
 
 	std::vector<std::shared_ptr<Agent>> m_in_building;
 
 	std::mutex m_closed_lock;
-	std::mutex m_active_task_lock;
+	std::mutex m_agent_amount_lock;
 
 	std::mutex m_occupant_lock;
 public:
@@ -29,16 +29,16 @@ public:
 	};
 
 	const bool& closed = m_closed;
-	const int& active_tasks = m_active_tasks;
+	const int& agent_amount = m_agent_amount;
 	const int& capacity = m_capacity;
 protected:
 	std::pair<bool, int> find(const std::shared_ptr<Agent>& agent, std::vector<std::shared_ptr<Agent>>& target_vector);
+	virtual void update_agent_amount() = 0; 
 public:
 	base_building();
 	virtual ~base_building();
 
 	void modify_closed(bool state);
-	void modify_active_tasks(int tasks);
 
 	std::pair<int, int> get_location();
 	void set_location(int x, int y);

@@ -13,6 +13,11 @@ void public_building::update_open_status(int time, CONSTANTS::DAY_OF_THE_WEEK ke
 	}
 }
 
+void public_building::update_agent_amount()
+{
+	m_agent_amount = m_in_building.size() - m_staff_amount;
+}
+
 const unsigned int public_building::get_default_capacity(pb_type type, base_building::SIZE bsize)
 {
 	unsigned int default_capacity = 0;
@@ -100,6 +105,7 @@ public_building::~public_building()
 void public_building::update_building(int time, CONSTANTS::DAY_OF_THE_WEEK DAY)
 {
 	update_open_status(time, DAY);
+	update_agent_amount();
 }
 
 void public_building::update_opening_hours(std::vector<std::pair<CONSTANTS::DAY_OF_THE_WEEK, std::pair<int,int>>> hours)
