@@ -21,3 +21,26 @@ namespace CONSTANTS
 
 	const unsigned int DAY_LENGTH = 1440;
 }
+
+namespace DEFAULT_CAPACITY
+{
+	const unsigned int POW = 200;
+	const unsigned int PARK = 2000;
+	const unsigned int CAFE = 20;
+	const unsigned int RESTAURANT = 40;
+	const unsigned int CINEMA = 200;
+	const unsigned int THEATRE = 300;
+	const unsigned int GENERIC_SHOP = 50;
+	const unsigned int SUPERMARKET = 500;
+	const unsigned int SHOPPING_CENTRE = 500;
+	const unsigned int NIGHTCLUB = 400;
+	const unsigned int PUB = 60;
+	const unsigned int ARENA= 1500;
+}
+
+namespace BUILDING_MODIFERS
+{
+	const double SMALL = 0.5;
+	const double MEDIUM = 1;
+	const double LARGE = 2;
+}

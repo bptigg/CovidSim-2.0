@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <tuple>
 #include <memory>
 
 #include "Agent.h"
@@ -24,8 +23,14 @@ protected:
 
 	std::mutex m_occupant_lock;
 public:
+	enum class SIZE
+	{
+		SMALL = 0, MEDIUM, LARGE, DEFUALT_SIZE
+	};
+
 	const bool& closed = m_closed;
 	const int& active_tasks = m_active_tasks;
+	const int& capacity = m_capacity;
 protected:
 	std::pair<bool, int> find(const std::shared_ptr<Agent>& agent);
 public:
