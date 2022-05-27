@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Building types\hospital.cpp" />
     <ClCompile Include="Source\Building types\public_building.cpp" />
     <ClCompile Include="Source\Building.cpp" />
     <ClCompile Include="Source\Calculations.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="Source\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Building types\hospital.h" />
     <ClInclude Include="Source\Building types\public_building.h" />
     <ClInclude Include="Source\Building.h" />
     <ClInclude Include="Source\Calculations.h" />

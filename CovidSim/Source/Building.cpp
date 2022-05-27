@@ -1,9 +1,9 @@
 #include "Building.h"
 
-std::pair<bool, int> base_building::find(const std::shared_ptr<Agent>& agent)
+std::pair<bool, int> base_building::find(const std::shared_ptr<Agent>& agent, std::vector<std::shared_ptr<Agent>>& target_vector)
 {
     int position = 0;
-    for (auto it = m_in_building.begin(); it < m_in_building.end(); it++)
+    for (auto it = target_vector.begin(); it < target_vector.end(); it++)
     {
         if (*it == agent)
         {
@@ -61,7 +61,7 @@ std::vector<std::shared_ptr<Agent>> base_building::get_occupants()
 
 std::shared_ptr<Agent> base_building::get_occupant(const std::shared_ptr<Agent>& agent)
 {
-    std::pair<bool, int> occupant = find(agent);
+    std::pair<bool, int> occupant = find(agent, m_in_building);
     if (occupant.first == false)
     {
         Log::warning("AGENT NOT IN BUILDING");
@@ -72,7 +72,7 @@ std::shared_ptr<Agent> base_building::get_occupant(const std::shared_ptr<Agent>&
 
 void base_building::add_to_building(std::shared_ptr<Agent> agent)
 {
-    std::pair<bool, int> occupant = find(agent);
+    std::pair<bool, int> occupant = find(agent, m_in_building);
     if (occupant.first == true)
     {
         Log::warning("AGENT ALREADY IN BUILDING");
@@ -85,7 +85,7 @@ void base_building::add_to_building(std::shared_ptr<Agent> agent)
 
 void base_building::remove_from_building(std::shared_ptr<Agent>& agent)
 {
-   std::pair<bool, int> occupant = find(agent);
+   std::pair<bool, int> occupant = find(agent, m_in_building);
    if (occupant.first == false)
    {
        Log::warning("AGENT NOT IN BUILDING");

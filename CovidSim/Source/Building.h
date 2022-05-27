@@ -32,7 +32,7 @@ public:
 	const int& active_tasks = m_active_tasks;
 	const int& capacity = m_capacity;
 protected:
-	std::pair<bool, int> find(const std::shared_ptr<Agent>& agent);
+	std::pair<bool, int> find(const std::shared_ptr<Agent>& agent, std::vector<std::shared_ptr<Agent>>& target_vector);
 public:
 	base_building();
 	virtual ~base_building();

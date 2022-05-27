@@ -119,7 +119,7 @@ void public_building::add_staff(std::vector<std::shared_ptr<Agent>>& staff)
 {
 	for (int i = 0; i < staff.size(); i++)
 	{
-		if (find(staff[i]).first == true)
+		if (find(staff[i], m_staff).first == true)
 		{
 			Log::warning("AGENT ALREADY STAFF MEMBER");
 		}
@@ -134,7 +134,7 @@ void public_building::add_staff(std::vector<std::shared_ptr<Agent>>& staff)
 
 void public_building::add_staff(std::shared_ptr<Agent> staff_member)
 {
-	if (find(staff_member).first == true)
+	if (find(staff_member, m_staff).first == true)
 	{
 		Log::warning("AGENT ALREADY STAFF MEMBER");
 	}
@@ -144,6 +144,19 @@ void public_building::add_staff(std::shared_ptr<Agent> staff_member)
 		m_staff.push_back(std::move(staff_member));
 		m_staff_lock.unlock();
 	}
+}
+
+void public_building::remove_staff(std::shared_ptr<Agent>& staff_member)
+{
+	std::pair<bool, int> occupant = find(staff_member, m_staff);
+	if (occupant.first == false)
+	{
+		Log::warning("AGENT NOT STAFF");
+		return;
+	}
+	m_staff_lock.lock();
+	m_staff.erase(m_staff.begin() + occupant.second);
+	m_staff_lock.unlock();
 }
 
 void public_building::set_staff_amount(int amount)

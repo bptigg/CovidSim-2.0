@@ -17,7 +17,7 @@ public:
 	const pb_type& type = m_type;
 	const base_building::SIZE& size = m_size;
 
-private:
+protected:
 	std::map<CONSTANTS::DAY_OF_THE_WEEK, std::pair<int, int>> m_opening_hours;
 
 	std::vector<std::shared_ptr<Agent>> m_staff;
@@ -27,7 +27,7 @@ private:
 	base_building::SIZE m_size;
 
 	std::mutex m_staff_lock;
-private:
+protected:
 	void update_open_status(int time, CONSTANTS::DAY_OF_THE_WEEK key);
 	const unsigned int get_default_capacity(pb_type type, base_building::SIZE bsize);
 public:
@@ -43,6 +43,7 @@ public:
 
 	void add_staff(std::vector<std::shared_ptr<Agent>>& staff);
 	void add_staff(std::shared_ptr<Agent> staff_member);
+	void remove_staff(std::shared_ptr<Agent>& staff_member);
 	void set_staff_amount(int amount = -1);
 
 	void set_capacity(int amount = -1);
