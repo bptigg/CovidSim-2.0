@@ -48,6 +48,12 @@ std::pair<int, int> base_building::get_location()
     return std::make_pair(m_x, m_y);
 }
 
+void base_building::set_location(int x, int y)
+{
+    m_x = x;
+    m_y = y;
+}
+
 std::vector<std::shared_ptr<Agent>> base_building::get_occupants()
 {
     return m_in_building;

@@ -41,7 +41,8 @@ public:
 	void modify_active_tasks(int tasks);
 
 	std::pair<int, int> get_location();
-	
+	void set_location(int x, int y);
+
 	std::vector<std::shared_ptr<Agent>> get_occupants();
 	std::shared_ptr<Agent> get_occupant(const std::shared_ptr<Agent>& agent);
 
