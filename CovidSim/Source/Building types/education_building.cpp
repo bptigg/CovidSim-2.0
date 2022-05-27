@@ -25,6 +25,15 @@ const unsigned int education_building::get_default_capacity(edu_type type, base_
 
 education_building::education_building()
 {
+	m_school_hours = {};
+
+	m_student_amount = 0;
+	m_student_capacity = 0;
+	m_type = edu_type::default_type;
+	m_size = base_building::SIZE::DEFUALT_SIZE;
+
+	m_staff = {};
+	m_students = {};
 }
 
 education_building::~education_building()
