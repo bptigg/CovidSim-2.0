@@ -59,6 +59,9 @@ const unsigned int public_building::get_default_capacity(pb_type type, base_buil
 	case public_building::pb_type::ARENA:
 		default_capacity = DEFAULT_CAPACITY::ARENA;
 		break;
+	case public_building::pb_type::GENERIC_WORK:
+		default_capacity = DEFAULT_CAPACITY::GENERIC_WORK;
+		break;
 	case public_building::pb_type::DEFUALT_TYPE:
 		return 0;
 	default:
@@ -170,6 +173,10 @@ void public_building::set_staff_amount(int amount)
 	if (amount == -1)
 	{
 		m_staff_amount = m_staff.size();
+		if (m_type == pb_type::GENERIC_WORK)
+		{
+			m_staff_amount = get_default_capacity(m_type, m_size);
+		}
 	}
 	else
 	{
@@ -182,10 +189,14 @@ void public_building::set_capacity(int amount)
 	if (amount == -1)
 	{
 		m_capacity = get_default_capacity(m_type, m_size);
+		if (m_type == pb_type::GENERIC_WORK)
+		{
+			m_capacity = 0;
+		}
 	}
 	else
 	{
-		m_staff_amount = amount;
+		m_capacity = amount;
 	}
 }
 

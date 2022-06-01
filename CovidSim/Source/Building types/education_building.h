@@ -50,7 +50,7 @@ public:
 
 #pragma region BUILDING INITILAZTION
 
-	void add_stuff(std::vector<std::shared_ptr<Agent>>& staff);
+	void add_staff(std::vector<std::shared_ptr<Agent>>& staff);
 	void add_staff(std::shared_ptr<Agent> staff_member);
 	void remove_staff(std::shared_ptr<Agent>& staff_member);
 	void set_staff_amount(int amount = -1);

@@ -36,6 +36,7 @@ namespace DEFAULT_CAPACITY
 	const unsigned int NIGHTCLUB = 400;
 	const unsigned int PUB = 60;
 	const unsigned int ARENA= 1500;
+	const unsigned int GENERIC_WORK = 50;
 }
 
 namespace BUILDING_MODIFERS

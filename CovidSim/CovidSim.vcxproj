@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Building types\education_building.cpp" />
     <ClCompile Include="Source\Building types\hospital.cpp" />
+    <ClCompile Include="Source\Building types\house.cpp" />
     <ClCompile Include="Source\Building types\public_building.cpp" />
     <ClCompile Include="Source\Building.cpp" />
     <ClCompile Include="Source\Calculations.cpp" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Building types\education_building.h" />
     <ClInclude Include="Source\Building types\hospital.h" />
+    <ClInclude Include="Source\Building types\house.h" />
     <ClInclude Include="Source\Building types\public_building.h" />
     <ClInclude Include="Source\Building.h" />
     <ClInclude Include="Source\Calculations.h" />
