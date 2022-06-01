@@ -12,6 +12,7 @@
 #include "Building types/public_building.h"
 //This is testing enviroment
 
+
 class Control_model_threads
 {
 private:
@@ -66,6 +67,8 @@ int main()
 		agents[i]->set_location(std::make_pair(x,y));
 		Sleep(1);
 	}
+
+	public_building pb_test;
 
 	//agent[0].set_target_location(std::make_pair(20,30));
 	

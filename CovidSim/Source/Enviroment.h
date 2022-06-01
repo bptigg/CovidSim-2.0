@@ -8,7 +8,8 @@
 
 #include "Agent.h"
 #include "Matrix.h"
-//#include "Building types/public_buildings.h"
+
+#include "building_types.h"
 
 #include "Constants.h"
 
@@ -26,6 +27,8 @@ private:
 	unsigned int m_grid_size = 0;
 	unsigned int m_num_agents = 0;
 	std::vector<std::vector<std::shared_ptr<Points>>> grid = {};
+
+	std::map<std::string, std::tuple<std::shared_ptr<public_building>, std::shared_ptr<hospital>, std::shared_ptr<house>, std::shared_ptr<education_building>>> m_building_id_table;
 
 	std::mutex m_position_lock;
 public:

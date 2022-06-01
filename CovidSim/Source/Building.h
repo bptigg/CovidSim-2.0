@@ -4,6 +4,7 @@
 
 #include "Agent.h"
 #include "Log.h"
+#include "Random.h"
 
 class base_building
 {
@@ -22,12 +23,16 @@ protected:
 	std::mutex m_agent_amount_lock;
 
 	std::mutex m_occupant_lock;
+
+	std::string m_building_id;
 public:
 	enum class SIZE
 	{
 		SMALL = 0, MEDIUM, LARGE, DEFUALT_SIZE
 	};
 
+	const std::string& building_id = m_building_id;
+	
 	const bool& closed = m_closed;
 	const int& agent_amount = m_agent_amount;
 	const int& capacity = m_capacity;

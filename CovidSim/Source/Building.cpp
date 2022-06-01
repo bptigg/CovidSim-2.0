@@ -29,8 +29,12 @@ base_building::base_building()
     m_agent_amount = 0;
     m_in_building = {};
     m_capacity = 0;
-}
 
+    const void* m_address = (const void*)this; // converts the address of the object to a string that can be stored
+    std::stringstream ss;
+    ss << m_address;
+    m_building_id = ss.str(); 
+}
 
 base_building::~base_building()
 {

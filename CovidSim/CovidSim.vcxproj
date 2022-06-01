@@ -33,6 +33,7 @@
     <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\Output.cpp" />
     <ClCompile Include="Source\Random.cpp" />
+    <ClCompile Include="Source\task.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Building types\education_building.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="Source\Building types\house.h" />
     <ClInclude Include="Source\Building types\public_building.h" />
     <ClInclude Include="Source\Building.h" />
+    <ClInclude Include="Source\building_types.h" />
     <ClInclude Include="Source\Calculations.h" />
     <ClInclude Include="Source\Constants.h" />
     <ClInclude Include="Source\Infection.h" />
@@ -50,6 +52,7 @@
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\Output.h" />
     <ClInclude Include="Source\Random.h" />
+    <ClInclude Include="Source\task.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
