@@ -19,7 +19,7 @@ namespace CONSTANTS
 	const unsigned int REINFECTION_TIME = 20160;
 	const double REINFECTION_PROBABILITY = 0.4;
 
-	const unsigned int DAY_LENGTH = 1440;
+	const unsigned int DAY_LENGTH = 10; //1440
 }
 
 namespace DEFAULT_CAPACITY

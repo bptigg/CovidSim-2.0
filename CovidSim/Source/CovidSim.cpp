@@ -2,6 +2,7 @@
 #include "Matrix.h"
 #include <random>
 
+#include "clock.h"
 #include "Enviroment.h"
 #include "Movement.h"
 #include "Infection.h"
@@ -72,7 +73,8 @@ int main()
 
 	//agent[0].set_target_location(std::make_pair(20,30));
 	
-	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY));
+	std::unique_ptr<world_clock> clk(new world_clock);
+	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::move(clk)));
 	world->initilise_agent_location(agents);
 	
 	std::shared_ptr<Movement> move(new Movement(40, world));
@@ -127,6 +129,7 @@ int main()
 		infect->run_infection(Infection::infection_type::OUTDOORS);
 		olg.modify_dc(false);
 		count++;
+		world->update_world_clock();
 		olg.modify_write(true);
 	}
 	olg.modify_kill(true);

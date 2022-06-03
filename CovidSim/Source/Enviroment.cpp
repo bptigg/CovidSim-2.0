@@ -1,6 +1,6 @@
 #include "Enviroment.h"
 
-Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day)
+Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk)
 {
 	m_grid_size = size;
 	m_num_agents = num_agents;
@@ -18,6 +18,9 @@ Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DA
 		}
 		grid.push_back(temp);
 	}
+
+	m_clk = std::move(clk);
+	m_clk->set_up_clock(m_day);
 }
 
 Enviroment::~Enviroment()
@@ -84,4 +87,13 @@ const std::shared_ptr<Enviroment::Points> Enviroment::pass_grid(unsigned int ind
 unsigned int Enviroment::get_num_agents()
 {
 	return m_num_agents;
+}
+
+void Enviroment::update_world_clock()
+{
+	if (m_clk->update_clock() == true)
+	{
+		m_day = m_clk->day;
+	}
+	m_time_of_day = m_clk->day_count;
 }

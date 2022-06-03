@@ -8,10 +8,13 @@
 
 #include "Agent.h"
 #include "Matrix.h"
+#include "clock.h"
 
 #include "building_types.h"
 
 #include "Constants.h"
+
+
 
 class Enviroment
 {
@@ -21,7 +24,8 @@ public:
 		std::vector<std::shared_ptr<Agent>> agents = {};
 	};
 
-	CONSTANTS::DAY_OF_THE_WEEK m_day = CONSTANTS::DAY_OF_THE_WEEK::MONDAY;
+	CONSTANTS::DAY_OF_THE_WEEK& day = m_day;
+	int& time_of_day = m_time_of_day;
 
 private:
 	unsigned int m_grid_size = 0;
@@ -31,8 +35,13 @@ private:
 	std::map<std::string, std::tuple<std::shared_ptr<public_building>, std::shared_ptr<hospital>, std::shared_ptr<house>, std::shared_ptr<education_building>>> m_building_id_table;
 
 	std::mutex m_position_lock;
+
+	CONSTANTS::DAY_OF_THE_WEEK m_day;
+	int m_time_of_day;
+
+	std::unique_ptr<world_clock> m_clk;
 public:
-	Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day);
+	Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk);
 	~Enviroment();
 	void initilise_agent_location(std::vector<std::shared_ptr<Agent>> locations);
 
@@ -43,6 +52,8 @@ public:
 	const std::shared_ptr<Enviroment::Points> pass_grid(unsigned int index_1, unsigned int index_2);
 
 	unsigned int get_num_agents();
+
+	void update_world_clock();
 
 };
 

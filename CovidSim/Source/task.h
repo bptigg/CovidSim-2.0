@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "Agent.h"
 #include "Log.h"
@@ -37,7 +38,11 @@ public:
 	~task();
 
 	bool update_task();
-	bool initlize_task(int x, int y, std::string b_id, std::vector<std::shared_ptr<Agent>>& target_agents, int run_time); //also allows redefinition of the task
+	bool initlize_task(int x, int y, std::string b_id, std::vector<std::shared_ptr<Agent>>& target_agents, int run_time); 
+
+	void update_task_length(int run_time);
+	void update_target_agents(std::vector<std::shared_ptr<Agent>>& target_agents);
+	void update_target_agents(std::shared_ptr<Agent> target_agent);
 
 };
 
