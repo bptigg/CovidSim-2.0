@@ -35,6 +35,7 @@
     <ClCompile Include="Source\Output.cpp" />
     <ClCompile Include="Source\Random.cpp" />
     <ClCompile Include="Source\task.cpp" />
+    <ClCompile Include="Source\weather.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Building types\education_building.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Source\Output.h" />
     <ClInclude Include="Source\Random.h" />
     <ClInclude Include="Source\task.h" />
+    <ClInclude Include="Source\weather.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
