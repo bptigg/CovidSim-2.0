@@ -3,6 +3,7 @@
 #include <random>
 
 #include "clock.h"
+#include "weather.h"
 #include "Enviroment.h"
 #include "Movement.h"
 #include "Infection.h"

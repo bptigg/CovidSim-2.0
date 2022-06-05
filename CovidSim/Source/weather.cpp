@@ -21,18 +21,23 @@ void weather::update_weather()
 	{
 	case 0:
 		b_type = BASIC_TYPES::CLEAR;
+		m_bt_value = WEATHER_MODIFERS::CLEAR;
 		break;
 	case 1:
 		b_type = BASIC_TYPES::OVERCAST;
+		m_bt_value = WEATHER_MODIFERS::OVERCAST;
 		break;
 	case 2:
 		b_type = BASIC_TYPES::LIGHT_RAIN;
+		m_bt_value = WEATHER_MODIFERS::LIGHT_RAIN;
 		break;
 	case 3:
 		b_type = BASIC_TYPES::MODERATE_RAIN;
+		m_bt_value = WEATHER_MODIFERS::MODERATE_RAIN;
 		break;
 	case 4:
 		b_type = BASIC_TYPES::HEAVY_RAIN;
+		m_bt_value = WEATHER_MODIFERS::HEAVY_RAIN;
 		break;
 	default:
 		break;
@@ -42,15 +47,19 @@ void weather::update_weather()
 	{
 	case 0:
 		t_mod = TEMP_MODIFERS::FREEZING;
+		m_tm_value = WEATHER_MODIFERS::FREEZING;
 		break;
 	case 1:
 		t_mod = TEMP_MODIFERS::COLD;
+		m_tm_value = WEATHER_MODIFERS::COLD;
 		break;
 	case 2:
 		t_mod = TEMP_MODIFERS::WARM;
+		m_tm_value = WEATHER_MODIFERS::WARM;
 		break;
 	case 3:
 		t_mod = TEMP_MODIFERS::HOT;
+		m_tm_value = WEATHER_MODIFERS::HOT;
 		break;
 	default:
 		break;
@@ -60,22 +69,25 @@ void weather::update_weather()
 	{
 	case 0:
 		w_mod = WIND_MODIFERS::CALM;
+		m_wm_value = WEATHER_MODIFERS::CALM;
 		break;
 	case 1:
 		w_mod = WIND_MODIFERS::LIGHT_WIND;
+		m_wm_value = WEATHER_MODIFERS::LIGHT_WIND;
 		break;
 	case 2:
 		w_mod = WIND_MODIFERS::MODERATE_WIND;
+		m_wm_value = WEATHER_MODIFERS::MODERATE_WIND;
 		break;
 	case 3:
 		w_mod = WIND_MODIFERS::STRONG_WIND;
+		m_wm_value = WEATHER_MODIFERS::STRONG_WIND;
 		break;
 	default:
 		break;
 	}
 
-	//do some stuff with constants
-	//weather_score = std::sqrt(m_bt_value + m_tm_value + m_wm_value);
+	m_weather_score = std::sqrt(m_bt_value + m_tm_value + m_wm_value);
 }
 
 

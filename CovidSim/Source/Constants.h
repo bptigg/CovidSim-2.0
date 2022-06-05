@@ -45,3 +45,34 @@ namespace BUILDING_MODIFERS
 	const double MEDIUM = 1;
 	const double LARGE = 2;
 }
+
+namespace WEATHER_MODIFERS
+{
+#pragma region BASIC_TYPES
+	
+	const double CLEAR = 1;
+	const double OVERCAST = 0.9;
+	const double LIGHT_RAIN = 0.7;
+	const double MODERATE_RAIN = 0.4;
+	const double HEAVY_RAIN = 0.1;
+
+#pragma endregion
+
+#pragma region TEMP
+
+	const double FREEZING = 0.2;
+	const double COLD = 0.5;
+	const double WARM = 0.9;
+	const double HOT = 0.8;
+
+#pragma endregion
+
+#pragma region WIND
+
+	const double CALM = 1;
+	const double LIGHT_WIND = 0.9;
+	const double MODERATE_WIND = 0.7;
+	const double STRONG_WIND = 0.5;
+
+#pragma endregion
+}
