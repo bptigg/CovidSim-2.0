@@ -20,6 +20,11 @@ namespace CONSTANTS
 	const double REINFECTION_PROBABILITY = 0.4;
 
 	const unsigned int DAY_LENGTH = 10; //1440
+
+	enum class public_building_type
+	{
+		POW = 0, PARK, CAFE, RESTAURANT, CINEMA, THEATRE, GENERIC_SHOP, SUPERMARKET, SHOPPING_CENTRE, PUB, NIGHTCLUB, ARENA, GENERIC_WORK, DEFUALT_TYPE
+	};
 }
 
 namespace DEFAULT_CAPACITY
@@ -50,29 +55,29 @@ namespace WEATHER_MODIFERS
 {
 #pragma region BASIC_TYPES
 	
-	const double CLEAR = 1;
-	const double OVERCAST = 0.9;
-	const double LIGHT_RAIN = 0.7;
-	const double MODERATE_RAIN = 0.4;
-	const double HEAVY_RAIN = 0.1;
+	const double CLEAR = 10;
+	const double OVERCAST = 9;
+	const double LIGHT_RAIN = 7;
+	const double MODERATE_RAIN = 4;
+	const double HEAVY_RAIN = 1;
 
 #pragma endregion
 
 #pragma region TEMP
 
-	const double FREEZING = 0.2;
-	const double COLD = 0.5;
-	const double WARM = 0.9;
-	const double HOT = 0.8;
+	const double FREEZING = 2;
+	const double COLD = 5;
+	const double WARM = 8;
+	const double HOT = 9;
 
 #pragma endregion
 
 #pragma region WIND
 
-	const double CALM = 1;
-	const double LIGHT_WIND = 0.9;
-	const double MODERATE_WIND = 0.7;
-	const double STRONG_WIND = 0.5;
+	const double CALM = 10;
+	const double LIGHT_WIND = 9;
+	const double MODERATE_WIND = 7;
+	const double STRONG_WIND = 5;
 
 #pragma endregion
 }

@@ -4,8 +4,12 @@
 #include <vector>
 #include <algorithm>
 
+#include "Enviroment.h"
+
 #include "Agent.h"
 #include "Log.h"
+
+#include "Constants.h"
 
 class task
 {
@@ -23,6 +27,8 @@ private:
 
 	bool task_initlized;
 
+	std::shared_ptr<Enviroment> m_enviroment;
+
 public:
 	const std::string& task_id = m_task_id;
 	const std::string& building_id = m_building_id;
@@ -32,6 +38,10 @@ public:
 
 private:
 	std::string get_id();
+
+	CONSTANTS::public_building_type generate_random_task(int age, int time, int day, double weather_score);
+	double normalize_weather_modifier(double weather_score);
+	
 
 public:
 	task();

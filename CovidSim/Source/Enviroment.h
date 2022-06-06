@@ -8,12 +8,14 @@
 
 #include "Agent.h"
 #include "Matrix.h"
+
 #include "clock.h"
+#include "weather.h"
 
 #include "building_types.h"
+#include "task.h"
 
 #include "Constants.h"
-
 
 
 class Enviroment
@@ -25,8 +27,11 @@ public:
 	};
 
 	CONSTANTS::DAY_OF_THE_WEEK& day = m_day;
-	int& time_of_day = m_time_of_day;
+	const int& time_of_day = m_time_of_day;
+	const double& weather_score = m_weather->weather_score;
 
+	double min_weather_score;
+	double max_weather_score;
 private:
 	unsigned int m_grid_size = 0;
 	unsigned int m_num_agents = 0;
@@ -40,8 +45,9 @@ private:
 	int m_time_of_day;
 
 	std::unique_ptr<world_clock> m_clk;
+	std::unique_ptr<weather> m_weather;
 public:
-	Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk);
+	Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk, std::unique_ptr<weather> weath);
 	~Enviroment();
 	void initilise_agent_location(std::vector<std::shared_ptr<Agent>> locations);
 

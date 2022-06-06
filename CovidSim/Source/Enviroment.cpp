@@ -1,6 +1,6 @@
 #include "Enviroment.h"
 
-Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk)
+Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DAY_OF_THE_WEEK day, std::unique_ptr<world_clock> clk, std::unique_ptr<weather> weath)
 {
 	m_grid_size = size;
 	m_num_agents = num_agents;
@@ -21,6 +21,13 @@ Enviroment::Enviroment(unsigned int size, unsigned int num_agents, CONSTANTS::DA
 
 	m_clk = std::move(clk);
 	m_clk->set_up_clock(m_day);
+
+	m_weather = std::move(weath);
+	m_weather->update_weather();
+
+	min_weather_score = std::sqrt(std::pow(WEATHER_MODIFERS::HEAVY_RAIN, 2) + std::pow(WEATHER_MODIFERS::COLD, 2) + std::pow(WEATHER_MODIFERS::STRONG_WIND, 2));
+	max_weather_score = std::sqrt(std::pow(WEATHER_MODIFERS::CLEAR, 2) + std::pow(WEATHER_MODIFERS::HOT, 2) + std::pow(WEATHER_MODIFERS::CALM, 2));
+	
 }
 
 Enviroment::~Enviroment()

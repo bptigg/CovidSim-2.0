@@ -8,6 +8,16 @@ std::string task::get_id()
     return ss.str();
 }
 
+CONSTANTS::public_building_type task::generate_random_task(int age, int time, int day, double weather_score)
+{
+    double n_weather_score = 1 + normalize_weather_modifier(weather_score);
+}
+
+double task::normalize_weather_modifier(double weather_score)
+{
+    return (weather_score - m_enviroment->min_weather_score) / (m_enviroment->max_weather_score - m_enviroment->min_weather_score);
+}
+
 task::task()
 {
     m_target_x = 0;

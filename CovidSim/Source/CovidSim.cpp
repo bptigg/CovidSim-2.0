@@ -73,9 +73,14 @@ int main()
 	public_building pb_test;
 
 	//agent[0].set_target_location(std::make_pair(20,30));
+
+	std::shared_ptr<Matrix<double>> bt(new Matrix<double>(5,5,0.5));
+	std::shared_ptr<Matrix<double>> tm(new Matrix<double>(4,4,0.5)); // tempoary transition matracies 
+	std::shared_ptr<Matrix<double>> wm(new Matrix<double>(4,4,0.5));
 	
+	std::unique_ptr<weather> weath(new weather(bt,tm,wm));
 	std::unique_ptr<world_clock> clk(new world_clock);
-	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::move(clk)));
+	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::move(clk), std::move(weath)));
 	world->initilise_agent_location(agents);
 	
 	std::shared_ptr<Movement> move(new Movement(40, world));

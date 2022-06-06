@@ -87,7 +87,7 @@ void weather::update_weather()
 		break;
 	}
 
-	m_weather_score = std::sqrt(m_bt_value + m_tm_value + m_wm_value);
+	m_weather_score = std::sqrt(std::pow(m_bt_value,2) + std::pow(m_tm_value,2) + std::pow(m_wm_value,2));
 }
 
 
