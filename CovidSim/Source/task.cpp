@@ -12,6 +12,8 @@ TASK_CONSTANTS::public_building_type task::generate_random_task(std::vector<int>
 {
     double n_weather_score = 1 + normalize_weather_modifier(weather_score);
     int avg_age = mean_age(age_range);
+
+    return TASK_CONSTANTS::public_building_type::DEFUALT_TYPE; //not pernament
 }
 
 double task::normalize_weather_modifier(double weather_score)
