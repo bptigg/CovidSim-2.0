@@ -8,15 +8,28 @@ std::string task::get_id()
     return ss.str();
 }
 
-CONSTANTS::public_building_type task::generate_random_task(int age, int time, int day, double weather_score)
+TASK_CONSTANTS::public_building_type task::generate_random_task(std::vector<int> age_range, int time, int day, double weather_score)
 {
     double n_weather_score = 1 + normalize_weather_modifier(weather_score);
+    int avg_age = mean_age(age_range);
 }
 
 double task::normalize_weather_modifier(double weather_score)
 {
     return (weather_score - m_enviroment->min_weather_score) / (m_enviroment->max_weather_score - m_enviroment->min_weather_score);
 }
+
+int task::mean_age(std::vector<int>& age_range)
+{
+    double sum = 0;
+    for (int i = 0; i < age_range.size(); i++)
+    {
+        sum = sum + age_range[i];
+    }
+
+    return (int)std::floor(sum / age_range.size());
+}
+
 
 task::task()
 {

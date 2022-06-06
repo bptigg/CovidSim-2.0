@@ -39,9 +39,10 @@ public:
 private:
 	std::string get_id();
 
-	CONSTANTS::public_building_type generate_random_task(int age, int time, int day, double weather_score);
+	TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, int day, double weather_score);
 	double normalize_weather_modifier(double weather_score);
 	
+	int mean_age(std::vector<int>& age_range);
 
 public:
 	task();
