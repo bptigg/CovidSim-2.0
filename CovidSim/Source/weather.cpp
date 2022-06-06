@@ -9,6 +9,8 @@ weather::weather(std::shared_ptr<Matrix<double>> bt, std::shared_ptr<Matrix<doub
 	m_bt = 0;
 	m_tm = 0;
 	m_wm = 0;
+
+	m_weather_score = 0;
 }
 
 void weather::update_weather()

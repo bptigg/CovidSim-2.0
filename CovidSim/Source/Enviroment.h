@@ -27,7 +27,7 @@ public:
 
 	CONSTANTS::DAY_OF_THE_WEEK& day = m_day;
 	const int& time_of_day = m_time_of_day;
-	const double& weather_score = m_weather->weather_score;
+	//const double& weather_score = m_weather->weather_score;
 
 	double min_weather_score;
 	double max_weather_score;
@@ -59,6 +59,8 @@ public:
 	unsigned int get_num_agents();
 
 	void update_world_clock();
+
+	double get_weather_score();
 
 };
 

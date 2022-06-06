@@ -104,3 +104,8 @@ void Enviroment::update_world_clock()
 	}
 	m_time_of_day = m_clk->day_count;
 }
+
+double Enviroment::get_weather_score()
+{
+	return m_weather->weather_score;
+}
