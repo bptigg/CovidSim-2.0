@@ -13,7 +13,7 @@ TASK_CONSTANTS::public_building_type task::generate_random_task(std::vector<int>
     double n_weather_score = normalize_weather_modifier(weather_score);
     int avg_age = mean_age(age_range);
 
-    if (n_weather_score <= 0.5)
+    if (n_weather_score >= 0.5)
     {
         n_weather_score = n_weather_score * 2;
     }

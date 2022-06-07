@@ -85,7 +85,7 @@ int main()
 	world->initilise_agent_location(agents);
 
 	task test_task(world);
-	test_task.generate_random_task({ 30 }, 599, (CONSTANTS::DAY_OF_THE_WEEK)2, 10);
+	test_task.generate_random_task({ 30 }, 599, (CONSTANTS::DAY_OF_THE_WEEK)2, world->get_weather_score());
 	
 
 	std::shared_ptr<Movement> move(new Movement(40, world));
