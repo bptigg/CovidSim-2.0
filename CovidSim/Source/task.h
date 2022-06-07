@@ -39,13 +39,16 @@ public:
 private:
 	std::string get_id();
 
-	TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, int day, double weather_score);
+	//TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, int day, double weather_score);
 	double normalize_weather_modifier(double weather_score);
-	
+	double normalize_age_modifier(double mean_age, std::pair<double, double> age_bracket, bool age_limit = false); //takes the bottom age to be minumimum requirment
+	double normalize_time_modifier(double time, std::pair<double, double> peak_time);
+	double normalize_day_modifier(CONSTANTS::DAY_OF_THE_WEEK day, std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> peak_day);
+
 	int mean_age(std::vector<int>& age_range);
 
 public:
-	task();
+	task(std::shared_ptr<Enviroment> env);
 	~task();
 
 	bool update_task();
@@ -55,5 +58,6 @@ public:
 	void update_target_agents(std::vector<std::shared_ptr<Agent>>& target_agents);
 	void update_target_agents(std::shared_ptr<Agent> target_agent);
 
+	TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, CONSTANTS::DAY_OF_THE_WEEK day, double weather_score);
 };
 

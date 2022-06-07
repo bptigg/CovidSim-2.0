@@ -8,6 +8,7 @@
 #include "Movement.h"
 #include "Infection.h"
 #include "Output.h"
+#include "task.h"
 #include <Windows.h>
 
 //#include "Building.h"
@@ -82,7 +83,11 @@ int main()
 	std::unique_ptr<world_clock> clk(new world_clock);
 	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::move(clk), std::move(weath)));
 	world->initilise_agent_location(agents);
+
+	task test_task(world);
+	test_task.generate_random_task({ 30 }, 599, (CONSTANTS::DAY_OF_THE_WEEK)2, 10);
 	
+
 	std::shared_ptr<Movement> move(new Movement(40, world));
 	std::shared_ptr<Infection> infect(new Infection(world,1));
 	infect->set_radius(2);

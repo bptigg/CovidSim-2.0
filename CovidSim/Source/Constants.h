@@ -32,18 +32,19 @@ namespace TASK_CONSTANTS
 	};
 
 	//TOD RANGE
-	const std::pair<int, int> POW_RANGE = { 600, 840 };
-	const std::pair<int, int> PARK_RANGE = { 420, 1020 };
-	const std::pair<int, int> CAFE_RANGE = { 660, 960 };
-	const std::pair<int, int> RESTAURANT_RANGE = { 1020, 1320 };
-	const std::pair<int, int> CINEMA_RANGE = { 960, 1320 };
-	const std::pair<int, int> GENERAL_SHOP_RANGE = { 480, 1200 };
-	const std::pair<int, int> SUPERMARKET_RANGE = { 480, 1200 };
-	const std::pair<int, int> SHOPPING_CENTRE_RANGE = { 600, 1200 };
-	const std::pair<int, int> PUB_RANGE = { 1080, 1410 };
-	const std::pair<int, int> NIGHTCLUB_RANGE = { 1200, 180 };
-	const std::pair<int, int> ARENA_RANGE = { 1080, 1380 };
-	const std::pair<int, int> HOME_RANGE = { 600, 1320 };
+	const std::pair<double, double> POW_RANGE = { 600, 840 };
+	const std::pair<double, double> PARK_RANGE = { 420, 1020 };
+	const std::pair<double, double> CAFE_RANGE = { 660, 960 };
+	const std::pair<double, double> RESTAURANT_RANGE = { 1020, 1320 };
+	const std::pair<double, double> CINEMA_RANGE = { 960, 1320 };
+	const std::pair<double, double> THEATRE_RANGE = { 960, 1320 };
+	const std::pair<double, double> GENERAL_SHOP_RANGE = { 480, 1200 };
+	const std::pair<double, double> SUPERMARKET_RANGE = { 480, 1200 };
+	const std::pair<double, double> SHOPPING_CENTRE_RANGE = { 600, 1200 };
+	const std::pair<double, double> PUB_RANGE = { 1080, 1410 };
+	const std::pair<double, double> NIGHTCLUB_RANGE = { 1200, 180 };
+	const std::pair<double, double> ARENA_RANGE = { 1080, 1380 };
+	const std::pair<double, double> HOME_RANGE = { 600, 1320 };
 
 	//DOTY RANGE
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> POW_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
@@ -51,27 +52,32 @@ namespace TASK_CONSTANTS
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> CAFE_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> RESTAURANT_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::FRIDAY, CONSTANTS::DAY_OF_THE_WEEK::MONDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> CINEMA_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
-	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> GENERAL_DSHOP_RANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
+	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> THEATRE_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
+	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> GENERAL_SHOP_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> SUPERMARKET_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
-	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> SHOPPING_DCENTRE_RANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
+	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> SHOPPING_CENTRE_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> PUB_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::FRIDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> NIGHTCLUB_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::THURSDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> ARENA_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::FRIDAY, CONSTANTS::DAY_OF_THE_WEEK::SATURDAY };
 	const std::pair<CONSTANTS::DAY_OF_THE_WEEK, CONSTANTS::DAY_OF_THE_WEEK> HOME_DRANGE = { CONSTANTS::DAY_OF_THE_WEEK::MONDAY, CONSTANTS::DAY_OF_THE_WEEK::SUNDAY };
 
 	//AGE RANGE
-	const std::pair<int, int> POW_ARANGE = { 0, 100 };
-	const std::pair<int, int> PARK_ARANGE = { 0, 100 };
-	const std::pair<int, int> CAFE_ARANGE = { 5, 80 };
-	const std::pair<int, int> RESTAURANT_ARANGE = { 15, 80 };
-	const std::pair<int, int> CINEMA_ARANGE = { 8, 60 };
-	const std::pair<int, int> GENERAL_SHOP_ARANGE = { 15, 80 };
-	const std::pair<int, int> SUPERMARKET_ARANGE = { 20, 80 };
-	const std::pair<int, int> SHOPPING_CENTRE_ARANGE = { 10, 60 };
-	const std::pair<int, int> PUB_ARANGE = { 20, 50 };
-	const std::pair<int, int> NIGHTCLUB_ARANGE = { 18, 25 };
-	const std::pair<int, int> ARENA_ARANGE = { 16, 40 };
-	const std::pair<int, int> HOME_ARANGE = { 0, 100 };
+	const std::pair<double, double> POW_ARANGE = { 0, 100 };
+	const std::pair<double, double> PARK_ARANGE = { 0, 100 };
+	const std::pair<double, double> CAFE_ARANGE = { 5, 80 };
+	const std::pair<double, double> RESTAURANT_ARANGE = { 15, 80 };
+	const std::pair<double, double> CINEMA_ARANGE = { 8, 60 };
+	const std::pair<double, double> THEATRE_ARANGE = { 15, 90 };
+	const std::pair<double, double> GENERAL_SHOP_ARANGE = { 15, 80 };
+	const std::pair<double, double> SUPERMARKET_ARANGE = { 20, 80 };
+	const std::pair<double, double> SHOPPING_CENTRE_ARANGE = { 10, 60 };
+	const std::pair<double, double> PUB_ARANGE = { 20, 50 };
+	const std::pair<double, double> NIGHTCLUB_ARANGE = { 18, 25 };
+	const std::pair<double, double> ARENA_ARANGE = { 16, 40 };
+	const std::pair<double, double> HOME_ARANGE = { 0, 100 };
+
+	const int MAX_AGE = 100;
+	const int MIN_AGE = 0;
 }
 
 namespace DEFAULT_CAPACITY
