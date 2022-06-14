@@ -147,6 +147,61 @@ TASK_CONSTANTS::public_building_type task::generate_random_task(std::vector<int>
     return TASK_CONSTANTS::public_building_type::DEFUALT_TYPE; //not pernament
 }
 
+std::string task::get_task_building(std::pair<int,int> location, TASK_CONSTANTS::public_building_type building, double weather_mod)
+{
+    if (building != TASK_CONSTANTS::public_building_type::HOME)
+    {
+        double n_weather_mod = normalize_weather_modifier(weather_mod);
+        int i = 0;
+        std::vector<std::pair<double, int>> dist_vec;
+        std::map<std::string, double> distance;
+        std::map<std::string, std::shared_ptr<public_building>> p_building = m_enviroment->return_public_list(building);
+        for (auto it = p_building.begin(); it != p_building.end(); it++)
+        {
+            double dist = get_distance(location, it->second->get_location());
+            distance[it->first] = dist;
+            dist_vec.push_back(std::make_pair(dist, i));
+            i++;
+        }
+
+        int result = 0;
+        if (dist_vec.size() > 1)
+        {
+            quicksort(dist_vec, 0, dist_vec.size() - 1);
+            std::pair<double, double> dist_range = std::make_pair(dist_vec[0].first / n_weather_mod, (dist_vec[-1].first + 1) / n_weather_mod);
+            double sum = 0;
+            for (int e = 0; e < dist_vec.size(); e++)
+            {
+                dist_vec[e].first = dist_vec[e].first / n_weather_mod;
+                normalize_distance(dist_vec[e].first, dist_range);
+                sum = sum + dist_vec[e].first;
+            }
+            double mod = 1 / sum;
+            std::vector<double> weights = {};
+            for (int e = 0; e < dist_vec.size(); e++)
+            {
+                weights.push_back(dist_vec[e].first * mod);
+            }
+            result = random::Discrete_distribution(weights, 1, true)[0];
+            result = dist_vec[result].second;
+        }
+        int a = 0;
+        std::string building_id;
+        for (auto it = distance.begin(); it != distance.end(); it++)
+        {
+            if (a = result)
+            {
+                return it->first;
+            }
+            a++;
+        }
+        
+    }
+    //Home requires looking at the target group and picking a home out of that group
+
+    return building_id;
+}
+
 double task::normalize_weather_modifier(double weather_score)
 {
     return (weather_score - m_enviroment->min_weather_score) / (m_enviroment->max_weather_score - m_enviroment->min_weather_score);
@@ -217,6 +272,11 @@ double task::normalize_day_modifier(CONSTANTS::DAY_OF_THE_WEEK day, std::pair<CO
     }
 }
 
+double task::normalize_distance(double distance, std::pair<double, double> disance_bracket)
+{
+    return std::abs(((distance - disance_bracket.first) / (disance_bracket.second - disance_bracket.first))-1);
+}
+
 int task::mean_age(std::vector<int>& age_range)
 {
     double sum = 0;
@@ -226,6 +286,51 @@ int task::mean_age(std::vector<int>& age_range)
     }
 
     return (int)std::floor(sum / age_range.size());
+}
+
+double task::get_distance(std::pair<int, int> agent, std::pair<int, int> building)
+{
+    int x_diff = building.first - agent.first;
+    int y_diff = building.second - agent.second;
+    return std::sqrt(std::pow(x_diff, 2) + std::pow(y_diff, 2));
+}
+
+double task::partition(std::vector<std::pair<double, int>>& arr, int low, int high)
+{
+    double pivot = arr[low].first;
+    int l = low;
+    int h = high;
+    while (l < h)
+    {
+        while (pivot >= arr[l].first)
+        {
+            l++;
+        }
+        while (pivot < arr[h].first)
+        {
+            h--;
+        }
+        if (l < h)
+        {
+            std::pair<double, int> temp = arr[h];
+            arr[h] = arr[l];
+            arr[l] = temp;
+        }
+        std::pair<double, int> temp = arr[h];
+        arr[h] = arr[low];
+        arr[low] = temp;
+    }
+    return h;
+}
+
+void task::quicksort(std::vector<std::pair<double, int>>& arr, int low, int high)
+{
+    if (low < high)
+    {
+        int pivot = partition(arr, low, high);
+        quicksort(arr, low, pivot - 1);
+        quicksort(arr, pivot + 1, high);  
+    }
 }
 
 
