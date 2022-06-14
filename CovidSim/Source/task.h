@@ -54,7 +54,7 @@ private:
 #pragma region QUICKSORT
 
 	double partition(std::vector<std::pair<double, int>>& arr, int low, int high);
-	void quicksort(std::vector<std::pair<double, int>>& arr, int low, int high);
+	//void quicksort(std::vector<std::pair<double, int>>& arr, int low, int high);
 
 #pragma endregion
 
@@ -72,6 +72,6 @@ public:
 	//TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, CONSTANTS::DAY_OF_THE_WEEK day, double weather_score);
 
 	//double partition(std::vector<std::pair<double, int>>& arr, int low, int high);
-	//void quicksort(std::vector<std::pair<double, int>>& arr, int low, int high);
+	void quicksort(std::vector<std::pair<double, int>>& arr, int low, int high);
 };
 

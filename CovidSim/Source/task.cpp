@@ -297,30 +297,29 @@ double task::get_distance(std::pair<int, int> agent, std::pair<int, int> buildin
 
 double task::partition(std::vector<std::pair<double, int>>& arr, int low, int high)
 {
-    double pivot = arr[low].first;
-    int l = low;
-    int h = high;
-    while (l < h)
+    int random_pivot = random::Random_number(low, high);
+    std::pair<double, int> temp = arr[high];
+    arr[high] = arr[random_pivot];
+    arr[random_pivot] = temp;
+
+    double pivot = arr[high].first;
+    
+    int l = low - 1;
+    
+    for (int h = low; h <= high - 1; h++)
     {
-        while (pivot >= arr[l].first)
+        if (arr[h].first <= pivot)
         {
             l++;
-        }
-        while (pivot < arr[h].first)
-        {
-            h--;
-        }
-        if (l < h)
-        {
             std::pair<double, int> temp = arr[h];
             arr[h] = arr[l];
             arr[l] = temp;
         }
-        std::pair<double, int> temp = arr[h];
-        arr[h] = arr[low];
-        arr[low] = temp;
     }
-    return h;
+    temp = arr[high];
+    arr[high] = arr[l+1];
+    arr[l+1] = temp;
+    return(l + 1);
 }
 
 void task::quicksort(std::vector<std::pair<double, int>>& arr, int low, int high)
