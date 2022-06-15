@@ -8,7 +8,7 @@
 #include "Movement.h"
 #include "Infection.h"
 #include "Output.h"
-#include "task.h"
+#include "task_builder.h"
 #include <Windows.h>
 
 //#include "Building.h"
@@ -84,10 +84,10 @@ int main()
 	std::shared_ptr<Enviroment> world(new Enviroment(40, 200, CONSTANTS::DAY_OF_THE_WEEK::MONDAY, std::move(clk), std::move(weath)));
 	world->initilise_agent_location(agents);
 
-	task test_task(world);
+	//task test_task(world);
 	//test_task.generate_random_task({ 30 }, 599, (CONSTANTS::DAY_OF_THE_WEEK)2, world->get_weather_score());
-	std::vector<std::pair<double, int>> sample = { {0.5,0},{0.1,1},{0.9,2},{0.2,3},{1.6,4},{1.0,5},{0.05,6},{1.07,7} };
-	test_task.quicksort(sample, 0, sample.size() - 1);
+	//std::vector<std::pair<double, int>> sample = { {0.5,0},{0.1,1},{0.9,2},{0.2,3},{1.6,4},{1.0,5},{0.05,6},{1.07,7} };
+	//test_task.quicksort(sample, 0, sample.size() - 1);
 
 	std::shared_ptr<Movement> move(new Movement(40, world));
 	std::shared_ptr<Infection> infect(new Infection(world,1));

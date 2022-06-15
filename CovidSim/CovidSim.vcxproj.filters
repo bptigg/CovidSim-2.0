@@ -57,13 +57,16 @@
     <ClCompile Include="Source\Building types\house.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\task.cpp">
+    <ClCompile Include="Source\task_builder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\clock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\weather.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,7 @@
     <ClInclude Include="Source\Building types\house.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\task.h">
+    <ClInclude Include="Source\task_builder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\building_types.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\weather.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

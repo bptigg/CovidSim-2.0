@@ -21,6 +21,8 @@ private:
 	int m_target_x = 0;
 	int m_target_y = 0;
 
+	int m_age = 0;
+
 	infection_state m_i_state = infection_state::SUCEPTIBLE;
 	task_state m_t_state = task_state::IDLE;
 	
@@ -28,6 +30,10 @@ private:
 	unsigned int m_infected_time = 0;
 	unsigned int m_revovery_time = 0;
 	unsigned int m_recovered_time = 0;
+
+	std::string m_house_id;
+	std::string m_task_id;
+	std::string m_work_id;
 
 public:
 
@@ -56,7 +62,17 @@ public:
 
 	void set_target_location(const std::pair<unsigned int, unsigned int>& location);
 	std::pair<unsigned int, unsigned int> get_target_location();
-	
+
+	void set_house_id(std::string id) { m_house_id = id; }
+	void set_task_id(std::string id) { m_task_id = id; }
+	void set_work_id(std::string id) { m_work_id = id; }
+	void set_age(int age) { m_age = age; }
+
+public:
+	const std::string& work_id = m_work_id;
+	const std::string& task_id = m_task_id;
+	const std::string& house_id = m_house_id;
+	const int& age = m_age;
 
 };
 

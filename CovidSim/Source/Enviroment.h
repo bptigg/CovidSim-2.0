@@ -56,6 +56,7 @@ public:
 	void initilise_agent_location(std::vector<std::shared_ptr<Agent>> locations);
 
 	std::map<std::string, std::shared_ptr<public_building>> return_public_list(TASK_CONSTANTS::public_building_type type) { return m_pbuilding_id_table[type]; }
+	std::shared_ptr<house> return_house(std::string id) { return m_house_id_table[id]; }
 
 	void edit_agent_location(const std::pair<unsigned int, unsigned int>& new_location, std::shared_ptr<Agent> target_agent);
 	//void update_public_building(int count, std::unique_ptr<public_buildings>& building); // will probably need to change 
