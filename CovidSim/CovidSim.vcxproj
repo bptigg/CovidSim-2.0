@@ -26,6 +26,7 @@
     <ClCompile Include="Source\Building.cpp" />
     <ClCompile Include="Source\Calculations.cpp" />
     <ClCompile Include="Source\clock.cpp" />
+    <ClCompile Include="Source\friendship.cpp" />
     <ClCompile Include="Source\Infection.cpp" />
     <ClCompile Include="Source\Enviroment.cpp" />
     <ClCompile Include="Source\Movement.cpp" />
@@ -39,6 +40,7 @@
     <ClCompile Include="Source\weather.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="friendship.h" />
     <ClInclude Include="Source\Building types\education_building.h" />
     <ClInclude Include="Source\Building types\hospital.h" />
     <ClInclude Include="Source\Building types\house.h" />
@@ -48,6 +50,7 @@
     <ClInclude Include="Source\Calculations.h" />
     <ClInclude Include="Source\clock.h" />
     <ClInclude Include="Source\Constants.h" />
+    <ClInclude Include="Source\friendship.h" />
     <ClInclude Include="Source\Infection.h" />
     <ClInclude Include="Source\Enviroment.h" />
     <ClInclude Include="Source\Matrix.h" />

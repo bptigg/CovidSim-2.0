@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <tuple>
+#include <vector>
 
 class Agent
 {
@@ -73,6 +74,8 @@ public:
 	const std::string& task_id = m_task_id;
 	const std::string& house_id = m_house_id;
 	const int& age = m_age;
+
+	std::vector<std::string> friends;
 
 };
 
