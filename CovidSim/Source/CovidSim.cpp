@@ -35,12 +35,15 @@ public:
 
 void esc_check(Control_model_threads* cmt)
 {
-	while (GetAsyncKeyState(VK_ESCAPE) == 0 || cmt->kill_model == true)
+	while (GetAsyncKeyState(VK_ESCAPE) == 0 && cmt->kill_model != true)
 	{
 
 	}
-
-	Log::warning("MODEL ENDED BY USER");
+	
+	if (cmt->kill_model != true)
+	{
+		Log::warning("MODEL ENDED BY USER");
+	}
 	cmt->modify_kill(true);
 };
 
