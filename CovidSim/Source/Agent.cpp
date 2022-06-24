@@ -1,5 +1,13 @@
 #include "Agent.h"
 
+Agent::Agent()
+{
+	const void* m_address = (const void*)this; 
+	std::stringstream ss;
+	ss << m_address;
+	m_agent_id = ss.str();
+}
+
 Agent::~Agent()
 {
 	//std::cout << "Agent deleted" << std::endl;

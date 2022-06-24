@@ -2,6 +2,7 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+#include <mutex>
 
 class Agent
 {
@@ -36,8 +37,14 @@ private:
 	std::string m_task_id;
 	std::string m_work_id;
 
+	std::string m_agent_id;
+
+	bool m_edit = true;
+	std::mutex edit_permission;
+
 public:
 
+	Agent();
 	~Agent();
 
 	Agent::infection_state get_infection_state();
@@ -69,11 +76,21 @@ public:
 	void set_work_id(std::string id) { m_work_id = id; }
 	void set_age(int age) { m_age = age; }
 
+	void modify_permission()
+	{
+		edit_permission.lock();
+		m_edit = true;
+		edit_permission.unlock();
+	}
+
 public:
 	const std::string& work_id = m_work_id;
 	const std::string& task_id = m_task_id;
 	const std::string& house_id = m_house_id;
+	const std::string& agent_id = m_agent_id;
 	const int& age = m_age;
+
+	const bool& edit = m_edit;
 
 	std::vector<std::string> friends;
 

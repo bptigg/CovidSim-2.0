@@ -231,6 +231,8 @@ public:
 	{
 		return m_colsize;
 	}
+
+
 };
 
 

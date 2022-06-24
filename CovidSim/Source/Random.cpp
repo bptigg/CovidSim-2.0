@@ -29,7 +29,7 @@ std::vector<unsigned int> random::Discrete_distribution(std::vector<double>& wei
 	return results;
 }
 
-unsigned int random::Random_number(int min, int max, std::vector<int> used)
+unsigned int random::Random_number(int min, int max, std::vector<int> used, bool random_device)
 {
 	std::default_random_engine gen;
 	std::uniform_int_distribution<int> random(min, max-1);
@@ -37,7 +37,15 @@ unsigned int random::Random_number(int min, int max, std::vector<int> used)
 
 	std::string time = Log::current_time();
 	std::seed_seq stime(time.begin(), time.end());
-	gen.seed(stime);
+	
+	if (random_device == false)
+	{
+		gen.seed(stime);
+	}
+	else
+	{
+		gen.seed(std::random_device{}());
+	}
 
 	while (number_found == false)
 	{

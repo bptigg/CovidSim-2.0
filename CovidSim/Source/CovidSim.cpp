@@ -9,6 +9,8 @@
 #include "Infection.h"
 #include "Output.h"
 #include "task_builder.h"
+#include "friendship.h"
+
 #include <Windows.h>
 
 //#include "Building.h"
@@ -68,11 +70,28 @@ int main()
 	{
 		std::shared_ptr<Agent> agent(new Agent);
 		agents.push_back(std::move(agent));
-		int x = random::Random_number(0, 40);
-		int y = random::Random_number(0, 40, std::vector<int>{x});
-		agents[i]->set_location(std::make_pair(x,y));
+		int x = random::Random_number(0, 40, {}, true);
+		int y = random::Random_number(0, 40, std::vector<int>{x}, true);
+		agents[i]->set_location(std::make_pair(x, y));
 		Sleep(1);
 	}
+
+	friendship friendship_director(agents);
+
+	for (int i = 0; i < 200; i++)
+	{
+		int random_n = random::Random_number(1, 6, {}, true);
+		std::vector<int> used_numbers = { i };
+		for (int e = 0; e < random_n; e++)
+		{
+			int index = random::Random_number(0, 200, used_numbers, true);
+			used_numbers.push_back(index);
+			agents[i]->friends.push_back(agents[index]->agent_id);
+		}
+	}
+
+	friendship_director.update_friendship_network();
+	friendship_director.get_viable_pairing(2);
 
 	public_building pb_test;
 

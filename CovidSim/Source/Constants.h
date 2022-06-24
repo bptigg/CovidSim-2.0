@@ -22,6 +22,9 @@ namespace CONSTANTS
 
 	const unsigned int DAY_LENGTH = 10; //1440
 
+	const int MAX_FRIENDS = 50;
+	const int MAX_INVITES = 10;
+
 }
 
 namespace TASK_CONSTANTS

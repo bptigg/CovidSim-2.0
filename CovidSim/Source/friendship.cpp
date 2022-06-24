@@ -2,95 +2,118 @@
 
 void friendship::update_friendship_network()
 {
+	std::map<std::pair<int, int>,int> updated;
 	for (auto it = m_agents_index.begin(); it != m_agents_index.end(); it++)
 	{
-		for (int i = 0; i < m_agents[it->first]->friends.size(); i++)
+		int size = m_agents[it->first]->friends.size();
+		for (int i = 0; i < size; i++)
 		{
 			std::string friend_id = m_agents[it->first]->friends[i];
-			if ((*m_friendship_network)(it->second, m_agents_index[friend_id]) == 0)
+			if (updated[std::make_pair(m_agents_index[friend_id],it->second)] == 0)
 			{
-				double strength = get_bond_strength();
-				(*m_friendship_network)(it->second, m_agents_index[friend_id]) = strength;
-				(*m_friendship_network)(m_agents_index[friend_id], it->second) = strength;
+				if ((*m_friendship_network)(it->second, m_agents_index[friend_id]) == 0)
+				{
+					(*m_friendship_network)(it->second, m_agents_index[friend_id]) = 1;
+					(*m_friendship_network)(m_agents_index[friend_id], it->second) = 1;
+					matrix_updated = true;
+				}
+				updated[std::make_pair(it->second, m_agents_index[friend_id])] = 1;
 			}
 		}
 	}
+	identify_friendship_triangle();
 }
 
 void friendship::identify_friendship_triangle()
 {
 	m_skip = true;
-	for (int i = 0; i < m_friendship_network->get_col_size(); i++)
+
+	if (matrix_updated == true)
 	{
-		for (int e = 0; e < m_friendship_network->get_row_size(); e++)
+		Matrix<double> network = (*m_friendship_network);
+		Matrix<double> network_sq = network * network;
+
+		int col_size = network.get_col_size();
+		int row_size = network.get_row_size();
+
+		for (int i = 0; i < col_size; i++)
 		{
-			if ((*m_friendship_network)(i, e) == 0);
+			for (int e = i; e < row_size; e++)
 			{
-				for (int a = 0; a < m_friendship_network->get_row_size(); a++)
+				if (i != e)
 				{
-					if ((*m_friendship_network)(e, a) != 0)
+					std::pair<std::string, std::string> triad = std::make_pair(m_agents_index_ref[i], m_agents_index_ref[e]);
+					if (m_agents_triangles[triad] == 0)
 					{
-						if (i == a || triangles[a] == i || triangles[i] == a)
+						int amount = network_sq(i, e);
+						if (amount > 0)
 						{
-							continue;
+							std::string target_a = m_agents_index_ref[i];
+							std::string final_a = m_agents_index_ref[e];
+							m_agents_triangles[triad] = std::make_shared<open_triad>(target_a, final_a, amount);
 						}
 						else
 						{
-							m_agents_triangles[std::make_pair(m_agents_index_ref[i],m_agents_index_ref[a])].push_back(std::make_shared<triangle>(m_agents_index_ref[i], m_agents_index_ref[e], m_agents_index_ref[a], (*m_friendship_network)(i, e), (*m_friendship_network)(e, a)));
-							triangles[i] = a;
+							m_agents_triangles.erase(triad);
 						}
 					}
 				}
 			}
 		}
 	}
-	get_confidence_value();
+	matrix_updated = false;
 	m_skip = false;
 }
 
-double friendship::get_bond_strength()
-{
-	return ((double)random::Random_number(0, 100) * 0.01);
-}
-
-void friendship::get_confidence_value()
-{
-	for (auto it = m_agents_triangles.begin(); it != m_agents_triangles.end(); it++)
-	{
-		int size = it->second.size();
-		double confidence_value = 0;
-		for (int i = 0; i < size; i++)
-		{
-			confidence_value = confidence_value + it->second[i]->p_strength;
-		}
-		m_triangle_confidence[it->first] = confidence_value;
-	}
-}
 
 std::vector<std::string> friendship::get_friends(std::pair<std::string, std::string> key)
 {
 	std::vector<std::string> friends;
-	std::vector<std::shared_ptr<triangle>> connections = m_agents_triangles[key];
+	std::shared_ptr<open_triad> connections = m_agents_triangles[key];
 
-	for (int i = 0; i < connections.size(); i++)
+	std::vector<int> random_sample = {};
+	int amount = random::Random_number(0, (m_agents[connections->m_target_agent]->friends.size() < CONSTANTS::MAX_INVITES) ? m_agents[connections->m_target_agent]->friends.size() : 10, {} ,true);
+	for (int i = 0; i < amount; i++)
 	{
-		friends.push_back(connections[i]->m_link_agent);
+		random_sample.push_back(random::Random_number(0, m_agents[connections->m_target_agent]->friends.size(), random_sample, true));
+		friends.push_back(m_agents[connections->m_target_agent]->friends[random_sample[i]]);
+	}
+
+	random_sample = {};
+	amount = random::Random_number(0, m_agents[connections->m_final_agent]->friends.size(), {}, true);
+	for (int i = 0; i < amount; i++)
+	{
+		random_sample.push_back(random::Random_number(0, (m_agents[connections->m_final_agent]->friends.size() < CONSTANTS::MAX_INVITES) ? m_agents[connections->m_final_agent]->friends.size() : 10, random_sample, true));
+		friends.push_back(m_agents[connections->m_final_agent]->friends[random_sample[i]]);
 	}
 	
 	return friends;
 }
 
-std::map<std::pair<std::string, std::string>, std::vector<std::string>> friendship::get_viable_pairing(double min_value)
+std::map<std::pair<std::string, std::string>, std::vector<std::string>> friendship::get_viable_pairing(int min_value)
 {
 	std::map<std::pair<std::string, std::string>, std::vector<std::string>> viable_pairing;
 	
-	for (auto it = m_triangle_confidence.begin(); it != m_triangle_confidence.end(); it++)
+	for (auto it = m_agents_triangles.begin(); it != m_agents_triangles.end(); it++)
 	{
-		if (it->second >= min_value)
+		if (it->second->m_amount >= min_value)
 		{
 			viable_pairing[it->first] = get_friends(it->first);
 		}
 	}
 
 	return viable_pairing;
+}
+
+friendship::friendship(std::vector<std::shared_ptr<Agent>> agent_vec)
+{
+	int i = 0;
+	for (i = 0; i < agent_vec.size(); i++)
+	{
+		m_agents[agent_vec[i]->agent_id] = agent_vec[i];
+		m_agents_index_ref[i] = agent_vec[i]->agent_id;
+		m_agents_index[agent_vec[i]->agent_id] = i;
+	}
+
+	m_friendship_network = std::make_unique<Matrix<double>>(Matrix<double>(i, i));
 }
