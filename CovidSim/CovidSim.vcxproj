@@ -40,7 +40,6 @@
     <ClCompile Include="Source\weather.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="friendship.h" />
     <ClInclude Include="Source\Building types\education_building.h" />
     <ClInclude Include="Source\Building types\hospital.h" />
     <ClInclude Include="Source\Building types\house.h" />

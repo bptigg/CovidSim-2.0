@@ -372,6 +372,10 @@ void task_builder::quicksort(std::vector<std::pair<double, int>>& arr, int low, 
 task_builder::task_builder(std::shared_ptr<Enviroment> env)
 {
     task_initlized = false;
+    m_active_tasks = 0;
+
+    m_max_tasks = (std::thread::hardware_concurrency() / 8) * TASK_CONSTANTS::BASE_MAX_TASKS;
+    friend_task_setup_key = { "","" };
 
     m_enviroment = std::move(env);
 }
@@ -435,10 +439,86 @@ bool task_builder::create_task(std::vector<std::shared_ptr<Agent>>& target_agent
     
 }
 
-bool task_builder::request_task()
+bool task_builder::friend_task_setup()
 {
-    //create_task()
-    return false;
+    std::pair<std::pair<std::string, std::string>, std::vector<std::string>> pairing;
+    std::vector<std::shared_ptr<Agent>> target_agents;
+    if (m_function_depth == 0)
+    {
+       pairing = m_friendship_director->get_viable_pairing(2);
+       friend_task_setup_key = pairing.first;
+    }
+    else
+    {
+        pairing = m_friendship_director->get_viable_pairing(2, friend_task_setup_key);
+    }
+
+    if (pairing.first.first == "")
+    {
+        return false;
+    }
+
+    target_agents.push_back(m_friendship_director->agents[pairing.first.first]);
+    target_agents.push_back(m_friendship_director->agents[pairing.first.second]);
+
+    for (int i = 0; i < pairing.second.size(); i++)
+    {
+        target_agents.push_back(m_friendship_director->agents[pairing.second[i]]);
+    }
+
+    bool return_value = false;
+
+    return_value = request_task(target_agents, true);
+    
+    m_function_depth = 0;
+    friend_task_setup_key = { "","" };
+
+    return return_value;
+}
+
+bool task_builder::request_task(std::vector<std::shared_ptr<Agent>>& target_agents, bool friend_task)
+{
+    int number_of_required_tasks = target_agents.size();
+    if (m_active_tasks + number_of_required_tasks > m_max_tasks && friend_task != false)
+    {
+        return false;
+    }
+    else if (m_active_tasks + number_of_required_tasks > m_max_tasks && friend_task == false)
+    {
+        if (m_active_tasks + number_of_required_tasks - m_max_tasks < 10)
+        {
+            Log::info("TASK BUDGET EXCEEDED BY SUITABLE LIMIT");
+        }
+        else
+        {
+            m_function_depth++;
+            if (m_function_depth <= TASK_CONSTANTS::TASK_RECURSION_LIMIT)
+            {
+                friend_task_setup();
+            }
+            else
+            {
+                Log::warning("TASK BUDGET EXCEEDED BY NON SUITABLE LIMIT");
+                return false;
+            }
+        }
+    }
+    for (int i = 0; i < target_agents.size(); i++)
+    {
+        if (target_agents[i]->get_task_state() != Agent::task_state::IDLE)
+        {
+            return false;
+        }
+    }
+
+    bool task_created = false;
+    std::shared_ptr<task> agent_task(new task);
+    task_created = create_task(target_agents, agent_task);
+    if (task_created == true)
+    {
+        m_task_list[agent_task->task_id] = agent_task;
+    }
+    return task_created;
 }
 
 

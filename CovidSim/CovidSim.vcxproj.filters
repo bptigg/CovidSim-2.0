@@ -134,9 +134,6 @@
     <ClInclude Include="Source\task.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="friendship.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\friendship.h">
       <Filter>Header Files</Filter>
     </ClInclude>

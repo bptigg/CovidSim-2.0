@@ -29,6 +29,10 @@ namespace CONSTANTS
 
 namespace TASK_CONSTANTS
 {
+
+	const int BASE_MAX_TASKS = 2000; //Based on developers system (8 logical processors), this does scale with number of logical processors
+	const int TASK_RECURSION_LIMIT = 5; 
+
 	enum class public_building_type
 	{
 		POW = 0, PARK, CAFE, RESTAURANT, CINEMA, THEATRE, GENERIC_SHOP, SUPERMARKET, SHOPPING_CENTRE, PUB, NIGHTCLUB, ARENA, HOME, DEFUALT_TYPE
