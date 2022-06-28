@@ -39,12 +39,13 @@ private:
 	bool matrix_updated = false;
 public:
 	const bool& skip = m_skip;
+	std::unordered_map<std::string, std::shared_ptr<Agent>>& agents = m_agents;
 private:
 	void identify_friendship_triangle();
-	std::vector<std::string> get_friends(std::pair<std::string, std::string> key);
+	std::vector<std::string> get_friends(std::pair<std::string, std::string> key, int limit = CONSTANTS::MAX_INVITES);
 
 public:
-	std::map<std::pair<std::string, std::string>, std::vector<std::string>> get_viable_pairing(int min_value);
+	std::pair<std::pair<std::string, std::string>, std::vector<std::string>> get_viable_pairing(int min_value, std::pair<std::string, std::string> optional_key = {"",""});
 	void update_friendship_network();
 
 	friendship(std::vector<std::shared_ptr<Agent>> agent_vec);

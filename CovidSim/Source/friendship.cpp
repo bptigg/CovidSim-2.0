@@ -66,13 +66,13 @@ void friendship::identify_friendship_triangle()
 }
 
 
-std::vector<std::string> friendship::get_friends(std::pair<std::string, std::string> key)
+std::vector<std::string> friendship::get_friends(std::pair<std::string, std::string> key ,int limit)
 {
 	std::vector<std::string> friends;
 	std::shared_ptr<open_triad> connections = m_agents_triangles[key];
 
 	std::vector<int> random_sample = {};
-	int amount = random::Random_number(0, (m_agents[connections->m_target_agent]->friends.size() < CONSTANTS::MAX_INVITES) ? m_agents[connections->m_target_agent]->friends.size() : 10, {} ,true);
+	int amount = random::Random_number(0, (m_agents[connections->m_target_agent]->friends.size() < limit) ? m_agents[connections->m_target_agent]->friends.size() : CONSTANTS::MAX_INVITES, {} ,true);
 	for (int i = 0; i < amount; i++)
 	{
 		random_sample.push_back(random::Random_number(0, m_agents[connections->m_target_agent]->friends.size(), random_sample, true));
@@ -80,26 +80,50 @@ std::vector<std::string> friendship::get_friends(std::pair<std::string, std::str
 	}
 
 	random_sample = {};
-	amount = random::Random_number(0, m_agents[connections->m_final_agent]->friends.size(), {}, true);
+	amount = random::Random_number(0, (m_agents[connections->m_final_agent]->friends.size() < limit) ? m_agents[connections->m_final_agent]->friends.size() : CONSTANTS::MAX_INVITES, {}, true);
 	for (int i = 0; i < amount; i++)
 	{
-		random_sample.push_back(random::Random_number(0, (m_agents[connections->m_final_agent]->friends.size() < CONSTANTS::MAX_INVITES) ? m_agents[connections->m_final_agent]->friends.size() : 10, random_sample, true));
+		random_sample.push_back(random::Random_number(0, m_agents[connections->m_final_agent]->friends.size(), random_sample, true));
 		friends.push_back(m_agents[connections->m_final_agent]->friends[random_sample[i]]);
 	}
 	
 	return friends;
 }
 
-std::map<std::pair<std::string, std::string>, std::vector<std::string>> friendship::get_viable_pairing(int min_value)
+std::pair<std::pair<std::string, std::string>, std::vector<std::string>> friendship::get_viable_pairing(int min_value, std::pair<std::string, std::string> optional_key)
 {
-	std::map<std::pair<std::string, std::string>, std::vector<std::string>> viable_pairing;
+	std::pair<std::pair<std::string, std::string>, std::vector<std::string>> viable_pairing;
 	
-	for (auto it = m_agents_triangles.begin(); it != m_agents_triangles.end(); it++)
+	if (optional_key.first == "")
 	{
-		if (it->second->m_amount >= min_value)
+		bool pairing = false;
+		int position = 0;
+		std::vector<int> used = {};
+		while (pairing == false)
 		{
-			viable_pairing[it->first] = get_friends(it->first);
+			position = random::Random_number(0, m_agents_triangles.size(), used, true);
+			used.push_back(position);
+
+			int i = 0;
+			for (auto it = m_agents_triangles.begin(); it != m_agents_triangles.end(); it++)
+			{
+				if (i == position)
+				{
+					if (it->second->m_amount >= min_value)
+					{
+						pairing = true;
+						viable_pairing = { it->first, get_friends(it->first) };
+						break;
+					}
+					break;
+				}
+				i++;
+			}
 		}
+	}
+	else
+	{
+		viable_pairing = { optional_key, get_friends(optional_key) };
 	}
 
 	return viable_pairing;

@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "Enviroment.h"
+#include "friendship.h"
 
 #include "Agent.h"
 #include "task.h"
@@ -19,8 +20,19 @@ private:
 	bool task_initlized;
 
 	std::shared_ptr<Enviroment> m_enviroment;
+	std::shared_ptr<friendship> m_friendship_director;
 	
 	std::map<std::string, std::shared_ptr<task>> m_task_list;
+	
+	int m_active_tasks;
+	int m_max_tasks;
+
+	bool m_over_task_limit;
+	bool m_at_task_limit; 
+
+	int m_function_depth;
+
+	std::pair<std::string, std::string> friend_task_setup_key;
 private:
 
 	TASK_CONSTANTS::public_building_type generate_random_task(std::vector<int> age_range, int time, CONSTANTS::DAY_OF_THE_WEEK day, double weather_score);
@@ -46,6 +58,9 @@ public:
 	task_builder(std::shared_ptr<Enviroment> env);
 
 	bool create_task(std::vector<std::shared_ptr<Agent>>& target_agents, std::shared_ptr<task> m_task);
-	bool request_task();
+	bool request_task(std::vector<std::shared_ptr<Agent>>& target_agents, bool friend_task = false);
+	bool friend_task_setup();
+public:
+	const bool& at_limit = m_at_task_limit;
 };
 
