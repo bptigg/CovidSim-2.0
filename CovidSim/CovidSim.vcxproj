@@ -19,6 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\AbstactStates\abstract_state.cpp" />
+    <ClCompile Include="Source\AbstactStates\active_task.cpp" />
+    <ClCompile Include="Source\AbstactStates\awaiting_task.cpp" />
+    <ClCompile Include="Source\AbstactStates\idle.cpp" />
+    <ClCompile Include="Source\AbstactStates\in_transit.cpp" />
     <ClCompile Include="Source\Building types\education_building.cpp" />
     <ClCompile Include="Source\Building types\hospital.cpp" />
     <ClCompile Include="Source\Building types\house.cpp" />
@@ -26,6 +31,7 @@
     <ClCompile Include="Source\Building.cpp" />
     <ClCompile Include="Source\Calculations.cpp" />
     <ClCompile Include="Source\clock.cpp" />
+    <ClCompile Include="Source\finite_state_machine.cpp" />
     <ClCompile Include="Source\friendship.cpp" />
     <ClCompile Include="Source\Infection.cpp" />
     <ClCompile Include="Source\Enviroment.cpp" />
@@ -40,6 +46,11 @@
     <ClCompile Include="Source\weather.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\AbstactStates\abstract_state.h" />
+    <ClInclude Include="Source\AbstactStates\active_task.h" />
+    <ClInclude Include="Source\AbstactStates\awaiting_task.h" />
+    <ClInclude Include="Source\AbstactStates\idle.h" />
+    <ClInclude Include="Source\AbstactStates\in_transit.h" />
     <ClInclude Include="Source\Building types\education_building.h" />
     <ClInclude Include="Source\Building types\hospital.h" />
     <ClInclude Include="Source\Building types\house.h" />
@@ -49,6 +60,7 @@
     <ClInclude Include="Source\Calculations.h" />
     <ClInclude Include="Source\clock.h" />
     <ClInclude Include="Source\Constants.h" />
+    <ClInclude Include="Source\finite_state_machine.h" />
     <ClInclude Include="Source\friendship.h" />
     <ClInclude Include="Source\Infection.h" />
     <ClInclude Include="Source\Enviroment.h" />

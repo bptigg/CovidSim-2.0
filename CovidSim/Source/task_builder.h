@@ -26,6 +26,7 @@ private:
 	
 	int m_active_tasks;
 	int m_max_tasks;
+	int m_tasks_extension;
 
 	bool m_over_task_limit;
 	bool m_at_task_limit; 

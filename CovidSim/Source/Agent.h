@@ -4,6 +4,9 @@
 #include <vector>
 #include <mutex>
 
+#include "Random.h"
+#include "finite_state_machine.h"
+
 class Agent
 {
 public:
@@ -24,6 +27,7 @@ private:
 	int m_target_y = 0;
 
 	int m_age = 0;
+	double m_extrovert = 0;
 
 	infection_state m_i_state = infection_state::SUCEPTIBLE;
 	task_state m_t_state = task_state::IDLE;
@@ -42,6 +46,11 @@ private:
 	bool m_edit = true;
 	std::mutex edit_permission;
 
+public:
+#pragma region FINITE_STATE_MACHINE
+	//class finite_state_machine;
+	std::shared_ptr<finite_state_machine> fsm;
+#pragma endregion
 public:
 
 	Agent();
@@ -79,9 +88,11 @@ public:
 	void modify_permission()
 	{
 		edit_permission.lock();
-		m_edit = true;
+		m_edit = !m_edit;
 		edit_permission.unlock();
 	}
+
+	void attach_fsm(std::vector<std::shared_ptr<abstract_state>> states);
 
 public:
 	const std::string& work_id = m_work_id;
@@ -89,6 +100,7 @@ public:
 	const std::string& house_id = m_house_id;
 	const std::string& agent_id = m_agent_id;
 	const int& age = m_age;
+	const double& extrovert = m_extrovert;
 
 	const bool& edit = m_edit;
 

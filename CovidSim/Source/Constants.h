@@ -32,6 +32,7 @@ namespace TASK_CONSTANTS
 
 	const int BASE_MAX_TASKS = 2000; //Based on developers system (8 logical processors), this does scale with number of logical processors
 	const int TASK_RECURSION_LIMIT = 5; 
+	const int MAX_TASKS_EXTENSION = 10;
 
 	enum class public_building_type
 	{
@@ -140,4 +141,27 @@ namespace WEATHER_MODIFERS
 	const double STRONG_WIND = 5;
 
 #pragma endregion
+
+}
+
+namespace FINITE_STATE_MACHINE
+{
+	const int AVG_IDLE_TIME = 50;
+	const int IDLE_SD = 10;
+
+	enum class execution_state
+	{
+		NONE = 0,
+		ACTIVE,
+		COMPLETE,
+		TERMINATED
+	};
+
+	enum class FSM_state_type
+	{
+		IDLE = 0,
+		AWAITING_TASK,
+		TRANSIT,
+		ACTIVE
+	};
 }

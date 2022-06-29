@@ -375,6 +375,7 @@ task_builder::task_builder(std::shared_ptr<Enviroment> env)
     m_active_tasks = 0;
 
     m_max_tasks = (std::thread::hardware_concurrency() / 8) * TASK_CONSTANTS::BASE_MAX_TASKS;
+    m_tasks_extension = (std::thread::hardware_concurrency() / 8) * TASK_CONSTANTS::MAX_TASKS_EXTENSION;
     friend_task_setup_key = { "","" };
 
     m_enviroment = std::move(env);
@@ -485,7 +486,7 @@ bool task_builder::request_task(std::vector<std::shared_ptr<Agent>>& target_agen
     }
     else if (m_active_tasks + number_of_required_tasks > m_max_tasks && friend_task == false)
     {
-        if (m_active_tasks + number_of_required_tasks - m_max_tasks < 10)
+        if (m_active_tasks + number_of_required_tasks - m_max_tasks < m_tasks_extension)
         {
             Log::info("TASK BUDGET EXCEEDED BY SUITABLE LIMIT");
         }

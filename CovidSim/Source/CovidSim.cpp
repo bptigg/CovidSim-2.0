@@ -11,6 +11,9 @@
 #include "task_builder.h"
 #include "friendship.h"
 
+#include "finite_state_machine.h"
+#include "AbstactStates/idle.h"
+
 #include <Windows.h>
 
 //#include "Building.h"
@@ -75,6 +78,11 @@ int main()
 		agents[i]->set_location(std::make_pair(x, y));
 		Sleep(1);
 	}
+
+	std::vector<std::shared_ptr<abstract_state>> states = { std::shared_ptr<idle>(new idle) };
+	agents[0]->attach_fsm(states);
+	agents[0]->fsm->start();
+	agents[0]->fsm->update();
 
 	friendship friendship_director(agents);
 

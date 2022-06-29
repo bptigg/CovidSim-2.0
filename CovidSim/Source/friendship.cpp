@@ -24,6 +24,38 @@ void friendship::update_friendship_network()
 	identify_friendship_triangle();
 }
 
+void friendship::make_friends(std::string agent_1, std::string agent_2)
+{
+	if (friend_check(m_agents[agent_1]->extrovert, m_agents[agent_2]->extrovert))
+	{
+		m_agents_triangles.erase(std::make_pair(agent_1, agent_2));
+		
+		bool agent_2_done = false;
+
+		while (m_agents[agent_1]->edit == false)
+		{
+			if (m_agents[agent_2]->edit != false)
+			{
+				m_agents[agent_2]->modify_permission();
+				m_agents[agent_2]->friends.push_back(agent_2);
+				agent_2_done = true;
+				m_agents[agent_2]->modify_permission();
+			}
+		}
+		m_agents[agent_1]->modify_permission();
+		m_agents[agent_1]->friends.push_back(agent_2);
+		m_agents[agent_1]->modify_permission();
+
+		if (agent_2_done != true)
+		{
+			while (m_agents[agent_2]->edit == false);
+			m_agents[agent_2]->modify_permission();
+			m_agents[agent_2]->friends.push_back(agent_2);
+			m_agents[agent_2]->modify_permission();
+		}
+	}
+}
+
 void friendship::identify_friendship_triangle()
 {
 	m_skip = true;
@@ -88,6 +120,12 @@ std::vector<std::string> friendship::get_friends(std::pair<std::string, std::str
 	}
 	
 	return friends;
+}
+
+bool friendship::friend_check(double agent_1, double agent_2)
+{
+	double weight = (agent_1 + agent_2) / 2;
+	return random::Discrete_distribution({ 1 - weight, weight }, true);
 }
 
 std::pair<std::pair<std::string, std::string>, std::vector<std::string>> friendship::get_viable_pairing(int min_value, std::pair<std::string, std::string> optional_key)

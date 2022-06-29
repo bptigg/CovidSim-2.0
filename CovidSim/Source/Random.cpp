@@ -29,6 +29,30 @@ std::vector<unsigned int> random::Discrete_distribution(std::vector<double>& wei
 	return results;
 }
 
+int random::Discrete_distribution(std::vector<double> weights, bool random_device)
+{
+
+	std::string time = Log::current_time();
+	std::seed_seq stime(time.begin(), time.end());
+
+	std::discrete_distribution<int> dist(std::begin(weights), std::end(weights));
+	std::mt19937 gen;
+
+	if (random_device == false)
+	{
+		gen.seed(stime);
+	}
+	else
+	{
+		gen.seed(std::random_device{}());
+	}
+
+
+	int result = dist(gen);
+
+	return result;
+}
+
 unsigned int random::Random_number(int min, int max, std::vector<int> used, bool random_device)
 {
 	std::default_random_engine gen;
