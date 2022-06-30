@@ -6,12 +6,12 @@ private:
 	int m_idle_count;
 	int m_idle_time;
 public:
-	idle();
+	idle(std::string owner);
 
 	bool enter_state() override;
 	bool exit_state() override;
 
-	void update_state() override;
+	FINITE_STATE_MACHINE::FSM_state_type update_state() override;
 	
 };
 

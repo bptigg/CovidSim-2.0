@@ -6,8 +6,6 @@
 
 #include "AbstactStates/abstract_state.h"
 
-class abstract_state;
-
 class finite_state_machine
 {
 private:
@@ -18,6 +16,8 @@ private:
 	std::unordered_map<FINITE_STATE_MACHINE::FSM_state_type, std::shared_ptr<abstract_state>> m_fsm_states;
 
 	bool m_awake;
+	
+
 public:
 	finite_state_machine();
 

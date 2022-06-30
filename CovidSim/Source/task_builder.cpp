@@ -522,4 +522,16 @@ bool task_builder::request_task(std::vector<std::shared_ptr<Agent>>& target_agen
     return task_created;
 }
 
+bool task_builder::request_task(std::vector<std::string>& target_agents, bool friend_task)
+{
+    std::vector<std::shared_ptr<Agent>> agent_list = {};
+    for (int i = 0; i < target_agents.size(); i++)
+    {
+        agent_list.push_back(m_friendship_director->agents[target_agents[i]]);
+    }
+
+    bool return_value = request_task(agent_list, friend_task);
+    return return_value;
+}
+
 

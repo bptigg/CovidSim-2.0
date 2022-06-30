@@ -60,8 +60,10 @@ public:
 
 	bool create_task(std::vector<std::shared_ptr<Agent>>& target_agents, std::shared_ptr<task> m_task);
 	bool request_task(std::vector<std::shared_ptr<Agent>>& target_agents, bool friend_task = false);
+	bool request_task(std::vector<std::string>& target_agents, bool friend_task = false);
 	bool friend_task_setup();
 public:
 	const bool& at_limit = m_at_task_limit;
+	const std::shared_ptr<friendship>& friendship_director = m_friendship_director;
 };
 

@@ -1,8 +1,9 @@
 #include "idle.h"
 
-idle::idle()
+idle::idle(std::string owner)
 {
 	m_type = FINITE_STATE_MACHINE::FSM_state_type::IDLE;
+	m_agent = owner;
 }
 
 bool idle::enter_state()
@@ -23,11 +24,12 @@ bool idle::exit_state()
 	return true;
 }
 
-void idle::update_state()
+FINITE_STATE_MACHINE::FSM_state_type idle::update_state()
 {
 	m_idle_count++;
 	if (m_idle_count >= m_idle_time)
 	{
-		fsm->EnterState(FINITE_STATE_MACHINE::FSM_state_type::AWAITING_TASK);
+		return FINITE_STATE_MACHINE::FSM_state_type::AWAITING_TASK;
 	}
+	return FINITE_STATE_MACHINE::FSM_state_type::NONE;
 }

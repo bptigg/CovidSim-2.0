@@ -109,11 +109,7 @@ void Agent::attach_fsm(std::vector<std::shared_ptr<abstract_state>> states)
 	modify_permission();
 	
 	std::shared_ptr<finite_state_machine> state_machine(new finite_state_machine());
-	for (int i = 0; i < states.size(); i++)
-	{
-		states[i]->attach_fsm(fsm);
-	}
-
+	
 	fsm = std::move(state_machine);
 	fsm->awake(states);
 

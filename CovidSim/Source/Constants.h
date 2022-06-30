@@ -33,6 +33,7 @@ namespace TASK_CONSTANTS
 	const int BASE_MAX_TASKS = 2000; //Based on developers system (8 logical processors), this does scale with number of logical processors
 	const int TASK_RECURSION_LIMIT = 5; 
 	const int MAX_TASKS_EXTENSION = 10;
+	const double GROUP_TASK = 0.3;
 
 	enum class public_building_type
 	{
@@ -162,6 +163,7 @@ namespace FINITE_STATE_MACHINE
 		IDLE = 0,
 		AWAITING_TASK,
 		TRANSIT,
-		ACTIVE
+		ACTIVE,
+		NONE
 	};
 }

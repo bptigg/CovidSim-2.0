@@ -39,7 +39,11 @@ void finite_state_machine::update()
 {
 	if (m_current_state != nullptr && m_awake == true)
 	{
-		m_current_state->update_state();
+		FINITE_STATE_MACHINE::FSM_state_type return_value = m_current_state->update_state();
+		if (return_value != FINITE_STATE_MACHINE::FSM_state_type::NONE)
+		{
+			EnterState(return_value);
+		}
 	}
 }
 

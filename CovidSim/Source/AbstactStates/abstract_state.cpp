@@ -3,25 +3,20 @@
 abstract_state::abstract_state()
 {
 	m_state = FINITE_STATE_MACHINE::execution_state::NONE;
-}
-
-void abstract_state::attach_fsm(std::shared_ptr<finite_state_machine> state_machine)
-{
-	fsm = std::move(state_machine);
+	m_entered_state = false;
+	m_type = FINITE_STATE_MACHINE::FSM_state_type::NONE;
+	//m_agent = owner;
 }
 
 bool abstract_state::enter_state()
 {
-	m_entered_state = false;
-	bool fsm_present = false;
-
-	fsm_present = (fsm != nullptr);
-	if (fsm_present == false)
+	m_entered_state = true;
+	if (m_agent == "")
 	{
-		Log::error("NO FSM FOUND", __FILE__, __LINE__);
+		m_entered_state == false;
+		Log::error("FSM STATE HAS NO OWNER", __FILE__, __LINE__);
+		return m_entered_state;
 	}
-	m_entered_state = fsm_present;
-
 	m_state = FINITE_STATE_MACHINE::execution_state::ACTIVE;
 	return m_entered_state;
 }
@@ -29,5 +24,6 @@ bool abstract_state::enter_state()
 bool abstract_state::exit_state()
 {
 	m_state = FINITE_STATE_MACHINE::execution_state::COMPLETE;
+	m_entered_state = false;
 	return true;
 }
