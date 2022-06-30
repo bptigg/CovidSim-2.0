@@ -26,9 +26,153 @@ void Movement::update_agent(std::shared_ptr<Agent> target_agent)
 	}
 }
 
+void Movement::a_star(node& start_node, node& end_node)
+{
+	Matrix<double> closed_list(m_transport_matrix->get_row_size(), m_transport_matrix->get_col_size(), 0.0);
+	std::vector<node> open_list;
+
+	start_node.g_cost = 0;
+	get_f_cost(start_node, end_node);
+	open_list.push_back(start_node);
+
+	bool path_found = false;
+
+	while (!open_list.empty())
+	{
+		quicksort(open_list, 0, open_list.size() - 1);
+		
+		for (int i = 0; i < m_transport_matrix->get_row_size(); i++)
+		{
+			if (i == open_list.begin()->current_node_num) { continue; }
+			int g_cost = (*m_transport_matrix)(open_list.begin()->current_node_num, i);
+			if (g_cost != 0)
+			{
+				node temp_node;
+				temp_node.g_cost = g_cost;
+				std::pair<std::string, std::pair<int, int>> node_info = m_world->return_building_id(i);
+				temp_node.building_id = node_info.first;
+				temp_node.location = node_info.second;
+				get_f_cost(temp_node, end_node);
+
+				if (temp_node.f_cost == 0)
+				{
+					path_found = true;
+				}
+
+				bool skip = true;
+				for (int e = 0; e < open_list.size(); e++)
+				{
+					if (open_list[e].current_node_num == i)
+					{
+						skip = open_list[e] < temp_node;
+						break;
+					}
+				}
+
+				if (!skip)
+				{
+					bool add_to_open = false;
+					double closed_f_cost = closed_list(open_list.begin()->current_node_num, i);
+					if (closed_f_cost != 0.0)
+					{
+						add_to_open = closed_f_cost < temp_node.f_cost;
+					}
+
+					if (add_to_open)
+					{
+						temp_node.current_node_num = i;
+						temp_node.previous_node_num = open_list.begin()->current_node_num;
+						open_list.push_back(temp_node);
+					}
+				}
+			}
+		}
+		closed_list(open_list.begin()->current_node_num, open_list.begin()->current_node_num) = open_list.begin()->f_cost;
+		open_list.erase(open_list.begin());
+	}
+
+
+}
+
+std::string Movement::find_pre_made_path(std::pair<int, int> start, std::pair<int, int> end)
+{
+	return m_paths[std::make_pair(start, end)];
+}
+
+bool Movement::check_valid_path(std::string& path_id)
+{
+	std::shared_ptr<path> trial_path = m_valid_paths[path_id];
+	
+	//assume start node and end node have already been checked to see if they're open
+	for (int i = 0; i < trial_path->nodes.size() - 1 ; i++)
+	{
+		if ((*m_transport_matrix)(trial_path->nodes[i]->current_node_num, trial_path->nodes[i + 1]->current_node_num) != 0)
+		{
+			continue;
+		}
+		else
+		{
+			char* message;
+			std::string s_message = "PATH " + path_id + " NO LONGER VALID";
+			message = &s_message[0];
+			Log::info(message);
+
+			m_valid_paths.erase(path_id);
+			m_paths.erase(std::make_pair(trial_path->nodes[0]->location, trial_path->nodes[-1]->location));
+
+			return false;
+		}
+
+	}
+	return true;
+}
+
 Movement::Movement(unsigned int grid, std::shared_ptr<Enviroment> world)
 	:m_grid_size(grid), m_world(world)
 {
+}
+
+void Movement::get_f_cost(node& _node, node& _end_node)
+{
+	_node.h_cost = get_distance(_node.location, _end_node.location);
+	_node.f_cost = _node.g_cost + _node.h_cost;
+}
+
+double Movement::partition(std::vector<node>& arr, int low, int high)
+{
+	int random_pivot = random::Random_number(low, high);
+	node temp = arr[high];
+	arr[high] = arr[random_pivot];
+	arr[random_pivot] = temp;
+
+	double pivot = arr[high].f_cost;
+
+	int l = low - 1;
+
+	for (int h = low; h <= high - 1; h++)
+	{
+		if (arr[h].f_cost <= pivot)
+		{
+			l++;
+			node temp = arr[h];
+			arr[h] = arr[l];
+			arr[l] = temp;
+		}
+	}
+	temp = arr[high];
+	arr[high] = arr[l + 1];
+	arr[l + 1] = temp;
+	return(l + 1);
+}
+
+void Movement::quicksort(std::vector<node>& arr, int low, int high)
+{
+	if (low < high)
+	{
+		int pivot = partition(arr, low, high);
+		quicksort(arr, low, pivot - 1);
+		quicksort(arr, pivot + 1, high);
+	}
 }
 
 std::pair<unsigned int, unsigned int> Movement::agent_random_walk(std::shared_ptr<Agent>& target_agent)

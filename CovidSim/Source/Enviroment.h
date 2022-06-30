@@ -16,6 +16,12 @@
 
 #include "Constants.h"
 
+//Temporary
+class public_transport_building
+{
+public:
+	std::pair<int, int> location;
+};
 
 class Enviroment
 {
@@ -43,6 +49,9 @@ private:
 	std::map<std::string, std::shared_ptr<hospital>> m_hospital_id_table;
 	std::map<std::string, std::shared_ptr<house>> m_house_id_table;
 
+	std::map<std::string, std::shared_ptr<public_transport_building>> m_public_transport_network;
+	std::map<int, std::string> m_node_map;
+
 	std::mutex m_position_lock;
 
 	CONSTANTS::DAY_OF_THE_WEEK m_day;
@@ -69,6 +78,8 @@ public:
 	void update_world_clock();
 
 	double get_weather_score();
+
+	std::pair<std::string,std::pair<int, int>> return_building_id(int node) { return std::make_pair(m_node_map[node], m_public_transport_network[m_node_map[node]]->location); } //will have to change
 
 };
 

@@ -25,6 +25,8 @@ namespace CONSTANTS
 	const int MAX_FRIENDS = 50;
 	const int MAX_INVITES = 10;
 
+	const int MAX_PATH_LENGTH = 5;
+
 }
 
 namespace TASK_CONSTANTS
