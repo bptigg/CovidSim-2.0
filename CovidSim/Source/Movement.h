@@ -54,7 +54,7 @@ public:
 	void update_agent(std::shared_ptr<Agent> target_agent);
 
 #pragma region TASK_MOVEMENT
-	void a_star(node& start_node, node& end_node);
+	int a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path);
 
 	std::string find_pre_made_path(std::pair<int, int> start, std::pair<int, int> end);
 	bool check_valid_path(std::string& path_id);

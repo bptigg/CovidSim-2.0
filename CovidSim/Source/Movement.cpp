@@ -26,9 +26,9 @@ void Movement::update_agent(std::shared_ptr<Agent> target_agent)
 	}
 }
 
-void Movement::a_star(node& start_node, node& end_node)
+int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path)
 {
-	Matrix<double> closed_list(m_transport_matrix->get_row_size(), m_transport_matrix->get_col_size(), 0.0);
+	std::vector<node> closed_list;
 	std::vector<node> open_list;
 
 	start_node.g_cost = 0;
@@ -36,8 +36,12 @@ void Movement::a_star(node& start_node, node& end_node)
 	open_list.push_back(start_node);
 
 	bool path_found = false;
+	bool no_path_found = false;
+	bool max_path_length = false;
 
-	while (!open_list.empty())
+	int run = 0;
+
+	while (!path_found)
 	{
 		quicksort(open_list, 0, open_list.size() - 1);
 		
@@ -54,11 +58,6 @@ void Movement::a_star(node& start_node, node& end_node)
 				temp_node.location = node_info.second;
 				get_f_cost(temp_node, end_node);
 
-				if (temp_node.f_cost == 0)
-				{
-					path_found = true;
-				}
-
 				bool skip = true;
 				for (int e = 0; e < open_list.size(); e++)
 				{
@@ -72,12 +71,13 @@ void Movement::a_star(node& start_node, node& end_node)
 				if (!skip)
 				{
 					bool add_to_open = false;
-					double closed_f_cost = closed_list(open_list.begin()->current_node_num, i);
-					if (closed_f_cost != 0.0)
+					for (int e = 0; e < closed_list.size(); e++)
 					{
-						add_to_open = closed_f_cost < temp_node.f_cost;
+						if (closed_list[e].current_node_num == i)
+						{
+							add_to_open = closed_list[e].f_cost < temp_node.f_cost;
+						}
 					}
-
 					if (add_to_open)
 					{
 						temp_node.current_node_num = i;
@@ -87,11 +87,87 @@ void Movement::a_star(node& start_node, node& end_node)
 				}
 			}
 		}
-		closed_list(open_list.begin()->current_node_num, open_list.begin()->current_node_num) = open_list.begin()->f_cost;
+		closed_list.push_back(open_list[0]);
 		open_list.erase(open_list.begin());
+
+		if (closed_list[-1].current_node_num == end_node.current_node_num)
+		{
+			path_found = true;
+		}
+
+		no_path_found = false;
+		if (open_list.size() == 0)
+		{
+			Log::warning("NO VALID PATH FOUND");
+			path_found = true;
+			no_path_found = true;
+		}
+
+		if (run == CONSTANTS::MAX_PATH_LENGTH)
+		{
+			Log::info("REACHED MAX PATH LENGTH");
+			path_found = true;
+			max_path_length = true;
+		}
 	}
 
+	if (path_found && !no_path_found)
+	{
+		path_found = false;
+		no_path_found = false;
+		valid_path->start_node = std::make_shared<node>(start_node);
+		valid_path->end_node = std::make_shared<node>(end_node);
 
+		int node_num = closed_list[-1].current_node_num;
+		int index = 0;
+
+		while (!(path_found && no_path_found))
+		{
+			for (int i = closed_list.size() - 1; i >= 0; i--)
+			{
+				if (closed_list[i].current_node_num == node_num)
+				{
+					valid_path->nodes.insert(valid_path->nodes.begin() + index, std::make_unique<node>(closed_list[i]));
+					node_num = closed_list[i].previous_node_num;
+
+					if (closed_list[i].current_node_num == start_node.current_node_num)
+					{
+						path_found = true;
+					}
+
+					break;
+				}
+				else if(i == 0)
+				{
+					no_path_found = true;
+				}
+			}
+		}
+
+		if (no_path_found == true)
+		{
+			Log::info("NO PATH FOUND");
+			return 0;
+		}
+
+		
+	}
+
+	if (no_path_found)
+	{
+		Log::info("NO PATH FOUND");
+		return 0;
+	}
+	else if (path_found && !max_path_length)
+	{
+		return 1;
+	}
+	else if (path_found && max_path_length)
+	{
+		return 2;
+	}
+	
+	return 0;
 }
 
 std::string Movement::find_pre_made_path(std::pair<int, int> start, std::pair<int, int> end)
