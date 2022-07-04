@@ -1,7 +1,8 @@
 #include "Movement.h"
 
-void Movement::update_agent(std::shared_ptr<Agent> target_agent)
+int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star)
 {
+	int result = 0;
 	Agent::task_state mode = target_agent->get_task_state();
 	std::pair<unsigned int, unsigned int> new_location;
 
@@ -11,8 +12,14 @@ void Movement::update_agent(std::shared_ptr<Agent> target_agent)
 		new_location = agent_random_walk(target_agent);
 		break;
 	case Agent::task_state::TRANSIT:
-		new_location = agent_weighted_walk(target_agent);
-		//transit requires other stuff like A* and planning
+		if (a_star == false)
+		{
+			new_location = agent_weighted_walk(target_agent);
+		}
+		else
+		{
+			result = movement_panning(target_agent);
+		}
 		break;
 	case Agent::task_state::ACTIVE:
 		break;
@@ -20,10 +27,12 @@ void Movement::update_agent(std::shared_ptr<Agent> target_agent)
 		break;
 	}
 
-	if (mode == Agent::task_state::IDLE || mode == Agent::task_state::TRANSIT)
+	if ((mode == Agent::task_state::IDLE || mode == Agent::task_state::TRANSIT) && a_star == false)
 	{
 		m_world->edit_agent_location(new_location, target_agent);
 	}
+
+	return result;
 }
 
 int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path)
@@ -170,7 +179,89 @@ int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> val
 	return 0;
 }
 
-std::string Movement::find_pre_made_path(std::pair<int, int> start, std::pair<int, int> end)
+int Movement::movement_panning(std::shared_ptr<Agent>& target_agent)
+{
+	int start = get_nearest_node(target_agent->get_location());
+	int end = get_nearest_node(target_agent->get_target_location());
+	std::string path_id = find_pre_made_path(start, end);
+	bool valid_path = false;
+	if (path_id != "")
+	{
+		valid_path = check_valid_path(path_id);
+	}
+	else
+	{
+		valid_path = false;
+	}
+	
+	if (valid_path == false)
+	{
+		node start_node;
+		start_node.current_node_num = start;
+		start_node.building_id = m_world->return_building_id(start).first;
+
+		node end_node;
+		end_node.current_node_num = end;
+		end_node.building_id = m_world->return_building_id(end).first;
+
+		std::shared_ptr<path> a_star_path(new path);
+
+		int result = 0;
+		result = a_star(start_node, end_node, a_star_path); 
+
+		if (result == 0)
+		{
+			return 0;
+		}
+		else if (result == 1)
+		{
+			const void* address = (const void*)a_star_path.get();
+			std::stringstream ss;
+			ss << address;
+			std::string id = ss.str();
+
+			m_paths[std::make_pair(start, end)] = id;
+			m_valid_paths[id] = a_star_path;
+			m_active_paths[target_agent->agent_id] = id;
+
+			return 1;
+		}
+		else if (result == 2)
+		{
+			const void* address = (const void*)a_star_path.get();
+			std::stringstream ss;
+			ss << address;
+			std::string id = ss.str();
+
+			m_paths[std::make_pair(start, a_star_path->end_node->current_node_num)] = id;
+			m_valid_paths[id] = a_star_path;
+			m_active_paths[target_agent->agent_id] = id;
+
+			return 2;
+		}
+	}
+	else
+	{
+		m_active_paths[target_agent->agent_id] = path_id;
+		return 1;
+	}
+	
+	return 0;
+
+}
+
+int Movement::get_nearest_node(std::pair<int, int> location)
+{
+	std::vector<std::pair<double, int>> distance_vec;
+	for (int i = 0; i < m_transport_matrix->get_row_size(); i++)
+	{
+		distance_vec.push_back(std::make_pair(get_distance(location, m_world->return_building_id(i).second), i));
+	}
+	quicksort(distance_vec, 0, distance_vec.size());
+	return distance_vec[0].second;
+}
+
+std::string Movement::find_pre_made_path(int start, int end)
 {
 	return m_paths[std::make_pair(start, end)];
 }
@@ -194,13 +285,18 @@ bool Movement::check_valid_path(std::string& path_id)
 			Log::info(message);
 
 			m_valid_paths.erase(path_id);
-			m_paths.erase(std::make_pair(trial_path->nodes[0]->location, trial_path->nodes[-1]->location));
+			m_paths.erase(std::make_pair(trial_path->nodes[0]->current_node_num, trial_path->nodes[-1]->current_node_num));
 
 			return false;
 		}
 
 	}
 	return true;
+}
+
+bool Movement::a_star_iterate(std::shared_ptr<Agent>& target_agent)
+{
+	return false;
 }
 
 Movement::Movement(unsigned int grid, std::shared_ptr<Enviroment> world)
@@ -242,6 +338,43 @@ double Movement::partition(std::vector<node>& arr, int low, int high)
 }
 
 void Movement::quicksort(std::vector<node>& arr, int low, int high)
+{
+	if (low < high)
+	{
+		int pivot = partition(arr, low, high);
+		quicksort(arr, low, pivot - 1);
+		quicksort(arr, pivot + 1, high);
+	}
+}
+
+double Movement::partition(std::vector<std::pair<double, int>>& arr, int low, int high)
+{
+	int random_pivot = random::Random_number(low, high);
+	std::pair<double, int> temp = arr[high];
+	arr[high] = arr[random_pivot];
+	arr[random_pivot] = temp;
+
+	double pivot = arr[high].first;
+
+	int l = low - 1;
+
+	for (int h = low; h <= high - 1; h++)
+	{
+		if (arr[h].first <= pivot)
+		{
+			l++;
+			std::pair<double, int> temp = arr[h];
+			arr[h] = arr[l];
+			arr[l] = temp;
+		}
+	}
+	temp = arr[high];
+	arr[high] = arr[l + 1];
+	arr[l + 1] = temp;
+	return(l + 1);
+}
+
+void Movement::quicksort(std::vector<std::pair<double, int>>& arr, int low, int high)
 {
 	if (low < high)
 	{

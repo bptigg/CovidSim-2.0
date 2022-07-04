@@ -46,18 +46,23 @@ private:
 	std::shared_ptr<Matrix<int>> m_world_matrix;
 
 	std::unordered_map<std::string, std::shared_ptr<path>> m_valid_paths;
-	std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, std::string> m_paths;
+	std::map<std::pair<int,int>, std::string> m_paths;
 	std::unordered_map<std::string, std::string> m_active_paths;
 
 public:
 	Movement(unsigned int grid, std::shared_ptr<Enviroment> world);
-	void update_agent(std::shared_ptr<Agent> target_agent);
+	int update_agent(std::shared_ptr<Agent> target_agent, bool a_star = false);
 
 #pragma region TASK_MOVEMENT
 	int a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path);
 
-	std::string find_pre_made_path(std::pair<int, int> start, std::pair<int, int> end);
+	int movement_panning(std::shared_ptr<Agent>& target_agent);
+	int get_nearest_node(std::pair<int, int> location);
+
+	std::string find_pre_made_path(int start, int end);
 	bool check_valid_path(std::string& path_id);
+
+	bool a_star_iterate(std::shared_ptr<Agent>& target_agent);
 
 	double get_distance(std::pair<int, int> first, std::pair<int, int> second) 
 	{
@@ -67,7 +72,10 @@ public:
 	void get_f_cost(node& _node, node& _end_node);
 
 	double partition(std::vector<node>& arr, int low, int high);
+	double partition(std::vector<std::pair<double, int>>& arr, int low, int high);
+	
 	void quicksort(std::vector<node>& arr, int low, int high);
+	void quicksort(std::vector<std::pair<double, int>>& arr, int low, int high);
 
 #pragma endregion 
 private:

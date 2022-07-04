@@ -434,6 +434,7 @@ bool task_builder::create_task(std::vector<std::shared_ptr<Agent>>& target_agent
     for (int e = 0; e < target_agents.size(); e++)
     {
         target_agents[i]->set_task_id(m_task->task_id);
+        target_agents[i]->set_target_location(task_location);
     }
 
     return true;
