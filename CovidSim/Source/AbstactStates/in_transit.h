@@ -9,6 +9,9 @@ private:
 	bool m_path_to_destination = false;
 	bool m_at_destination = false;
 	bool m_using_a_star = false;
+	bool m_arrived_at_start = false;
+	bool m_at_end = false;
+	bool m_valid_path = false;
 
 	std::shared_ptr<Movement> m_movement_director; 
 public:

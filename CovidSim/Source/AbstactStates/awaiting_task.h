@@ -8,10 +8,8 @@ private:
 	double m_task_chance;
 	bool m_group_task;
 	int m_chances;
-
-	std::shared_ptr<task_builder> m_task_director;
 public:
-	awaiting_task(std::string owner, std::shared_ptr<task_builder> director);
+	awaiting_task(std::string owner);
 
 	bool enter_state() override;
 	bool exit_state() override;

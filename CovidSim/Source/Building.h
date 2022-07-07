@@ -36,6 +36,9 @@ public:
 	const bool& closed = m_closed;
 	const int& agent_amount = m_agent_amount;
 	const int& capacity = m_capacity;
+
+	const std::pair<int, int>& location = std::make_pair(m_x, m_y);
+
 protected:
 	std::pair<bool, int> find(const std::shared_ptr<Agent>& agent, std::vector<std::shared_ptr<Agent>>& target_vector);
 	virtual void update_agent_amount() = 0; 

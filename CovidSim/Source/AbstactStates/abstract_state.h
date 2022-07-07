@@ -5,6 +5,7 @@
 #include "../log.h"
 #include "../Random.h"
 #include "../Constants.h"
+#include "../task_builder.h"
 
 
 /*NEED TO CHANGE
@@ -23,12 +24,14 @@ protected:
 	bool m_entered_state;
 	std::string m_agent;
 
+	std::shared_ptr<task_builder> m_task_director;
+
 public:
 	const FINITE_STATE_MACHINE::execution_state& state = m_state;
 	const FINITE_STATE_MACHINE::FSM_state_type& type = m_type;
 	void set(const FINITE_STATE_MACHINE::execution_state new_state) { m_state = new_state; }
 public:
-	abstract_state();
+	abstract_state(std::shared_ptr<task_builder> director = nullptr);
 
 	virtual bool enter_state();
 	virtual bool exit_state();

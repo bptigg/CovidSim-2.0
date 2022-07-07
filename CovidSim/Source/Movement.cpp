@@ -1,6 +1,6 @@
 #include "Movement.h"
 
-int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star)
+int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star, bool new_path, bool start, bool end)
 {
 	int result = 0;
 	Agent::task_state mode = target_agent->get_task_state();
@@ -15,10 +15,43 @@ int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star)
 		if (a_star == false)
 		{
 			new_location = agent_weighted_walk(target_agent);
+			std::pair<unsigned int, unsigned int> location;
+			if (start == true)
+			{
+				location = m_valid_paths[m_active_paths[target_agent->agent_id]]->start_node->location;
+			}
+			else if (end == true)
+			{
+				location = target_agent->get_task_location();
+			}
+
+			if (new_location == location)
+			{
+				result = 3;
+			}
+			
+		}
+		else if(new_path == true)
+		{
+			result = movement_planning(target_agent);
+			if (result == 1 || result == 2)
+			{
+				target_agent->modify_permission();
+				target_agent->set_target_location(m_valid_paths[m_active_paths[target_agent->agent_id]]->start_node->location);
+				target_agent->modify_permission();
+			}
 		}
 		else
 		{
-			result = movement_panning(target_agent);
+			bool end = false;
+			//new_location = a_star_iterate(target_agent, end);
+			if (end == true)
+			{
+				result = 4;
+				target_agent->modify_permission();
+				target_agent->set_target_location(target_agent->get_task_location());
+				target_agent->modify_permission();
+			}
 		}
 		break;
 	case Agent::task_state::ACTIVE:
@@ -27,12 +60,17 @@ int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star)
 		break;
 	}
 
-	if ((mode == Agent::task_state::IDLE || mode == Agent::task_state::TRANSIT) && a_star == false)
+	if ((mode == Agent::task_state::IDLE || mode == Agent::task_state::TRANSIT) && (a_star == false || new_path == false))
 	{
 		m_world->edit_agent_location(new_location, target_agent);
 	}
 
 	return result;
+}
+
+int Movement::update_agent(std::string target_agent, bool a_star, bool new_path, bool start, bool end)
+{
+	//m_world->age
 }
 
 int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path)
@@ -179,7 +217,7 @@ int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> val
 	return 0;
 }
 
-int Movement::movement_panning(std::shared_ptr<Agent>& target_agent)
+int Movement::movement_planning(std::shared_ptr<Agent>& target_agent)
 {
 	int start = get_nearest_node(target_agent->get_location());
 	int end = get_nearest_node(target_agent->get_target_location());
@@ -294,9 +332,13 @@ bool Movement::check_valid_path(std::string& path_id)
 	return true;
 }
 
-bool Movement::a_star_iterate(std::shared_ptr<Agent>& target_agent)
+std::pair<unsigned int, unsigned int> Movement::a_star_iterate(std::shared_ptr<Agent>& target_agent, bool& finished, bool start)
 {
-	return false;
+	if (start == false)
+	{
+
+	}
+	return { 0,0 };
 }
 
 Movement::Movement(unsigned int grid, std::shared_ptr<Enviroment> world)

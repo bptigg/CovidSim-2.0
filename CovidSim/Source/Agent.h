@@ -26,6 +26,9 @@ private:
 	int m_target_x = 0;
 	int m_target_y = 0;
 
+	int m_task_x = 0;
+	int m_task_y = 0;
+
 	int m_age = 0;
 	double m_extrovert = 0;
 
@@ -79,6 +82,9 @@ public:
 
 	void set_target_location(const std::pair<unsigned int, unsigned int>& location);
 	std::pair<unsigned int, unsigned int> get_target_location();
+
+	void set_task_location(const std::pair<unsigned int, unsigned int>& location);
+	std::pair<unsigned int, unsigned int> get_task_location();
 
 	void set_house_id(std::string id) { m_house_id = id; }
 	void set_task_id(std::string id) { m_task_id = id; }

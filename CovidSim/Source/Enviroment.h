@@ -13,15 +13,10 @@
 #include "weather.h"
 
 #include "building_types.h"
+#include "Public transport buildings/public_transport.h"
 
 #include "Constants.h"
 
-//Temporary
-class public_transport_building
-{
-public:
-	std::pair<int, int> location;
-};
 
 class Enviroment
 {
@@ -49,7 +44,7 @@ private:
 	std::map<std::string, std::shared_ptr<hospital>> m_hospital_id_table;
 	std::map<std::string, std::shared_ptr<house>> m_house_id_table;
 
-	std::map<std::string, std::shared_ptr<public_transport_building>> m_public_transport_network;
+	std::map<std::string, std::shared_ptr<public_transport>> m_public_transport_network;
 	std::map<int, std::string> m_node_map;
 
 	std::mutex m_position_lock;

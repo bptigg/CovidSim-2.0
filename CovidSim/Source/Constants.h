@@ -93,6 +93,7 @@ namespace TASK_CONSTANTS
 
 namespace DEFAULT_CAPACITY
 {
+#pragma region PUBLIC BUILDINGS
 	const unsigned int POW = 200;
 	const unsigned int PARK = 2000;
 	const unsigned int CAFE = 20;
@@ -106,6 +107,14 @@ namespace DEFAULT_CAPACITY
 	const unsigned int PUB = 60;
 	const unsigned int ARENA= 1500;
 	const unsigned int GENERIC_WORK = 50;
+#pragma endregion
+
+#pragma region PUBLIC_TRANSPORT
+	const unsigned int BUS = 100;
+	const unsigned int LIGHT_RAIL = 200;
+	const unsigned int RAPID_TRANSIT = 500;
+	const unsigned int TRAINS = 1000;
+#pragma enregion
 }
 
 namespace BUILDING_MODIFERS

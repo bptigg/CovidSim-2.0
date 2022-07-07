@@ -1,16 +1,20 @@
 #include "awaiting_task.h"
 
-awaiting_task::awaiting_task(std::string owner, std::shared_ptr<task_builder> director)
+awaiting_task::awaiting_task(std::string owner)
 {
 	m_type = FINITE_STATE_MACHINE::FSM_state_type::IDLE;
 	m_agent = owner;
-	m_task_director = std::move(director);
 }
 
 bool awaiting_task::enter_state()
 {
 	abstract_state::enter_state();
 	bool task_present = (m_task_director != nullptr);
+
+	if (task_present == false)
+	{
+		Log::warning("NO TASK COMPONENT PRESENT");
+	}
 	
 	m_entered_state = m_entered_state && task_present;
 	if (m_entered_state == false)

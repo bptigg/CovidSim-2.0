@@ -94,6 +94,12 @@ void Agent::set_target_location(const std::pair<unsigned int, unsigned int>& loc
 	m_target_y = location.second;
 }
 
+void Agent::set_task_location(const std::pair<unsigned int, unsigned int>& location)
+{
+	m_task_x = location.first;
+	m_task_y = location.second;
+}
+
 std::pair<unsigned int, unsigned int> Agent::get_target_location()
 {
 	return std::pair<unsigned int, unsigned int>(m_target_x,m_target_y);
