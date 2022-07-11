@@ -70,7 +70,7 @@ int Movement::update_agent(std::shared_ptr<Agent> target_agent, bool a_star, boo
 
 int Movement::update_agent(std::string target_agent, bool a_star, bool new_path, bool start, bool end)
 {
-	//m_world->age
+	return 0;
 }
 
 int Movement::a_star(node& start_node, node& end_node, std::shared_ptr<path> valid_path)

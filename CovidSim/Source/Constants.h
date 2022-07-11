@@ -114,7 +114,7 @@ namespace DEFAULT_CAPACITY
 	const unsigned int LIGHT_RAIL = 200;
 	const unsigned int RAPID_TRANSIT = 500;
 	const unsigned int TRAINS = 1000;
-#pragma enregion
+#pragma endregion
 }
 
 namespace BUILDING_MODIFERS

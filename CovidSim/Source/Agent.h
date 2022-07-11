@@ -5,7 +5,6 @@
 #include <mutex>
 
 #include "Random.h"
-#include "finite_state_machine.h"
 
 class Agent
 {
@@ -52,7 +51,6 @@ private:
 public:
 #pragma region FINITE_STATE_MACHINE
 	//class finite_state_machine;
-	std::shared_ptr<finite_state_machine> fsm;
 #pragma endregion
 public:
 
@@ -98,7 +96,6 @@ public:
 		edit_permission.unlock();
 	}
 
-	void attach_fsm(std::vector<std::shared_ptr<abstract_state>> states);
 
 public:
 	const std::string& work_id = m_work_id;

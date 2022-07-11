@@ -100,24 +100,14 @@ void Agent::set_task_location(const std::pair<unsigned int, unsigned int>& locat
 	m_task_y = location.second;
 }
 
+std::pair<unsigned int, unsigned int> Agent::get_task_location()
+{
+	return std::pair<unsigned int, unsigned int>(m_task_x, m_task_y);
+}
+
 std::pair<unsigned int, unsigned int> Agent::get_target_location()
 {
 	return std::pair<unsigned int, unsigned int>(m_target_x,m_target_y);
 }
 
-void Agent::attach_fsm(std::vector<std::shared_ptr<abstract_state>> states)
-{
-	while (m_edit == false)
-	{
 
-	};
-
-	modify_permission();
-	
-	std::shared_ptr<finite_state_machine> state_machine(new finite_state_machine());
-	
-	fsm = std::move(state_machine);
-	fsm->awake(states);
-
-	modify_permission();
-}

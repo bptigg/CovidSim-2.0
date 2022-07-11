@@ -290,7 +290,7 @@ double task_builder::normalize_day_modifier(CONSTANTS::DAY_OF_THE_WEEK day, std:
     double min_day = (double)peak_day.first;
     double max_day = (double)peak_day.second;
 
-    if (day2 >= min_day && day2 <= max_day);
+    if (day2 >= min_day && day2 <= max_day)
     {
         return 1.0;
     }
