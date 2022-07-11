@@ -37,8 +37,8 @@ Debug/
 .vs/
 Release/
 Output/
-GLEW/doc
-GLEW/bin
+doc/
+bin/
 
 #Other Files
 *.pdb
