@@ -146,6 +146,7 @@
     <ClCompile Include="src\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gl_debug.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Renderer.h" />
   </ItemGroup>
