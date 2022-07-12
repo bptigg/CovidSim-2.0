@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "glm/glm.hpp"
+
 class shader
 {
 private:
@@ -17,6 +19,7 @@ private:
 		std::string fragment_source;
 	};
 
+
 public:
 	shader(const std::string& filepath);
 	~shader();
@@ -28,6 +31,7 @@ public:
 	void set_uniform_1i(const std::string& name, int v0);
 	void set_uniform_1f(const std::string& name, float v0);
 	void set_uniform_4f(const std::string& name, float v0, float v1, float v2, float v3);
+	void set_uniform_mat_4f(const std::string& name, const glm::mat4& matrix);
 #pragma endregion
 private:
 	unsigned int get_uniform_location(const std::string& name);
