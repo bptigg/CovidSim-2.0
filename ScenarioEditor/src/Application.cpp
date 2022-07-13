@@ -19,6 +19,8 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+static std::array<std::unique_ptr<Texture>, Texture::MAX_TEXTURE_SLOTS> texture_slot;
+
 int main()
 {
     GLFWwindow* window;
@@ -32,7 +34,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1280, 960, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -52,10 +54,10 @@ int main()
     {
 
         float positions[] = {
-             -50.0f, -50.0f, 0.0f, 0.0f,
-              50.0f, -50.0f, 1.0f, 0.0f,
-              50.0f,  50.0f, 1.0f, 1.0f,
-             -50.0f,  50.0f, 0.0f, 1.0f
+             100.0f, 100.0f, 0.0f, 0.0f,
+             340.0f, 100.0f, 1.0f, 0.0f,
+             340.0f, 420.0f, 1.0f, 1.0f,
+             100.0f, 420.0f, 0.0f, 1.0f
         };
 
         unsigned int indices[] = {
@@ -67,37 +69,51 @@ int main()
         GlCall(glEnable(GL_BLEND));
 
         Vertex_Array va;
-        Vertex_Buffer vb(positions, 4 * 4 * sizeof(float));
-        Vertex_Buffer_Layout layout;
-        layout.Push<float>(2);
-        layout.Push<float>(2);
-        va.add_buffer(vb, layout);
+        {
+            Vertex_Buffer vb(positions, 4 * 4 * sizeof(float));
+            Vertex_Buffer_Layout layout;
+            layout.Push<float>(2);
+            layout.Push<float>(2);
+            va.add_buffer(vb, layout);
+        }
 
-        Index_Buffer ib(indices, 6);
+        Index_Buffer ib(6);
 
         int width, height;
         GlCall(glfwGetWindowSize(window, &width, &height));
         glm::mat4 proj = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f); 
-        glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0, 0, 0)); //moving camera to left 
+        //glm::mat4 view = glm::translate(glm::mat4(1.0f),glm::vec3(0, 0, 0)); //moving camera to left 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)); //moving model to the right and up
 
-        glm::mat4 mvp = proj * view * model;
+        glm::mat4 mvp = proj * model;
+        //glm::mat4 mvp = model;
 
-        shader shader("res/shaders/Texture.shader");
-        shader.bind();
-        shader.set_uniform_4f("u_color", 0.8f, 0.3f, 0.8f, 1.0f);
+        //shader shader("res/shaders/Texture.shader");
+        //shader.bind();
+        //shader.set_uniform_4f("u_Color", 0.8f, 0.3f, 0.8f, 1.0f);
 
-        Texture tex("res/textures/ork.jpg");
-        tex.bind();
-        shader.set_uniform_1i("u_texture", 0);
-        shader.set_uniform_mat_4f("u_MVP", mvp);
+        {
+            //Texture tex("res/textures/ork.jpg");
+            //tex.bind(1);
+            //unsigned int color = 0xffffffff;
+            //Texture test(1, 1, &color);
+            //texture_slot[0] = std::make_unique<Texture>(tex);
+            //texture_slot[1] = std::make_unique<Texture>(test);
+        }
+        //test.bind(1);
+        //shader.set_uniform_1i("u_texture", 0);
+       //shader.set_uniform_mat_4f("u_MVP", mvp);
 
-        va.unbind();
-        shader.unbind();
-        vb.unbind();
-        ib.unbind();
+        //va.unbind();
+        //shader.unbind();
+        //vb.unbind();
+        //ib.unbind();
 
         Renderer render;
+        render.init({"res/textures/ork.jpg"});
+
+        
+
         ImGui::CreateContext();
         ImGui_ImplGlfwGL3_Init(window, true);
         ImGui::StyleColorsDark();
@@ -150,13 +166,13 @@ int main()
             //    ImGui::ShowDemoWindow(&show_demo_window);
             //}
 
-            shader.bind();
-            shader.set_uniform_4f("u_color", r, 0.3f, 0.5f, 1.0f);
+            //shader.bind();
+            //shader.set_uniform_4f("u_color", r, 0.3f, 0.5f, 1.0f);
 
-            va.bind();
-            ib.bind();
+            //va.bind();
+            //ib.bind();
 
-            render.draw(va, ib, shader);
+            render.draw(va, ib);
             //GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
             if (r > 1.0f)

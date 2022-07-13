@@ -46,6 +46,7 @@ unsigned int shader::create_shader(const std::string& vertex_shader, const std::
         delete[] info_log;
     }
 
+    Log::variable<std::string&>("Shader loaded succesfully", m_filepath);
 
     remove_shader(program, vs);
     remove_shader(program, fs);
@@ -131,6 +132,11 @@ shader::shader_source shader::parse_shader(const std::string& filepath)
         }
         else
         {
+            if (type == shader_type::NONE)
+            {
+                Log::warning("Incomplete shader file");
+                continue;
+            }
             ss[(int)type] << line << "\n";
         }
     }
@@ -154,6 +160,12 @@ void shader::set_uniform_1i(const std::string& name, int v0)
     GlCall(glUniform1i(get_uniform_location(name), v0));
 }
 
+void shader::set_uniform_1iv(const std::string& name, int count, const int* v0)
+{
+    bind();
+    GlCall(glUniform1iv(get_uniform_location(name), count, v0));
+}
+
 void shader::set_uniform_1f(const std::string& name, float v0)
 {
     bind();
@@ -164,6 +176,12 @@ void shader::set_uniform_4f(const std::string& name, float v0, float v1, float v
 {
     bind();
     GlCall(glUniform4f(get_uniform_location(name), v0, v1, v2, v3));
+}
+
+void shader::set_uniform_mat_2f(const std::string& name, const glm::mat2& matrix)
+{
+    bind();
+    GlCall(glUniformMatrix2fv(get_uniform_location(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
 void shader::set_uniform_mat_4f(const std::string& name, const glm::mat4& matrix)

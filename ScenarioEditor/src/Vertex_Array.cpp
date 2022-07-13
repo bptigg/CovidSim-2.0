@@ -24,6 +24,7 @@ void Vertex_Array::add_buffer(const Vertex_Buffer& vb, const Vertex_Buffer_Layou
 		GlCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.get_stride(), (const void*)offset));
 		offset += element.count * Buffer_Element::size_of_type(element.type);
 	}
+	vb.unbind();
 	unbind();
 }
 

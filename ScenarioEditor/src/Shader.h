@@ -29,8 +29,10 @@ public:
 
 #pragma region SET UNIFORMS
 	void set_uniform_1i(const std::string& name, int v0);
+	void set_uniform_1iv(const std::string& name, int count, const int* v0);
 	void set_uniform_1f(const std::string& name, float v0);
 	void set_uniform_4f(const std::string& name, float v0, float v1, float v2, float v3);
+	void set_uniform_mat_2f(const std::string& name, const glm::mat2& matrix);
 	void set_uniform_mat_4f(const std::string& name, const glm::mat4& matrix);
 #pragma endregion
 private:

@@ -2,22 +2,22 @@
 
 #include <string>
 
+#include "gl_debug.h"
+
+
 class Texture
 {
-private:
-	unsigned int m_renderer_id;
-	std::string m_filepath;
-	unsigned char* m_local_buffer;
-	int m_width, m_height, m_BPP;
 public:
-	Texture(const std::string& path);
-	~Texture();
+	static const unsigned int MAX_TEXTURE_SLOTS = 32;
+public:
 
-	void bind(unsigned int slot = 0) const;
-	void unbind() const;
+	static GLuint Load_Texture(std::string path);
+	static GLuint Create_Texture(unsigned int width, unsigned int height, unsigned int color, unsigned int& renderer_id);
+	
+	static void delete_texture(unsigned int id);
 
-	inline int get_width() const { return m_width; }
-	inline int get_height() const { return m_height; }
-	inline unsigned int get_id() const { return m_renderer_id; }
+	static void bind(GLuint id, unsigned int slot = 0) ;
+	static void unbind(unsigned int slot) ;
+
 };
 
