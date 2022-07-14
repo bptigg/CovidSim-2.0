@@ -68,16 +68,18 @@ int main()
         GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
         GlCall(glEnable(GL_BLEND));
 
-        Vertex_Array va;
+        //Vertex_Array va;
         {
-            Vertex_Buffer vb(positions, 4 * 4 * sizeof(float));
-            Vertex_Buffer_Layout layout;
-            layout.Push<float>(2);
-            layout.Push<float>(2);
-            va.add_buffer(vb, layout);
+            //Vertex_Buffer vb(positions, 4 * 4 * sizeof(float));
+            //Vertex_Buffer_Layout layout;
+            //layout.Push<float>(2);
+            //layout.Push<float>(2);
+            //layout.Push<float>(2);
+            //layout.Push<float>(1);
+            //va.add_buffer(vb, layout);
         }
 
-        Index_Buffer ib(6);
+        //Index_Buffer ib(6);
 
         int width, height;
         GlCall(glfwGetWindowSize(window, &width, &height));
@@ -172,8 +174,10 @@ int main()
             //va.bind();
             //ib.bind();
 
-            render.draw(va, ib);
+            //render.draw(va, ib);
             //GlCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+            render.draw();
 
             if (r > 1.0f)
             {
@@ -193,7 +197,7 @@ int main()
 
             GlCall(glfwPollEvents());
         }
-
+        render.shutdown();
     }
     ImGui_ImplGlfwGL3_Shutdown();
     ImGui::DestroyContext();

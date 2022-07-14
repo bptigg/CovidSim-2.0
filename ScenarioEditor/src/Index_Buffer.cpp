@@ -16,14 +16,18 @@ Index_Buffer::Index_Buffer(unsigned int count)
     unsigned int* data = new unsigned int[count];
 
     unsigned int quads = count / 6;
-    for (unsigned int i = 0; i < quads; i++)
+    unsigned int offset = 0;
+    for (unsigned int i = 0; i < quads; i += 6)
     {
-        data[i * 6] = (i * 4);
-        data[i * 6 + 1] = (i * 4) + 1;
-        data[i * 6 + 2] = (i * 4) + 2;
-        data[i * 6 + 3] = (i * 4) + 2;
-        data[i * 6 + 4] = (i * 4) + 3;
-        data[i * 6 + 5] = (i * 4);
+        data[i + 0] = 0 + offset;
+        data[i + 1] = 1 + offset;
+        data[i + 2] = 2 + offset;
+        
+        data[i + 3] = 2 + offset;
+        data[i + 4] = 3 + offset;
+        data[i + 5] = 0 + offset;
+
+        offset += 4; 
     }
 
     GlCall(glGenBuffers(1, &m_renderer_id));
