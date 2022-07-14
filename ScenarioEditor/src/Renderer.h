@@ -42,6 +42,9 @@ public:
 	
 	void init(std::vector<std::string> textures);
 	void shutdown();
+
+	void begin_batch();
+	void end_batch();
 	
 	void clear();
 	void draw(const Vertex_Array& vao, const Index_Buffer& ib, const shader& shader);

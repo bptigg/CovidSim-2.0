@@ -4,7 +4,7 @@ class Vertex_Buffer
 private:
 	unsigned int m_renderer_id;
 	bool is_dynamic;
-	int m_offset;
+	int m_offset = 0;
 	unsigned int m_buffer_size;
 public:
 	Vertex_Buffer(const void* data, unsigned int size);

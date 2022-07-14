@@ -24,13 +24,13 @@ void main()
 #shader fragment
 #version 450 core
 
-layout(location = 0) = out vec4 o_Color;
+layout(location = 0) out vec4 o_Color;
 
-int vec4 v_Color;
+in vec4 v_Color;
 in vec2 v_Tex_Coord;
 in float v_Tex_Index;
 
-uniform sampler_2D u_Textures[32];
+uniform sampler2D u_Textures[32];
 
 void main()
 {
