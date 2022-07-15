@@ -57,7 +57,7 @@ void Renderer::init(std::vector<std::string> textures)
 	}
 
 
-	glm::mat4 mvp = glm::ortho(0.0f, 1280.0f, 0.0f, 960.f, -1.0f, 1.0f);
+	glm::mat4 mvp = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 	m_shader->set_uniform_mat_4f("u_View_Proj", mvp);
 	m_shader->set_uniform_mat_4f("u_Transform", transform);
@@ -128,11 +128,25 @@ void Renderer::draw()
 	}
 
 	begin_batch();
-	draw_rectangle_texture({ 200.0f, 200.0f }, { 120.0f, 160.0f }, 1);
+	draw_rectangle_texture({ -60.0f, -60.0f }, { 120.0f, 120.0f }, 2);
+	draw_rectangle_texture({ 61.0f,  61.0f }, { 120.0f, 120.0f }, 2);
+	end_batch();
+
+	//Do one draw call per texture stops the texutre overlap stuff
+
+	flush();
+	begin_batch();
+	draw_rectangle_color({  61.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
+	draw_rectangle_color({ -60.0f,  61.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
 	end_batch();
 
 	flush();
 
+}
+
+void Renderer::update_view(const glm::mat4& projection_view_matrix)
+{
+	m_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
 }
 
 void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -144,17 +158,17 @@ void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& 
 		begin_batch();
 	}
 
-	float texture_index = s_data.White_Texture_Slot;
+	float texture_index = (float)s_data.White_Texture_Slot;
 
 	s_data.Object_Buffer_Ptr->position = { position.x, position.y };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f };
+	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f };
+	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
@@ -183,6 +197,7 @@ void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2
 		begin_batch();
 	}
 
+	constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	float texture_index = 0.0f;
 	for (unsigned int i = 1; i < s_data.current_texture_slot; i++)
@@ -201,11 +216,10 @@ void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2
 		s_data.current_texture_slot++;
 	}
 
-	constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 	s_data.Object_Buffer_Ptr->position = { position.x, position.y };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f };
+	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
@@ -217,13 +231,13 @@ void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2
 
 	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y + size.y };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
+	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x, position.y + size.y };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
+	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 

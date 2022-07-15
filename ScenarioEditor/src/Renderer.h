@@ -50,6 +50,8 @@ public:
 	void draw(const Vertex_Array& vao, const Index_Buffer& ib, const shader& shader);
 	void draw();
 
+	void update_view(const glm::mat4& projection_view_matrix);
+
 #pragma region draw_shapes
 	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);

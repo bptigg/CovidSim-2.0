@@ -1,5 +1,5 @@
 #shader vertex
-#version 450 core
+#version 460 core
 
 layout(location = 0) in vec2 a_Position;
 layout(location = 1) in vec4 a_Color;
@@ -22,7 +22,7 @@ void main()
 }
 
 #shader fragment
-#version 450 core
+#version 460 core
 
 layout(location = 0) out vec4 o_Color;
 
@@ -31,6 +31,7 @@ in vec2 v_Tex_Coord;
 in float v_Tex_Index;
 
 uniform sampler2D u_Textures[32];
+
 
 void main()
 {

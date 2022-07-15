@@ -144,6 +144,7 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Camera\Camera_Controller.cpp" />
     <ClCompile Include="src\Camera\Orthographic_camera.cpp" />
+    <ClCompile Include="src\Entry_Point.cpp" />
     <ClCompile Include="src\Index_Buffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Log.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Camera\Camera_Controller.h" />
     <ClInclude Include="src\Camera\Orthographic_camera.h" />
     <ClInclude Include="src\Events\Application_Event.h" />
@@ -172,10 +174,12 @@
     <ClInclude Include="src\gl_debug.h" />
     <ClInclude Include="src\Index_Buffer.h" />
     <ClInclude Include="src\Input.h" />
+    <ClInclude Include="src\Layer.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Timestep.h" />
     <ClInclude Include="src\vendor\imgui\imconfig.h" />
     <ClInclude Include="src\vendor\imgui\imgui.h" />
     <ClInclude Include="src\vendor\imgui\imgui_impl_glfw_gl3.h" />

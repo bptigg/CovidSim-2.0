@@ -64,7 +64,7 @@ namespace Events {
 		{
 			if (m_Event.Get_Event_Type() == T::GetStaticType())
 			{
-				if (m_Event.m_Handled = func(static_cast<T&>(m_Event)))
+				if (m_Event.m_Handled == func(static_cast<T&>(m_Event)))
 				{
 					return true;
 				}
