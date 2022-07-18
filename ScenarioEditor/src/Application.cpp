@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#define BIND_EVENT_FN(x) std::bind(&app::x, this, std::placeholders::_1)
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 //static std::array<std::unique_ptr<Texture>, Texture::MAX_TEXTURE_SLOTS> texture_slot;
 
@@ -9,10 +9,19 @@ app* app::s_instance = nullptr;
 void app::On_Event(Events::Event& e)
 {
     Events::Event_Dispatcher dispatch(e);
-    dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(OnWindowClose));
-    Camera(e);
+    dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(app::OnWindowClose));
+
+    for (auto it = stack.r_begin(); it < stack.rend(); ++it)
+    {
+        if (e.Handled)
+        {
+            break;
+        }
+        (*it)->On_Event(e);
+    }
+
 }
-bool app::OnWindowClose(Events::Window_Close_Event e)
+bool app::OnWindowClose(Events::Window_Close_Event& e)
 {
     m_running = false;
     return true;
@@ -22,6 +31,7 @@ void app::Camera(Events::Event& e)
     m_camera.On_Event(e);
     m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
 }
+
 
 int app::loop()
 {
@@ -52,13 +62,16 @@ int app::loop()
         //Log::error("GLEW NOT INITLIZED", __FILE__, __LINE__);
     //};
         m_window = Window::Create();
-        m_window->Set_Event_Callback(BIND_EVENT_FN(On_Event));
+        m_window->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
         m_render.init({ "res/textures/ork.jpg" });
 
-        m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
-        m_camera.Set_Resolution({ m_window->Get_Width(),m_window->Get_Height() });
-        m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
+        //m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
+        //m_camera.Set_Resolution({ m_window->Get_Width(),m_window->Get_Height() });
+        //m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
+
+        stack.Push_Layer(new Scenario_Editor());
+        stack[0]->On_Attach({});
 
         s_instance = this;
 
@@ -194,8 +207,14 @@ int app::loop()
                 Timestep time = c_time - m_frame_time;
                 m_frame_time = c_time;
                 
-                m_camera.On_Update(time);
-                m_render.draw();
+                //m_camera.On_Update(time);
+                //m_render.draw();
+
+                for (auto it = stack.begin(); it < stack.end(); it++)
+                {
+                    (*it)->On_Update(time);
+                }
+
                 m_window->On_Update();
 
                 if (r > 1.0f)

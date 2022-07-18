@@ -20,43 +20,45 @@
 class Renderer
 {
 private:
-	const unsigned int m_MAX_QUADS = 10000;
-	const unsigned int m_MAX_VERTICIES = m_MAX_QUADS * 4;
-	const unsigned int m_MAX_INDICIES = m_MAX_QUADS * 6;
+	//const unsigned int m_MAX_QUADS = 10000;
+	//const unsigned int m_MAX_VERTICIES = m_MAX_QUADS * 4;
+	//const unsigned int m_MAX_INDICIES = m_MAX_QUADS * 6;
 
 	//std::unique_ptr<Index_Buffer> m_Index_Buffer;
 	//std::unique_ptr<Vertex_Buffer> m_Vertex_Buffer;
 	//std::unique_ptr<Vertex_Array> m_VA0;
 	//std::unique_ptr<shader> m_shader;
 
-	shader* m_shader = nullptr;
-	Vertex_Array* m_VA0 = nullptr;
-	Vertex_Buffer* m_Vertex_Buffer = nullptr;
-	Index_Buffer* m_Index_Buffer = nullptr;
+	//shader* m_shader = nullptr;
+	//Vertex_Array* m_VA0 = nullptr;
+	//Vertex_Buffer* m_Vertex_Buffer = nullptr;
+	//Index_Buffer* m_Index_Buffer = nullptr;
 
-	bool initlized;
+	//bool initlized;
 	
 public:
 
 	~Renderer();
 	
-	void init(std::vector<std::string> textures);
-	void shutdown();
-
-	void begin_batch();
-	void end_batch();
+	static void init(std::vector<std::string> textures);
+	static void shutdown();
 	
-	void clear();
-	void draw(const Vertex_Array& vao, const Index_Buffer& ib, const shader& shader);
-	void draw();
-
-	void update_view(const glm::mat4& projection_view_matrix);
+	static void begin_batch();
+	static void end_batch();
+	
+	static void clear();
+	static void draw(const Vertex_Array& vao, const Index_Buffer& ib, const shader& shader);
+	static void draw();
+	
+	static void update_view(const glm::mat4& projection_view_matrix);
 
 #pragma region draw_shapes
-	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
+	static void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+	static void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
 
-	void flush();
+	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color);
+
+	static void flush();
 
 };
 

@@ -164,7 +164,9 @@ void Window::Init(const properties& props)
 			{
 			case GLFW_PRESS:
 			{
-				Events::Mouse_Button_Pressed_Event event(button);
+				double x_pos, y_pos;
+				glfwGetCursorPos(window, &x_pos, &y_pos);
+				Events::Mouse_Button_Pressed_Event event(button, (float)x_pos, (float)y_pos);
 				data.Event_Call_back(event);
 				break;
 			}

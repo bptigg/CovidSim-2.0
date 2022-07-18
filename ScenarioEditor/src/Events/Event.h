@@ -43,6 +43,8 @@ namespace Events {
 		{
 			return Get_Catagory_Flag() & cat;
 		}
+	public:
+		const bool& Handled = m_Handled;
 	};
 
 #define EVENT_CLASS_TYPE(type) static Event_Type GetStaticType() { return Event_Type::##type; }\

@@ -19,6 +19,9 @@
 
 #include "Camera/Camera_Controller.h"
 
+#include "Layer_Stack.h"
+#include "Scenario_Editor.h"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -37,6 +40,8 @@ private:
 
     static app* s_instance;
 
+    Layer_Stack stack;
+
     float m_frame_time = 0.0f;
 public:
     app()
@@ -48,9 +53,11 @@ public:
     static app& get() { return *s_instance; }
 
     void On_Event(Events::Event& e);
-    bool OnWindowClose(Events::Window_Close_Event e);
+    bool OnWindowClose(Events::Window_Close_Event& e);
     void Camera(Events::Event& e);
     int loop();
+
+    void mouse_click(Events::Mouse_Button_Pressed_Event& e);
 
     Window& GetWindow() { return *m_window; }
 

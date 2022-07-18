@@ -1,11 +1,27 @@
 #include "Renderer.h"
 
+static const unsigned int m_MAX_QUADS = 10000;
+static const unsigned int m_MAX_VERTICIES = m_MAX_QUADS * 4;
+static const unsigned int m_MAX_INDICIES = m_MAX_QUADS * 6;
+
 struct render_data
 {
 	unsigned int White_Texture = 0;
 	unsigned int White_Texture_Slot = 0;
 
+	shader* quad_shader = nullptr;
+	
+	Vertex_Array* VA0 = nullptr;
+	Vertex_Buffer* VertexBuffer = nullptr;
+	Index_Buffer* IndexBuffer = nullptr;
+
+
+	bool initlized = false;
+
 	unsigned int Index_Count = 0;
+	unsigned int line_index_count = 0;
+
+	float line_width = 5.0f;
 
 	Vertex* Object_Buffer = nullptr;
 	Vertex* Object_Buffer_Ptr = nullptr;
@@ -18,7 +34,7 @@ static render_data s_data;
 
 Renderer::~Renderer()
 {
-	if (initlized)
+	if (s_data.initlized)
 	{
 		shutdown();
 	}
@@ -27,7 +43,7 @@ Renderer::~Renderer()
 void Renderer::init(std::vector<std::string> textures)
 {
 
-	if (initlized)
+	if (s_data.initlized)
 	{
 		Log::error("RENDERER ALREADY INITLIZED", __FILE__, __LINE__);
 		return; 
@@ -41,26 +57,27 @@ void Renderer::init(std::vector<std::string> textures)
 		samplers[i] = i;
 	}
 
-	m_shader = new shader("res/shaders/simple.shader");
-	m_shader->set_uniform_1iv("u_Textures", 32, samplers);
-	m_Index_Buffer = new Index_Buffer(m_MAX_INDICIES);
-	m_Vertex_Buffer = new Vertex_Buffer(m_MAX_VERTICIES * sizeof(Vertex));
+	s_data.quad_shader = new shader("res/shaders/simple.shader");
+	s_data.quad_shader->set_uniform_1iv("u_Textures", 32, samplers);
+	s_data.IndexBuffer = new Index_Buffer(m_MAX_INDICIES);
 	
-	m_VA0 = new Vertex_Array();
+	s_data.VertexBuffer = new Vertex_Buffer(m_MAX_VERTICIES * sizeof(Vertex));
+	s_data.VA0 = new Vertex_Array();
 	{
 		Vertex_Buffer_Layout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(4);
 		layout.Push<float>(2);
 		layout.Push<float>(1);
-		m_VA0->add_buffer(*m_Vertex_Buffer, layout);
+		s_data.VA0->add_buffer(*s_data.VertexBuffer, layout);
 	}
-
 
 	glm::mat4 mvp = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-	m_shader->set_uniform_mat_4f("u_View_Proj", mvp);
-	m_shader->set_uniform_mat_4f("u_Transform", transform);
+	
+	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", mvp);
+	s_data.quad_shader->set_uniform_mat_4f("u_Transform", transform);
+	
 
 	unsigned int color = 0xffffffff;
 
@@ -74,21 +91,23 @@ void Renderer::init(std::vector<std::string> textures)
 
 	Texture::Load_Texture("res/textures/ork.jpg");
 
-	initlized = true;
+	s_data.initlized = true;
 }
 
 void Renderer::shutdown()
 {
 	Log::info("Renderer shutting down....");
 	delete[] s_data.Object_Buffer;
-	delete m_shader;
-	delete m_VA0;
-	delete m_Vertex_Buffer;
-	delete m_Index_Buffer;
+	
+	delete s_data.quad_shader;
+	
+	delete s_data.VA0;
+	delete s_data.VertexBuffer;
+	delete s_data.IndexBuffer;
 
 	Texture::delete_texture(s_data.White_Texture);
 
-	initlized = false;
+	s_data.initlized = false;
 	Log::info("Renderer shut down");
 }
 
@@ -100,7 +119,8 @@ void Renderer::begin_batch()
 void Renderer::end_batch()
 {
 	GLsizeiptr buffer_size = (uint8_t*)s_data.Object_Buffer_Ptr - (uint8_t*)s_data.Object_Buffer;
-	m_Vertex_Buffer->add_to_buffer(s_data.Object_Buffer, buffer_size);
+	s_data.VertexBuffer->add_to_buffer(s_data.Object_Buffer, buffer_size);
+
 }
 
 void Renderer::clear()
@@ -127,26 +147,27 @@ void Renderer::draw()
 		}
 	}
 
-	begin_batch();
+	//begin_batch();
 	draw_rectangle_texture({ -60.0f, -60.0f }, { 120.0f, 120.0f }, 2);
-	draw_rectangle_texture({ 61.0f,  61.0f }, { 120.0f, 120.0f }, 2);
+	draw_rectangle_texture({ 60.0f,  60.0f }, { 120.0f, 120.0f }, 2);
 	end_batch();
 
 	//Do one draw call per texture stops the texutre overlap stuff
 
 	flush();
 	begin_batch();
-	draw_rectangle_color({  61.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
-	draw_rectangle_color({ -60.0f,  61.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
+	draw_rectangle_color({  60.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
+	draw_rectangle_color({ -60.0f,  60.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
 	end_batch();
 
 	flush();
+
 
 }
 
 void Renderer::update_view(const glm::mat4& projection_view_matrix)
 {
-	m_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
+	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
 }
 
 void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -160,32 +181,31 @@ void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& 
 
 	float texture_index = (float)s_data.White_Texture_Slot;
 
-	s_data.Object_Buffer_Ptr->position = { position.x, position.y };
+	s_data.Object_Buffer_Ptr->position = { position.x - (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y };
+	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y + size.y };
+	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x, position.y + size.y };
+	s_data.Object_Buffer_Ptr->position = { position.x - (size.x/ 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Index_Count += 6;
-
 }
 
 void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id)
@@ -217,32 +237,50 @@ void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2
 	}
 
 
-	s_data.Object_Buffer_Ptr->position = { position.x, position.y };
+	s_data.Object_Buffer_Ptr->position = { position.x - (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
+	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y };
+	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x + size.x, position.y + size.y };
+	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f};
+	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
-	s_data.Object_Buffer_Ptr->position = { position.x, position.y + size.y };
+	s_data.Object_Buffer_Ptr->position = { position.x - (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
-	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f};
+	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Index_Count += 6;
 }
+
+void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color)
+{
+	if (s_data.Index_Count + 4 >= m_MAX_INDICIES)
+	{
+		end_batch();
+		flush();
+		begin_batch();
+	}
+
+	draw_rectangle_color({ centre.x - (size.x / 2.0f) + (border_width / 2.0f), centre.y }, { border_width, size.y }, color);
+	draw_rectangle_color({ centre.x + (size.x / 2.0f) - (border_width / 2.0f), centre.y }, { border_width, size.y }, color);
+	draw_rectangle_color({ centre.x, centre.y + (size.y / 2.0f) - (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
+	draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
+}
+
+
+
 
 
 void Renderer::flush()
@@ -252,12 +290,20 @@ void Renderer::flush()
 		GlCall(glBindTextureUnit(i, s_data.texture_slots[i]));
 	}
 
-	m_shader->bind();
-	m_VA0->bind();
-	m_Index_Buffer->bind();
 
-	GlCall(glDrawElements(GL_TRIANGLES, s_data.Index_Count, GL_UNSIGNED_INT, nullptr));
+	if (s_data.Index_Count > 0)
+	{
+		s_data.quad_shader->bind();
 
-	s_data.Index_Count = 0;
+		s_data.VA0->bind();
+		s_data.IndexBuffer->bind();
+
+		GlCall(glDrawElements(GL_TRIANGLES, s_data.Index_Count, GL_UNSIGNED_INT, nullptr));
+
+		s_data.Index_Count = 0;
+	}
+
+	
 	s_data.current_texture_slot = 1;
+
 }

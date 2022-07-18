@@ -54,6 +54,7 @@ namespace Events {
 		inline int Get_Mouse_Button() const { return m_Button; }
 
 		EVENT_CLASS_CATEGORY(Event_Catagory_Mouse | Event_Catagory_Input)
+
 	protected:
 		Mouse_Button_Event(int button)
 			: m_Button(button) {}
@@ -64,8 +65,11 @@ namespace Events {
 	class Mouse_Button_Pressed_Event : public Mouse_Button_Event
 	{
 	public:
-		Mouse_Button_Pressed_Event(int button)
-			: Mouse_Button_Event(button) {}
+		Mouse_Button_Pressed_Event(int button, float x, float y)
+			: Mouse_Button_Event(button), m_Mouse_X(x), m_Mouse_Y(y) {}
+
+		inline float get_x() const { return m_Mouse_X; }
+		inline float get_y() const { return m_Mouse_Y; }
 
 		std::string To_String() const override
 		{
@@ -75,6 +79,8 @@ namespace Events {
 		}
 
 		EVENT_CLASS_TYPE(Mouse_Button_Pressed)
+	private:
+		float m_Mouse_X, m_Mouse_Y;
 	};
 
 	class MouseButtonReleasedEvent : public Mouse_Button_Event

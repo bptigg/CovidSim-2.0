@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -144,11 +144,14 @@
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Camera\Camera_Controller.cpp" />
     <ClCompile Include="src\Camera\Orthographic_camera.cpp" />
+    <ClCompile Include="src\Entity\Entity.cpp" />
     <ClCompile Include="src\Entry_Point.cpp" />
     <ClCompile Include="src\Index_Buffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
+    <ClCompile Include="src\Layer_Stack.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Scenario_Editor.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -166,6 +169,7 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Camera\Camera_Controller.h" />
     <ClInclude Include="src\Camera\Orthographic_camera.h" />
+    <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\Events\Application_Event.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\Key_Codes.h" />
@@ -175,8 +179,10 @@
     <ClInclude Include="src\Index_Buffer.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Layer.h" />
+    <ClInclude Include="src\Layer_Stack.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Scenario_Editor.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Timestep.h" />
@@ -197,7 +203,7 @@
   <ItemGroup>
     <None Include="res\shaders\simple.shader" />
     <None Include="res\shaders\Texture.shader" />
-    <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\line.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

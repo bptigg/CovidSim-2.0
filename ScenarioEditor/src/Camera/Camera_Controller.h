@@ -29,6 +29,8 @@ public:
 		m_resolution = res; m_camera.set_projection(-m_resolution.x / 2.0f, m_resolution.x / 2.0f, -m_resolution.y / 2.0f, m_resolution.y / 2.0f); m_camera_translation_speed = 5.0f;
 	}
 
+	const glm::vec3 get_position() const{ return m_camera_position; }
+
 private:
 	bool on_mouse_scroll(Events::Mouse_Scrolled_Event& e);
 	bool on_window_resize(Events::Window_Resize_Event& e);
