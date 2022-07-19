@@ -66,6 +66,20 @@ void Camera_Controller::On_Event(Events::Event& e)
 	Events::Event_Dispatcher dispatcher(e);
 	dispatcher.Dispatch<Events::Mouse_Scrolled_Event>(std::bind(&Camera_Controller::on_mouse_scroll, this, std::placeholders::_1));
 	dispatcher.Dispatch<Events::Window_Resize_Event>(std::bind(&Camera_Controller::on_window_resize, this, std::placeholders::_1));
+	dispatcher.Dispatch<Events::Key_Pressed_Event>(std::bind(&Camera_Controller::on_key_event, this, std::placeholders::_1));
+}
+
+bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
+{
+	if (Input::Is_Key_Pressed(CS_KEY_R))
+	{
+		m_camera_position = { 0.0f,0.0f,0.0f };
+		m_camera.Set_Position(m_camera_position);
+		m_zoom_level = 1.0f;
+		m_camera.set_projection((-m_resolution.x / 2.0f) * m_zoom_level, (m_resolution.x / 2.0f) * m_zoom_level, (-m_resolution.y / 2.0f) * m_zoom_level, (m_resolution.y / 2.0f) * m_zoom_level);
+		return true;
+	}
+	return false;
 }
 
 bool Camera_Controller::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)

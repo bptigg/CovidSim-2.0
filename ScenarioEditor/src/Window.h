@@ -38,6 +38,7 @@ public:
 	bool Is_VSync() const;
 
 	virtual void* Get_Native_Window() const { return m_window; }
+	GLFWwindow* Get_Native_Window() { return m_window; }
 
 	static Window* Create(const properties& props = properties());
 private:

@@ -5,6 +5,11 @@ Scenario_Editor::Scenario_Editor()
 {
 }
 
+void Scenario_Editor::test()
+{
+	Log::info("test button pressed");
+}
+
 void Scenario_Editor::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
 	m_orthographic_controller.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
@@ -15,6 +20,11 @@ void Scenario_Editor::On_Attach(std::vector<std::pair<std::string, std::string>>
 	{
 		m_textures[textures[i].first] = Texture::Load_Texture(textures[i].second);
 	}
+
+	Button test({ -60.0f, 60.0f }, { 120.0f, 120.0f }, this);
+	test.Bind_function(BIND_BUTTON_FN(Scenario_Editor::test));
+	buttons.push_back(std::make_unique<Button>(test));
+
 }
 
 void Scenario_Editor::On_Detach()
@@ -30,10 +40,16 @@ void Scenario_Editor::On_Update(Timestep ts)
 
 	//ss << "Mouse click at: " << mouse_loc.x << " , " << mouse_loc.y << " : " << zoom << std::endl;
 
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		buttons[i]->update_position(m_orthographic_controller.Get_Zoom_Level(), m_orthographic_controller.get_position(), m_orthographic_controller.get_camera().Get_View_Projection_Matrix());
+		buttons[i]->render();
+	}
+
 	if (present)
 	{
-		glm::vec4 color = { 0.8f, 0.4f,0.2f,1.0f };
-		Renderer::draw_box({ -60.0f,60.0f }, { 120.0f, 120.0f }, 5.0f, color);
+		//glm::vec4 color = { 0.8f, 0.4f,0.2f,1.0f };
+		//Renderer::draw_box({ -60.0f,60.0f }, { 120.0f, 120.0f }, 5.0f, color);
 		//Renderer::draw_rectangle_color({ -115.0f, 60.0f }, { 10.0f, 100.0f }, color);
 		//Renderer::draw_rectangle_color({ -60.0f, 115.0f }, { 120.0f, 10.0f }, color);
 		//Renderer::draw_rectangle_color({ -5.0f, 60.0f }, { 10.0f, 100.0f }, color);
@@ -51,9 +67,16 @@ void Scenario_Editor::On_Event(Events::Event& e)
 {
 	m_orthographic_controller.On_Event(e);
 	Renderer::update_view(m_orthographic_controller.get_camera().Get_View_Projection_Matrix());
-	Events::Event_Dispatcher dispatcher(e);
-	dispatcher.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Scenario_Editor::On_Key_Pressed));
-	dispatcher.Dispatch<Events::Mouse_Moved_Event>(BIND_EVENT_FN(Scenario_Editor::On_Mouse_Press));
+
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		buttons[i]->update_position(m_orthographic_controller.Get_Zoom_Level(), m_orthographic_controller.get_position(), m_orthographic_controller.get_camera().Get_View_Projection_Matrix());
+		buttons[i]->event_callback(e);
+	}
+
+	//Events::Event_Dispatcher dispatcher(e);
+	//dispatcher.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Scenario_Editor::On_Key_Pressed));
+	//dispatcher.Dispatch<Events::Mouse_Moved_Event>(BIND_EVENT_FN(Scenario_Editor::On_Mouse_Press));
 }
 
 bool Scenario_Editor::On_Key_Pressed(Events::Key_Pressed_Event& e)

@@ -6,6 +6,7 @@
 
 #include "../Events/Application_Event.h"
 #include "../Events/Mouse_Event.h"
+#include "../Events/Key_Event.h"
 
 #include "../Input.h"
 
@@ -34,6 +35,7 @@ public:
 private:
 	bool on_mouse_scroll(Events::Mouse_Scrolled_Event& e);
 	bool on_window_resize(Events::Window_Resize_Event& e);
+	bool on_key_event(Events::Key_Pressed_Event& e);
 private:
 	float m_aspect_ratio;
 	float m_zoom_level = 1.0f;

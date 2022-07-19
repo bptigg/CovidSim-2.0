@@ -84,10 +84,13 @@
     <ClCompile Include="src\Layer_Stack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Entity\Entity.cpp">
+    <ClCompile Include="src\Renderer_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer_Manager.cpp">
+    <ClCompile Include="src\Entity\scriptable_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity\Button.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,10 +191,13 @@
     <ClInclude Include="src\Layer_Stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Entity\Entity.h">
+    <ClInclude Include="src\Renderer_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer_Manager.h">
+    <ClInclude Include="src\Entity\scriptable_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\Button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

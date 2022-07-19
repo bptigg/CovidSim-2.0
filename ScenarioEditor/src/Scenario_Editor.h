@@ -1,6 +1,11 @@
 #pragma once
 #include "Layer.h"
 
+#include "Entity/Button.h"
+
+#include<memory>
+#include<vector>
+
 #include "Events/Key_Event.h"
 
 class Scenario_Editor : public Layer
@@ -23,10 +28,15 @@ private:
 
 	Camera_Controller m_orthographic_controller;
 	std::unordered_map<std::string, unsigned int> m_textures;
+	bool present = false;
+
+	std::vector<std::unique_ptr<Button>> buttons;
+
+private:
 
 	bool colision(glm::vec4& pos, glm::vec2& box_pos, float size);
+	void test();
 
-	bool present = false;
 	
 };
 

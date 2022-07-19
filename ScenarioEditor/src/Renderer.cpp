@@ -152,16 +152,16 @@ void Renderer::draw()
 	//}
 
 	//begin_batch();
-	draw_rectangle_texture({ -60.0f, -60.0f }, { 120.0f, 120.0f }, 2);
-	draw_rectangle_texture({ 60.0f,  60.0f }, { 120.0f, 120.0f }, 2);
+	//draw_rectangle_texture({ -60.0f, -60.0f }, { 120.0f, 120.0f }, 2);
+	//draw_rectangle_texture({ 60.0f,  60.0f }, { 120.0f, 120.0f }, 2);
 	//end_batch();
 
 	//Do one draw call per texture stops the texutre overlap stuff
 
 	//flush();
 	//begin_batch();
-	draw_rectangle_color({  60.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
-	draw_rectangle_color({ -60.0f,  60.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
+	//draw_rectangle_color({  60.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
+	//draw_rectangle_color({ -60.0f,  60.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
 
 	while (!manager.finished)
 	{

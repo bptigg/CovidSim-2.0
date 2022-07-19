@@ -142,7 +142,7 @@ int app::loop()
 
 
             //ImGui::CreateContext();
-            //ImGui_ImplGlfwGL3_Init(window, true);
+            //ImGui_ImplGlfwGL3_Init(m_window->Get_Native_Window(), true);
             //ImGui::StyleColorsDark();
 
             float r = 0.0f;
