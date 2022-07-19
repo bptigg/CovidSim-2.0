@@ -26,7 +26,7 @@ void Scenario_Editor::On_Update(Timestep ts)
 {
 	m_orthographic_controller.On_Update(ts);
 
-	Renderer::begin_batch();
+	//Renderer::begin_batch();
 
 	//ss << "Mouse click at: " << mouse_loc.x << " , " << mouse_loc.y << " : " << zoom << std::endl;
 

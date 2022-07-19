@@ -60,5 +60,11 @@ public:
 
 	static void flush();
 
+private:
+	static void m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+	static void m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
+
+	static void m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color);
+
 };
 
