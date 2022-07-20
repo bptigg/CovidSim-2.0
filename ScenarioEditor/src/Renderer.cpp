@@ -488,6 +488,7 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 		end_batch();
 		s_data.text_shader->bind();
 		flush();
+
 	}
 }
 
@@ -498,26 +499,37 @@ std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, f
 	float x_pos = position.x + ch->bearing.x * new_scale + x_offset;
 	float y_pos = position.y - (ch->size.y - ch->bearing.y) * new_scale;
 
+	float w = ch->size.x * new_scale;
+	float h = ch->size.y * new_scale;
+
+	glm::vec2 bottom, top;
+
+	bottom.x = -size.x / 2.0f;
+	bottom.y = -size.y / 2.0f;
+
+	top.x = (-size.x / 2.0f) + w;
+	top.y = (-size.y / 2.0f) + h;
+
 	Vertex v0;
-	v0.position = { x_pos - (size.x / 2.0f), y_pos - (size.y / 2.0f) };
+	v0.position = { x_pos + bottom.x, y_pos + top.y };
 	v0.texture_coord = { 0.0f, 0.0f };
 	v0.color = color;
 	v0.tex_id = tex_slot;
 
 	Vertex v1;
-	v1.position = { x_pos + (size.x / 2.0f), y_pos - (size.y / 2.0f) };
+	v1.position = { x_pos + top.x, y_pos + top.y };
 	v1.texture_coord = { 1.0f, 0.0f };
 	v1.color = color;
 	v1.tex_id = tex_slot;
 
 	Vertex v2;
-	v2.position = { x_pos + (size.x / 2.0f), y_pos + (size.y / 2.0f) };
+	v2.position = { x_pos + top.x, y_pos + bottom.y };
 	v2.texture_coord = { 1.0f, 1.0f };
 	v2.color = color;
 	v2.tex_id = tex_slot;
 
 	Vertex v3;
-	v3.position = { x_pos - (size.x / 2.0f), y_pos + (size.y / 2.0f) };
+	v3.position = { x_pos + bottom.x, y_pos + bottom.y };
 	v3.texture_coord = { 0.0f, 1.0f };
 	v3.color = color;
 	v3.tex_id = tex_slot;
