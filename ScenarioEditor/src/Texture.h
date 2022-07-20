@@ -13,6 +13,7 @@ public:
 
 	static GLuint Load_Texture(std::string path);
 	static GLuint Create_Texture(unsigned int width, unsigned int height, unsigned int color, unsigned int& renderer_id);
+	static GLuint Create_Texture(unsigned int width, unsigned height, unsigned char* buffer);
 	
 	static void delete_texture(unsigned int id);
 

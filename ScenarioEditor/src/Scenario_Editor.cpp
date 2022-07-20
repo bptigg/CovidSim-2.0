@@ -46,6 +46,9 @@ void Scenario_Editor::On_Update(Timestep ts)
 		buttons[i]->render();
 	}
 
+	std::string test = "Hello World";
+	Renderer::draw_text(test, { 60.0f, -60.0f }, { 1.0f,1.0f,1.0f,1.0f }, 3, 5.0f);
+
 	if (present)
 	{
 		//glm::vec4 color = { 0.8f, 0.4f,0.2f,1.0f };

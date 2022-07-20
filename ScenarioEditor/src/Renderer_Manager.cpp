@@ -47,6 +47,19 @@ void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, 
 	Push_Object(object);
 }
 
+void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale)
+{
+	finished = false;
+	render_queue_object* object = new render_queue_object(render_type::TEXT, centre, size);
+
+	object->color = color;
+	object->layer = layer;
+	object->text = text;
+	object->scale = scale;
+
+	Push_Object(object);
+}
+
 std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator Renderer_Manager::next_draw()
 {
 	auto it = m_layer_queue.begin();

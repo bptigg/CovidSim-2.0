@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
-#include "Renderer_Manager.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 static const unsigned int m_MAX_QUADS = 10000;
 static const unsigned int m_MAX_VERTICIES = m_MAX_QUADS * 4;
@@ -12,11 +13,11 @@ struct render_data
 	unsigned int White_Texture_Slot = 0;
 
 	shader* quad_shader = nullptr;
+	shader* text_shader = nullptr;
 	
 	Vertex_Array* VA0 = nullptr;
 	Vertex_Buffer* VertexBuffer = nullptr;
 	Index_Buffer* IndexBuffer = nullptr;
-
 
 	bool initlized = false;
 
@@ -30,6 +31,8 @@ struct render_data
 
 	std::array<GLuint, Texture::MAX_TEXTURE_SLOTS> texture_slots;
 	unsigned int current_texture_slot = 1;
+
+	std::unordered_map<char, Character> characters;
 };
 
 static render_data s_data;
@@ -45,12 +48,54 @@ Renderer::~Renderer()
 
 void Renderer::init(std::vector<std::string> textures)
 {
-
 	if (s_data.initlized)
 	{
 		Log::error("RENDERER ALREADY INITLIZED", __FILE__, __LINE__);
 		return; 
 	}
+
+	FT_Library ft;
+	if (FT_Init_FreeType(&ft))
+	{
+		Log::crit("FREETYPE: Could not initlized free", __FILE__, __LINE__);
+	}
+
+	FT_Face face;
+	if (FT_New_Face(ft, "res/fonts/HPSimplified_Rg.ttf", 0, &face))
+	{
+		Log::crit("FREETYPE: Failed to load font", __FILE__, __LINE__);
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, 48);
+	if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
+	{
+		Log::crit("FREETYPE: Failed to load glyph", __FILE__, __LINE__);
+	}
+	GlCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+
+	for (unsigned char c = 0; c < 128; c++)
+	{
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+		{
+			Log::warning("FREETYPE: Failed to load glyph");
+			continue;
+		}
+
+		Character character = {
+			0,
+			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+			(uint16_t)face->glyph->advance.x,
+		};
+
+		s_data.characters[c] = character;
+		s_data.characters[c].tex_id = Texture::Create_Texture(face->glyph->bitmap.width, face->glyph->bitmap.rows, face->glyph->bitmap.buffer);
+	}
+
+	FT_Done_Face(face);
+	FT_Done_FreeType(ft);
+
+	Log::info("Text initialised");
 
 	s_data.Object_Buffer = new Vertex[m_MAX_VERTICIES];
 
@@ -63,6 +108,9 @@ void Renderer::init(std::vector<std::string> textures)
 	s_data.quad_shader = new shader("res/shaders/simple.shader");
 	s_data.quad_shader->set_uniform_1iv("u_Textures", 32, samplers);
 	s_data.IndexBuffer = new Index_Buffer(m_MAX_INDICIES);
+
+	s_data.text_shader = new shader("res/shaders/Text.shader");
+	s_data.text_shader->set_uniform_1iv("u_Textures", 32, samplers);
 	
 	s_data.VertexBuffer = new Vertex_Buffer(m_MAX_VERTICIES * sizeof(Vertex));
 	s_data.VA0 = new Vertex_Array();
@@ -77,9 +125,13 @@ void Renderer::init(std::vector<std::string> textures)
 
 	glm::mat4 mvp = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+	//glm::vec4 zoom = glm::vec4(1.0f);
 	
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", mvp);
 	s_data.quad_shader->set_uniform_mat_4f("u_Transform", transform);
+
+	s_data.text_shader->set_uniform_mat_4f("u_MVP", mvp);
+	s_data.text_shader->set_uniform_4f("u_Zoom", 1.0f, 1.0f, 1.0f, 1.0f);
 	
 
 	unsigned int color = 0xffffffff;
@@ -103,6 +155,7 @@ void Renderer::shutdown()
 	delete[] s_data.Object_Buffer;
 	
 	delete s_data.quad_shader;
+	delete s_data.text_shader;
 	
 	delete s_data.VA0;
 	delete s_data.VertexBuffer;
@@ -182,6 +235,12 @@ void Renderer::draw()
 				case render_type::COLOURED_BOX:
 					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color);
 					break;
+				case render_type::TEXT:
+					end_batch();
+					s_data.quad_shader->bind();
+					flush();
+					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale);
+					break;
 				default:
 					Log::warning("UNKOWN DRAW TYPE");
 					break;
@@ -190,6 +249,7 @@ void Renderer::draw()
 			if (manager.next_layer)
 			{
 				end_batch();
+				s_data.quad_shader->bind();
 				flush();
 			}
 		}
@@ -223,6 +283,31 @@ void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2
 void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer)
 {
 	manager.draw_box(centre, size, border_width, color, layer);
+}
+
+void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale)
+{
+	float text_width	= 0.0f;
+	float text_height	= 0.0f;
+	float min_y			= 0.0f;
+	float new_scale		= scale / 100;
+	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
+	{
+		Character* ch = &s_data.characters[*c];
+		text_width += (ch->advance >> 6) * new_scale;
+		float h = ch->bearing.y * new_scale;
+		if (h > text_height)
+		{
+			text_height = h;
+		}
+		float y = (ch->bearing.y - ch->size.y) * new_scale;
+		if (y < min_y)
+		{
+			min_y = y;
+		}
+	}
+
+	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale);
 }
 
 void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -334,8 +419,109 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
 }
 
+void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale)
+{
+	begin_batch();
+	float x_offset = 0.0f;
+	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
+	{
+		Character* ch = &s_data.characters[*c];
 
+		if (s_data.Index_Count >= m_MAX_INDICIES || s_data.current_texture_slot > 31)
+		{
+			end_batch();
+			flush();
+			begin_batch();
+		}
 
+		float texture_id = ch->tex_id;
+
+		float texture_index = 0.0f;
+		for (unsigned int i = 1; i < s_data.current_texture_slot; i++)
+		{
+			if (s_data.texture_slots[i] == texture_id)
+			{
+				texture_index = (float)i;
+				break;
+			}
+		}
+
+		if (texture_index == 0.0f)
+		{
+			texture_index = (float)s_data.current_texture_slot;
+			s_data.texture_slots[s_data.current_texture_slot] = texture_id;
+			s_data.current_texture_slot++;
+		}
+
+		std::array<Vertex, 4> vertecies = m_convert_character_to_vertices(ch, x_offset, texture_id, scale, text, position, size, color);
+
+		s_data.Object_Buffer_Ptr->position = vertecies[0].position;
+		s_data.Object_Buffer_Ptr->color = vertecies[0].color;
+		s_data.Object_Buffer_Ptr->texture_coord = vertecies[0].texture_coord;
+		s_data.Object_Buffer_Ptr->tex_id = vertecies[0].tex_id;
+		s_data.Object_Buffer_Ptr++;
+
+		s_data.Object_Buffer_Ptr->position = vertecies[1].position;
+		s_data.Object_Buffer_Ptr->color = vertecies[1].color;
+		s_data.Object_Buffer_Ptr->texture_coord = vertecies[1].texture_coord;
+		s_data.Object_Buffer_Ptr->tex_id = vertecies[1].tex_id;
+		s_data.Object_Buffer_Ptr++;
+
+		s_data.Object_Buffer_Ptr->position = vertecies[2].position;
+		s_data.Object_Buffer_Ptr->color = vertecies[2].color;
+		s_data.Object_Buffer_Ptr->texture_coord = vertecies[2].texture_coord;
+		s_data.Object_Buffer_Ptr->tex_id = vertecies[2].tex_id;
+		s_data.Object_Buffer_Ptr++;
+
+		s_data.Object_Buffer_Ptr->position = vertecies[3].position;
+		s_data.Object_Buffer_Ptr->color = vertecies[3].color;
+		s_data.Object_Buffer_Ptr->texture_coord = vertecies[3].texture_coord;
+		s_data.Object_Buffer_Ptr->tex_id = vertecies[3].tex_id;
+		s_data.Object_Buffer_Ptr++;
+
+		s_data.Index_Count += 6;
+		
+		float new_scale = scale / 100;
+		x_offset += (ch->advance >> 6) * new_scale;
+	}
+	end_batch();
+	s_data.text_shader->bind();
+	flush();
+}
+
+std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color)
+{
+	float new_scale = scale / 100;
+
+	float x_pos = position.x + ch->bearing.x * new_scale + x_offset;
+	float y_pos = position.y - (ch->size.y - ch->bearing.y) * new_scale;
+
+	Vertex v0;
+	v0.position = { x_pos - (size.x / 2.0f), y_pos - (size.y / 2.0f) };
+	v0.texture_coord = { 0.0f, 0.0f };
+	v0.color = color;
+	v0.tex_id = tex_slot;
+
+	Vertex v1;
+	v1.position = { x_pos + (size.x / 2.0f), y_pos - (size.y / 2.0f) };
+	v1.texture_coord = { 1.0f, 0.0f };
+	v1.color = color;
+	v1.tex_id = tex_slot;
+
+	Vertex v2;
+	v2.position = { x_pos + (size.x / 2.0f), y_pos + (size.y / 2.0f) };
+	v2.texture_coord = { 1.0f, 1.0f };
+	v2.color = color;
+	v2.tex_id = tex_slot;
+
+	Vertex v3;
+	v3.position = { x_pos - (size.x / 2.0f), y_pos + (size.y / 2.0f) };
+	v3.texture_coord = { 0.0f, 1.0f };
+	v3.color = color;
+	v3.tex_id = tex_slot;
+
+	return { v0,v1,v2,v3 };
+}
 
 
 void Renderer::flush()
@@ -347,7 +533,7 @@ void Renderer::flush()
 
 	
 	
-	s_data.quad_shader->bind();
+	//s_data.quad_shader->bind();
 
 	s_data.VA0->bind();
 	s_data.IndexBuffer->bind();
