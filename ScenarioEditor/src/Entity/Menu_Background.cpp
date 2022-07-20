@@ -24,16 +24,10 @@ void Menu_Background::event_callback(Events::Event& e)
 	switch (e.Get_Event_Type())
 	{
 	case Events::Event_Type::Key_Pressed:
-		if (Input::Is_Key_Pressed(CS_KEY_ESCAPE))
-		{
-			m_exit_func();
-		}
+		dispatcher.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Menu_Background::on_keyboard_press));
 		break;
 	case Events::Event_Type::Mouse_Button_Pressed:
-		if (Input::Is_MouseButton_Pressed(CS_MOUSE_BUTTON_LEFT) && !is_mouse_over())
-		{
-			m_exit_func();
-		}
+		dispatcher.Dispatch<Events::Mouse_Button_Pressed_Event>(BIND_EVENT_FN(Menu_Background::on_mouse_click));
 		break;
 	default:
 		break;
@@ -44,4 +38,24 @@ bool Menu_Background::is_mouse_over()
 {
 	glm::vec2 loc = { Input::Get_Mouse_X(), Input::Get_Mouse_Y() };
 	return !(loc.x < m_location.x - m_size.x / 2.0f || loc.x > m_location.x + m_size.x / 2.0f || loc.y < m_location.y - m_size.y / 2.0f || loc.y > m_location.y + m_size.y / 2.0f);
+}
+
+bool Menu_Background::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
+{
+	if (Input::Is_Key_Pressed(CS_KEY_ESCAPE))
+	{
+		m_exit_func();
+		return true;
+	}
+	return false;
+}
+
+bool Menu_Background::on_keyboard_press(Events::Key_Pressed_Event& e)
+{
+	if (Input::Is_MouseButton_Pressed(CS_MOUSE_BUTTON_LEFT) && !is_mouse_over())
+	{
+		m_exit_func();
+		return true;
+	}
+	return false;
 }

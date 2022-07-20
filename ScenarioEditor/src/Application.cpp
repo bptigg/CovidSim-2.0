@@ -160,10 +160,10 @@ int app::loop()
 
                 //ImGui_ImplGlfwGL3_NewFrame();
 
-                //{
+                {
                 //    static float f = 0.0f;
                 //    static int counter = 0;
-                //    ImGui::Text("Hello, world!");                           // Display some text (you can use a format string too)
+                    //ImGui::Text("Hello, world!");                           // Display some text (you can use a format string too)
                 //    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
                 //    ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
                 //
@@ -175,8 +175,8 @@ int app::loop()
                 //    ImGui::SameLine();
                 //    ImGui::Text("counter = %d", counter);
                 //
-                //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-                //}
+                   //::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                }
                 //
                 //// 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name your windows.
                 //if (show_another_window)

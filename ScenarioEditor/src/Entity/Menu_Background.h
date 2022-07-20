@@ -15,5 +15,8 @@ public:
 	virtual void event_callback(Events::Event& e) override;
 
 	bool is_mouse_over(); 
+
+	bool on_mouse_click(Events::Mouse_Button_Pressed_Event& e);
+	bool on_keyboard_press(Events::Key_Pressed_Event& e);
 };
 
