@@ -147,6 +147,7 @@
     <ClCompile Include="src\Camera\Camera_Controller.cpp" />
     <ClCompile Include="src\Camera\Orthographic_camera.cpp" />
     <ClCompile Include="src\Entity\Button.cpp" />
+    <ClCompile Include="src\Entity\Menu_Background.cpp" />
     <ClCompile Include="src\Entity\scriptable_object.cpp" />
     <ClCompile Include="src\Entry_Point.cpp" />
     <ClCompile Include="src\Index_Buffer.cpp" />
@@ -174,9 +175,11 @@
     <ClInclude Include="src\Camera\Camera_Controller.h" />
     <ClInclude Include="src\Camera\Orthographic_camera.h" />
     <ClInclude Include="src\Entity\Button.h" />
+    <ClInclude Include="src\Entity\Menu_Background.h" />
     <ClInclude Include="src\Entity\scriptable_object.h" />
     <ClInclude Include="src\Events\Application_Event.h" />
     <ClInclude Include="src\Events\Event.h" />
+    <ClInclude Include="src\Events\Gui_Events.h" />
     <ClInclude Include="src\Events\Key_Codes.h" />
     <ClInclude Include="src\Events\Key_Event.h" />
     <ClInclude Include="src\Events\Mouse_Event.h" />

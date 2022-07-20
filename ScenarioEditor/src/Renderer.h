@@ -53,10 +53,10 @@ public:
 	static void update_view(const glm::mat4& projection_view_matrix);
 
 #pragma region draw_shapes
-	static void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-	static void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
+	static void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer);
+	static void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer);
 
-	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color);
+	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer);
 
 	static void flush();
 

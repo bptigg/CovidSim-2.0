@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 
 #include <tuple>
+#include <map>
 #include <unordered_map>
 #include <vector>
 
@@ -34,6 +35,7 @@ public:
 	
 	glm::vec4 color;
 	unsigned int texture_id;
+	unsigned int layer;
 
 	float border_width;
 
@@ -47,10 +49,10 @@ public:
 	~Renderer_Manager();
 
 	//draw objects
-	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id);
-	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
+	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer);
+	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer);
 
-	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color);
+	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer);
 
 	std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator next_draw();
 	void delete_queue();
@@ -59,11 +61,17 @@ private:
 	void Pop_Object(render_queue_object* object);
 public:
 	bool finished = true;
+	bool next_layer = true;
+	bool empty = false;
 private:
-	std::unordered_map<unsigned int, std::vector<render_queue_object*>> m_queue;
+	std::map<unsigned int, std::unordered_map<unsigned int, std::vector<render_queue_object*>>> m_layer_queue;
 
 	unsigned int m_map_position = 0;
-	unsigned int m_max_positions = 0;
+	unsigned int m_layer_position = 0;
+
+	unsigned int m_max_layers = 0;
+	
+	std::map<unsigned int, unsigned int> m_max_positions; 
 
 };
 

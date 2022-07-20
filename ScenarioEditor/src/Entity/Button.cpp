@@ -23,15 +23,15 @@ void Button::render()
 	switch (m_state)
 	{
 	case Button::State::None:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f });
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f }, 1);
 		break;
 	case Button::State::Hover:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f });
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f });
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f },1);
+		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2);
 		break;
 	case Button::State::Press:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.5f,0.0f,1.0f,1.0f });
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f });
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.5f,0.0f,1.0f,1.0f },1);
+		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2);
 		break;
 	default:
 		break;
@@ -70,7 +70,7 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 {
 	if (m_zoom == 1)
 	{
-		std::pair<int, int> loc = std::make_pair(e.GetX(), e.GetY());
+		std::pair<float, float> loc = std::make_pair(e.GetX(), e.GetY());
 		glm::vec4 mouse_loc = glm::vec4((loc.first - 640.0f) + m_camera_position.x, (360.0f - loc.second) + m_camera_position.y, 1.0f, 1.0f);
 		mouse_loc = mouse_loc * m_camera_matrix;
 

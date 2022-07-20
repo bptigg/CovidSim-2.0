@@ -14,7 +14,9 @@ namespace Events {
 		Window_Close, Window_Resize, Window_Focus, Window_Lost_Focus, Window_Moved,
 		App_Tick, App_Update, App_Render,
 		Key_Pressed, Key_Released,Key_Typed,
-		Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled
+		Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled,
+		GUI_Overlay, GUI_Building_Select
+
 	};
 
 	enum Event_Catagory
@@ -24,7 +26,8 @@ namespace Events {
 		Event_Catagory_Input			= BIT(1),
 		Event_Catagory_Keyboard			= BIT(2),
 		Event_Catagory_Mouse			= BIT(3),
-		Event_Catagory_Mouse_Button		= BIT(4)
+		Event_Catagory_Mouse_Button		= BIT(4),
+		Event_Catagory_Menu				= BIT(5)
 
 	};
 

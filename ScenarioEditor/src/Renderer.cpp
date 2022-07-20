@@ -166,27 +166,33 @@ void Renderer::draw()
 	while (!manager.finished)
 	{
 		auto draw = manager.next_draw();
-		begin_batch();
-		for (int i = 0; i < draw->second.size(); i++)
+		if (!manager.empty)
 		{
-			switch (draw->second[i]->type)
+			begin_batch();
+			for (int i = 0; i < draw->second.size(); i++)
 			{
-			case render_type::COLOURED_RECTANGLE:
-				m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color);
-				break;
-			case render_type::TEXTURED_RECTANGLE:
-				m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id);
-				break;
-			case render_type::COLOURED_BOX:
-				m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color);
-				break;
-			default:
-				Log::warning("UNKOWN DRAW TYPE");
-				break;
+				switch (draw->second[i]->type)
+				{
+				case render_type::COLOURED_RECTANGLE:
+					m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color);
+					break;
+				case render_type::TEXTURED_RECTANGLE:
+					m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id);
+					break;
+				case render_type::COLOURED_BOX:
+					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color);
+					break;
+				default:
+					Log::warning("UNKOWN DRAW TYPE");
+					break;
+				}
+			}
+			if (manager.next_layer)
+			{
+				end_batch();
+				flush();
 			}
 		}
-		end_batch();
-		flush();
 	}
 
 	manager.delete_queue();
@@ -204,19 +210,19 @@ void Renderer::update_view(const glm::mat4& projection_view_matrix)
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
 }
 
-void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer)
 {
-	manager.draw_rectangle_color(position, size, color);
+	manager.draw_rectangle_color(position, size, color, layer);
 }
 
-void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index)
+void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer)
 {
-	manager.draw_rectangle_texture(position, size, index);
+	manager.draw_rectangle_texture(position, size, index, layer);
 }
 
-void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color)
+void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer)
 {
-	manager.draw_box(centre, size, border_width, color);
+	manager.draw_box(centre, size, border_width, color, layer);
 }
 
 void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
