@@ -1,10 +1,10 @@
 #shader vertex
 #version 460 core
 
-layout(location = 0) in vec4 a_position;
-layout(location = 1) in vec2 a_tex_coord;
-layout(location = 2) in float a_tex_index;
-layout(location = 3) in vec4 a_text_color;
+layout(location = 0) in vec2 a_position;
+layout(location = 2) in vec2 a_tex_coord;
+layout(location = 3) in float a_tex_index;
+layout(location = 1) in vec4 a_text_color;
 
 out vec2 v_Tex_Coord;
 out vec4 v_Text_Colour;
@@ -15,7 +15,7 @@ uniform vec4 u_Zoom;
 
 void main()
 {
-	gl_Position = u_MVP * (u_Zoom * a_position);
+	gl_Position = u_MVP * (u_Zoom * vec4(a_position, 1.0, 1.0));
 	v_Tex_Coord = a_tex_coord;
 	v_Text_Colour = a_text_color;
 	v_Tex_Index = a_tex_index;

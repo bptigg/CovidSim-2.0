@@ -268,6 +268,7 @@ void Renderer::draw()
 void Renderer::update_view(const glm::mat4& projection_view_matrix)
 {
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
+	s_data.text_shader->set_uniform_mat_4f("u_MVP", projection_view_matrix);
 }
 
 void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer)
@@ -421,10 +422,10 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 
 void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale)
 {
-	begin_batch();
 	float x_offset = 0.0f;
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
 	{
+		begin_batch();
 		Character* ch = &s_data.characters[*c];
 
 		if (s_data.Index_Count >= m_MAX_INDICIES || s_data.current_texture_slot > 31)
@@ -453,7 +454,7 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 			s_data.current_texture_slot++;
 		}
 
-		std::array<Vertex, 4> vertecies = m_convert_character_to_vertices(ch, x_offset, texture_id, scale, text, position, size, color);
+		std::array<Vertex, 4> vertecies = m_convert_character_to_vertices(ch, x_offset, texture_index, scale, text, position, size, color);
 
 		s_data.Object_Buffer_Ptr->position = vertecies[0].position;
 		s_data.Object_Buffer_Ptr->color = vertecies[0].color;
@@ -483,10 +484,11 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 		
 		float new_scale = scale / 100;
 		x_offset += (ch->advance >> 6) * new_scale;
+
+		end_batch();
+		s_data.text_shader->bind();
+		flush();
 	}
-	end_batch();
-	s_data.text_shader->bind();
-	flush();
 }
 
 std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color)

@@ -47,7 +47,7 @@ void Scenario_Editor::On_Update(Timestep ts)
 	}
 
 	std::string test = "Hello World";
-	Renderer::draw_text(test, { 60.0f, -60.0f }, { 1.0f,1.0f,1.0f,1.0f }, 3, 5.0f);
+	Renderer::draw_text(test, { -60.0f, -60.0f }, { 1.0f,1.0f,1.0f,1.0f }, 3, 100.0f);
 
 	if (present)
 	{
