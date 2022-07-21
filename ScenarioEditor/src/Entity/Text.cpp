@@ -2,7 +2,7 @@
 
 #include "../Renderer.h"
 
-Text::Text(std::string& text, const glm::vec2 position, float scale, glm::vec4 colour, bool centred)
+Text::Text(std::string text, const glm::vec2& position, float scale, const glm::vec4& colour, bool centred)
 {
 	pos = position;
 	m_text = text;

@@ -5,6 +5,7 @@
 #include "Entity/Button.h"
 #include "Entity/Menu_Background.h"
 #include "Entity/Text_Menu_object.h"
+#include "Entity/Text_Box.h"
 
 #include<memory>
 #include<vector>
@@ -34,6 +35,7 @@ private:
 	bool present = false;
 
 	std::vector<std::unique_ptr<Button>> buttons;
+	std::unique_ptr<Text_Box> box;
 
 private:
 

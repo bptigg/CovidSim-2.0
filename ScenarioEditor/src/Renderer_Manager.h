@@ -32,7 +32,7 @@ public:
 	render_queue_object(render_type o_type, const glm::vec2& o_position, const glm::vec2 o_size)
 		:type(o_type), position(o_position), size(o_size)
 	{
-		color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		color = { 1.0f,1.0f,1.0f,1.0f };
 		texture_id = 0;
 		border_width = 0.0f;
 		

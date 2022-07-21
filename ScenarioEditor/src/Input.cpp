@@ -1,17 +1,17 @@
 #include "Input.h"
 
-#include "Application.h" //will need to change to applicaton.h
+#include "Application.h" 
 
 bool Input::Is_Key_Pressed(const int key)
 {
-    auto* window = static_cast<GLFWwindow*>(app::get().GetWindow().Get_Native_Window()); //defiently change
+    auto* window = static_cast<GLFWwindow*>(app::get().GetWindow().Get_Native_Window()); 
     auto state = glfwGetKey(window, key);
     return state == GLFW_PRESS;
 }
 
 bool Input::Is_MouseButton_Pressed(int button)
 {
-    auto* window = static_cast<GLFWwindow*>(app::get().GetWindow().Get_Native_Window()); //defiently change
+    auto* window = static_cast<GLFWwindow*>(app::get().GetWindow().Get_Native_Window()); 
     auto state = glfwGetKey(window, button);
     return state == GLFW_PRESS;
 }

@@ -49,5 +49,7 @@ private:
 	float m_camera_rotation = 0.0f;
 	float m_camera_translation_speed = 1.0f;
 	float m_rotation_speed = 180.0f;
+public:
+	bool block;
 };
 

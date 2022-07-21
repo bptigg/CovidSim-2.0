@@ -25,6 +25,11 @@ void Scenario_Editor::On_Attach(std::vector<std::pair<std::string, std::string>>
 	test.Bind_function(BIND_BUTTON_FN(Scenario_Editor::test));
 	buttons.push_back(std::make_unique<Button>(test));
 
+	std::string base = "";
+	Text text_box_text(base, {-30.0f, -60.0f}, 50.0f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
+	Text_Box test_box({ 90.0f, -30.0f }, { 240.0f, 60.0f }, this, text_box_text);
+	box = std::make_unique<Text_Box>(test_box);
+	//objects.push_back(std::make_unique<Text_Box>(test_box));
 }
 
 void Scenario_Editor::On_Detach()
@@ -35,6 +40,7 @@ void Scenario_Editor::On_Detach()
 void Scenario_Editor::On_Update(Timestep ts)
 {
 	m_orthographic_controller.On_Update(ts);
+	m_orthographic_controller.block = box->selected;
 
 	//Renderer::begin_batch();
 
@@ -46,8 +52,11 @@ void Scenario_Editor::On_Update(Timestep ts)
 		buttons[i]->render();
 	}
 
+	box->update_position(m_orthographic_controller.Get_Zoom_Level(), m_orthographic_controller.get_position(), m_orthographic_controller.get_camera().Get_View_Projection_Matrix());
+	box->render();
+
 	std::string test = "Hello world";
-	Renderer::draw_text(test, { -60.0f, -60.0f }, { 1.0f,1.0f,1.0f,1.0f }, 3, 50.0f, true);
+	Renderer::draw_text(test, { -60.0f, -60.0f }, { 1.0f,0.0f,0.0f,1.0f }, 3, 50.0f, true);
 
 	if (present)
 	{
@@ -76,6 +85,8 @@ void Scenario_Editor::On_Event(Events::Event& e)
 		buttons[i]->update_position(m_orthographic_controller.Get_Zoom_Level(), m_orthographic_controller.get_position(), m_orthographic_controller.get_camera().Get_View_Projection_Matrix());
 		buttons[i]->event_callback(e);
 	}
+	box->event_callback(e);
+
 
 	//Events::Event_Dispatcher dispatcher(e);
 	//dispatcher.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Scenario_Editor::On_Key_Pressed));

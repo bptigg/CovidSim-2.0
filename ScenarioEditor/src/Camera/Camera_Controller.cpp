@@ -14,30 +14,33 @@ void Camera_Controller::On_Update(Timestep ts)
 	m_camera_translation_speed = 100.0f;
 	m_camera_translation_speed = m_zoom_level * m_camera_translation_speed;
 	bool changed = false;
-	if (Input::Is_Key_Pressed(CS_KEY_A))
+	if (!block)
 	{
-		m_camera_position.x -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		m_camera_position.y -= sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		changed = true;
-	}
-	else if (Input::Is_Key_Pressed(CS_KEY_D))
-	{
-		m_camera_position.x += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		m_camera_position.y += sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		changed = true;
-	}
+		if (Input::Is_Key_Pressed(CS_KEY_A))
+		{
+			m_camera_position.x -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			m_camera_position.y -= sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			changed = true;
+		}
+		else if (Input::Is_Key_Pressed(CS_KEY_D))
+		{
+			m_camera_position.x += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			m_camera_position.y += sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			changed = true;
+		}
 
-	if (Input::Is_Key_Pressed(CS_KEY_W))
-	{
-		m_camera_position.x += -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		m_camera_position.y += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		changed = true;
-	}
-	else if (Input::Is_Key_Pressed(CS_KEY_S))
-	{
-		m_camera_position.x -= -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		m_camera_position.y -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-		changed = true;
+		if (Input::Is_Key_Pressed(CS_KEY_W))
+		{
+			m_camera_position.x += -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			m_camera_position.y += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			changed = true;
+		}
+		else if (Input::Is_Key_Pressed(CS_KEY_S))
+		{
+			m_camera_position.x -= -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			m_camera_position.y -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+			changed = true;
+		}
 	}
 
 	if (m_rotation)

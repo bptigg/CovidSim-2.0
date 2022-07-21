@@ -105,6 +105,8 @@ void Renderer::init(std::vector<std::string> textures)
 		samplers[i] = i;
 	}
 
+	GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE));
+
 	s_data.quad_shader = new shader("res/shaders/simple.shader");
 	s_data.quad_shader->set_uniform_1iv("u_Textures", 32, samplers);
 	s_data.IndexBuffer = new Index_Buffer(m_MAX_INDICIES);
@@ -487,7 +489,9 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 
 		end_batch();
 		s_data.text_shader->bind();
+		GlCall(glEnable(GL_BLEND));
 		flush();
+		GlCall(glDisable(GL_BLEND));
 
 	}
 }

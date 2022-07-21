@@ -14,7 +14,7 @@ public:
 
 	bool is_centred;
 
-	Text(std::string& text, const glm::vec2 position, float scale, glm::vec4 colour, bool centred = true);
+	Text(std::string text, const glm::vec2& position, float scale, const glm::vec4& colour, bool centred);
 	~Text();
 
 	void render(float x_offset, float y_offset, unsigned int layer);

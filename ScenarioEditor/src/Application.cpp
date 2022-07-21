@@ -90,8 +90,6 @@ int app::loop()
                 2,3,0
             };
 
-            GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
-            GlCall(glEnable(GL_BLEND));
 
             //Vertex_Array va;
             {
