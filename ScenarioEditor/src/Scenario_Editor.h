@@ -1,7 +1,10 @@
 #pragma once
 #include "Layer.h"
 
+
 #include "Entity/Button.h"
+#include "Entity/Menu_Background.h"
+#include "Entity/Text_Menu_object.h"
 
 #include<memory>
 #include<vector>

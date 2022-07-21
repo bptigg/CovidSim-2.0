@@ -53,6 +53,7 @@ public:
 	double rotation;
 	std::string text;
 	float scale;
+	bool centred;
 
 	float border_width;
 
@@ -71,7 +72,7 @@ public:
 
 	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer);
 
-	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale);
+	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred = true);
 
 	std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator next_draw();
 	void delete_queue();

@@ -239,7 +239,7 @@ void Renderer::draw()
 					end_batch();
 					s_data.quad_shader->bind();
 					flush();
-					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale);
+					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale, draw->second[i]->centred);
 					break;
 				default:
 					Log::warning("UNKOWN DRAW TYPE");
@@ -286,7 +286,7 @@ void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const fl
 	manager.draw_box(centre, size, border_width, color, layer);
 }
 
-void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale)
+void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred)
 {
 	float text_width	= 0.0f;
 	float text_height	= 0.0f;
@@ -308,7 +308,7 @@ void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::v
 		}
 	}
 
-	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale);
+	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, centred);
 }
 
 void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -420,7 +420,7 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
 }
 
-void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale)
+void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred)
 {
 	float x_offset = 0.0f;
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
@@ -454,7 +454,7 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 			s_data.current_texture_slot++;
 		}
 
-		std::array<Vertex, 4> vertecies = m_convert_character_to_vertices(ch, x_offset, texture_index, scale, text, position, size, color);
+		std::array<Vertex, 4> vertecies = m_convert_character_to_vertices(ch, x_offset, texture_index, scale, text, position, size, color, centred);
 
 		s_data.Object_Buffer_Ptr->position = vertecies[0].position;
 		s_data.Object_Buffer_Ptr->color = vertecies[0].color;
@@ -492,7 +492,7 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 	}
 }
 
-std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color)
+std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, bool centred)
 {
 	float new_scale = scale / 100;
 
@@ -504,11 +504,22 @@ std::array<Vertex, 4> Renderer::m_convert_character_to_vertices(Character* ch, f
 
 	glm::vec2 bottom, top;
 
-	bottom.x = -size.x / 2.0f;
-	bottom.y = -size.y / 2.0f;
+	if (centred)
+	{
+		bottom.x = -size.x / 2.0f;
+		bottom.y = -size.y / 2.0f;
 
-	top.x = (-size.x / 2.0f) + w;
-	top.y = (-size.y / 2.0f) + h;
+		top.x = (-size.x / 2.0f) + w;
+		top.y = (-size.y / 2.0f) + h;
+	}
+	else
+	{
+		bottom.x = 0;
+		bottom.y = 0;
+
+		top.x = w;
+		top.y = h;
+	}
 
 	Vertex v0;
 	v0.position = { x_pos + bottom.x, y_pos + top.y };

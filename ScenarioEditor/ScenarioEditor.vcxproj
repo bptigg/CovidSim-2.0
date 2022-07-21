@@ -149,6 +149,9 @@
     <ClCompile Include="src\Entity\Button.cpp" />
     <ClCompile Include="src\Entity\Menu_Background.cpp" />
     <ClCompile Include="src\Entity\scriptable_object.cpp" />
+    <ClCompile Include="src\Entity\Text.cpp" />
+    <ClCompile Include="src\Entity\Text_Box.cpp" />
+    <ClCompile Include="src\Entity\Text_Menu_object.cpp" />
     <ClCompile Include="src\Entry_Point.cpp" />
     <ClCompile Include="src\Index_Buffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
@@ -178,6 +181,9 @@
     <ClInclude Include="src\Entity\Button.h" />
     <ClInclude Include="src\Entity\Menu_Background.h" />
     <ClInclude Include="src\Entity\scriptable_object.h" />
+    <ClInclude Include="src\Entity\Text.h" />
+    <ClInclude Include="src\Entity\Text_Box.h" />
+    <ClInclude Include="src\Entity\Text_Menu_object.h" />
     <ClInclude Include="src\Events\Application_Event.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\Gui_Events.h" />

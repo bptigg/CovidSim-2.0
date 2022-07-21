@@ -47,7 +47,7 @@ void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale)
+void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::TEXT, centre, size);
@@ -56,6 +56,7 @@ void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, con
 	object->layer = layer;
 	object->text = text;
 	object->scale = scale;
+	object->centred = centred;
 
 	Push_Object(object);
 }
