@@ -25,9 +25,10 @@ void Scenario_Editor::On_Attach(std::vector<std::pair<std::string, std::string>>
 	test.Bind_function(BIND_BUTTON_FN(Scenario_Editor::test));
 	buttons.push_back(std::make_unique<Button>(test));
 
-	std::string base = "";
-	Text text_box_text(base, {-30.0f, -60.0f}, 50.0f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
-	Text_Box test_box({ 90.0f, -30.0f }, { 240.0f, 60.0f }, this, text_box_text);
+	//std::string base = "";
+	//Text text_box_text(base, {-25.0f, -40.0f}, 50.0f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
+	float size = 320.0f;
+	Text_Box test_box({ 90.0f, -30.0f }, { size, size / 8.0f }, this);
 	box = std::make_unique<Text_Box>(test_box);
 	//objects.push_back(std::make_unique<Text_Box>(test_box));
 }
@@ -39,8 +40,8 @@ void Scenario_Editor::On_Detach()
 
 void Scenario_Editor::On_Update(Timestep ts)
 {
+	m_orthographic_controller.block = box->get_selected();
 	m_orthographic_controller.On_Update(ts);
-	m_orthographic_controller.block = box->selected;
 
 	//Renderer::begin_batch();
 

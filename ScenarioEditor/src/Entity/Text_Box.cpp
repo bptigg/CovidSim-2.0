@@ -1,11 +1,15 @@
 #include "Text_Box.h"
 
-Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, Text text)
-    :scriptable_object(position, size, layer), m_text(text)
+Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer)
+    :scriptable_object(position, size, layer)
 {
     m_over = false;
 	m_selected = false;
 	caps = false;
+
+	x_offset = 0.0f;
+	
+	m_text = Text("",{position.x - (size.x/ 2.0f) + 15.0f, position.y - (size.y / 2.0f) + 5.0f}, size.y * 1.25f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
 }
 
 Text_Box::~Text_Box()
@@ -18,8 +22,8 @@ void Text_Box::update()
 
 void Text_Box::render()
 {
-	Renderer::draw_rectangle_color(m_location, m_size, { 0.2f, 0.2f, 0.2f, 1.0f }, 1);
-	m_text.render(0, 0, 2);
+	Renderer::draw_rectangle_color(m_location, m_size, { 0.1f, 0.1f, 0.1f, 1.0f }, 1);
+	m_text.render(0, 0, 2, &x_offset);
 }
 
 void Text_Box::event_callback(Events::Event& e)
@@ -82,7 +86,21 @@ bool Text_Box::on_keyboard_press(Events::Key_Pressed_Event& e)
 {
 	if (m_selected == true)
 	{
-		key_to_char(e.Get_Key_Code());
+		if (x_offset < m_size.x - 30.0f)
+		{
+			key_to_char(e.Get_Key_Code());
+		}
+		else if (e.Get_Key_Code() == CS_KEY_BACKSPACE)
+		{
+			if (!text.empty())
+			{
+				text.pop_back();
+			}
+		}
+		else if (e.Get_Key_Code() == CS_KEY_ENTER)
+		{
+			m_selected = false;
+		}
 		m_text.update_string(text);
 		return true;
 	}
@@ -379,4 +397,5 @@ void Text_Box::key_to_char(uint32_t key)
 	default:
 		break;
 	}
+
 }

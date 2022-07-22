@@ -24,7 +24,6 @@ struct Character
 	uint16_t advance;
 };
 
-
 class render_queue_object
 {
 public:
@@ -56,6 +55,7 @@ public:
 	bool centred;
 
 	float border_width;
+	float* text_width;
 
 };
 
@@ -72,7 +72,7 @@ public:
 
 	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer);
 
-	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred = true);
+	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred = true, float* width = nullptr);
 
 	std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator next_draw();
 	void delete_queue();

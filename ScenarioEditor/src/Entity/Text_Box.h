@@ -8,8 +8,6 @@
 
 class Text_Box : public scriptable_object
 {
-public:
-	const bool& selected = m_selected;
 protected:
 	Text m_text;
 	std::string text;
@@ -22,8 +20,10 @@ protected:
 	glm::vec2 m_camera_position;
 	glm::mat4 m_camera_matrix;
 
+	float x_offset;
+
 public:
-	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, Text text);
+	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer);
 	~Text_Box();
 
 	virtual void update() override;
@@ -32,6 +32,8 @@ public:
 	virtual void event_callback(Events::Event& e) override;
 
 	void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat);
+
+	const bool get_selected() const { return m_selected; }
 
 private:
 

@@ -14,7 +14,7 @@ struct render_data
 
 	shader* quad_shader = nullptr;
 	shader* text_shader = nullptr;
-	
+
 	Vertex_Array* VA0 = nullptr;
 	Vertex_Buffer* VertexBuffer = nullptr;
 	Index_Buffer* IndexBuffer = nullptr;
@@ -241,7 +241,7 @@ void Renderer::draw()
 					end_batch();
 					s_data.quad_shader->bind();
 					flush();
-					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale, draw->second[i]->centred);
+					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale, draw->second[i]->centred, draw->second[i]->text_width);
 					break;
 				default:
 					Log::warning("UNKOWN DRAW TYPE");
@@ -288,7 +288,7 @@ void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const fl
 	manager.draw_box(centre, size, border_width, color, layer);
 }
 
-void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred)
+void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred, float* width)
 {
 	float text_width	= 0.0f;
 	float text_height	= 0.0f;
@@ -310,7 +310,7 @@ void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::v
 		}
 	}
 
-	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, centred);
+	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, centred, width);
 }
 
 void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -422,7 +422,7 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
 }
 
-void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred)
+void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred, float* width)
 {
 	float x_offset = 0.0f;
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
@@ -486,6 +486,10 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 		
 		float new_scale = scale / 100;
 		x_offset += (ch->advance >> 6) * new_scale;
+		if (width != nullptr)
+		{
+			*width = x_offset;
+		}
 
 		end_batch();
 		s_data.text_shader->bind();

@@ -59,7 +59,7 @@ public:
 
 	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer);
 
-	static void draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred);
+	static void draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred, float* width = nullptr);
 
 	static void flush();
 
@@ -68,7 +68,7 @@ private:
 	static void m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
 
 	static void m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color);
-	static void m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred);
+	static void m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred, float* width = nullptr);
 
 	static std::array<Vertex, 4> m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, bool centred);
 
