@@ -147,6 +147,7 @@
     <ClCompile Include="src\Camera\Camera_Controller.cpp" />
     <ClCompile Include="src\Camera\Orthographic_camera.cpp" />
     <ClCompile Include="src\Entity\Button.cpp" />
+    <ClCompile Include="src\Entity\dialouge_box.cpp" />
     <ClCompile Include="src\Entity\Menu_Background.cpp" />
     <ClCompile Include="src\Entity\scriptable_object.cpp" />
     <ClCompile Include="src\Entity\Text.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="src\Camera\Camera_Controller.h" />
     <ClInclude Include="src\Camera\Orthographic_camera.h" />
     <ClInclude Include="src\Entity\Button.h" />
+    <ClInclude Include="src\Entity\dialouge_box.h" />
     <ClInclude Include="src\Entity\Menu_Background.h" />
     <ClInclude Include="src\Entity\scriptable_object.h" />
     <ClInclude Include="src\Entity\Text.h" />

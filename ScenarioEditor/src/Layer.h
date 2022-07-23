@@ -15,6 +15,8 @@
 class Layer
 {
 public:
+	using Event_Call_back_fn = std::function<void(Events::Event&)>;
+public:
 	Layer(const std::string& name = "Layer")
 		:m_debug_name(name)
 	{
@@ -28,8 +30,11 @@ public:
 	virtual void On_ImGui_Render() = 0;
 	virtual void On_Event(Events::Event& event) = 0;
 
+	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
+
 	const std::string& GetName() const { return m_debug_name; }
 protected:
+	Event_Call_back_fn Event_Call_back;
 #if _DEBUG
 	std::string m_debug_name;
 #endif

@@ -1,9 +1,12 @@
 #include "GUI_Layer.h"
 
+#define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
+
 GUI_Layer::GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll)
 {
 	m_type = menu_type;
 	m_base_layer = base_layer;
+	m_render = true;
 
 	m_orthographic_controller = std::move(ortho_controll);
 }
@@ -35,7 +38,6 @@ void GUI_Layer::On_Detach()
 
 void GUI_Layer::On_Update(Timestep ts)
 {
-	//m_orthographic_controller->block = box->get_selected();
 	m_orthographic_controller->On_Update(ts);
 
 	for (scriptable_object* obj : m_objects)
@@ -47,7 +49,10 @@ void GUI_Layer::On_Update(Timestep ts)
 	//Text title_text("Settings", { 0  , 250   }, 70.0f, { 0.0f,0.0f,0.0f,1.0f }, true);
 	//title_text.render(0, 0, 3, true);
 
-	Renderer::draw();
+	if (m_render)
+	{
+		Renderer::draw();
+	}
 }
 
 void GUI_Layer::On_ImGui_Render()
@@ -69,7 +74,8 @@ void GUI_Layer::add_scriptable_object(scriptable_object* obj)
 
 void GUI_Layer::create_menu()
 {
-	Menu_Background* settings = new Menu_Background({ 0,0 }, { 500, 600 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	Menu_Background* settings = new Menu_Background({ 0,0 }, { 500, 600 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, GUI_Layer:: m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::exit_func));
 	m_objects.push_back(settings);
 
 	Text title_text("Settings", { 0 + settings->get_position().x , 250 + settings->get_position().y }, 70.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
@@ -96,4 +102,11 @@ void GUI_Layer::create_menu()
 
 	Text_Box* num_agents_box = new Text_Box({ 0 + settings->get_position().x, -10 + settings->get_position().y }, { 200, 30 }, this, true, m_base_layer, true);
 	m_objects.push_back(num_agents_box);
+}
+
+void GUI_Layer::exit_func()
+{
+	m_render = false;
+	//Events::GUI_Overlay_Event event;
+	//Event_Call_back(event);
 }

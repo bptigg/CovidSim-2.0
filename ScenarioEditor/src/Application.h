@@ -31,8 +31,26 @@
 
 #include "Timestep.h"
 
+struct file_data
+{
+    std::fstream scenario_file;
+    std::filesystem::path m_filepath;
+};
+
 class app
 {
+public:
+    app()
+        :m_camera()
+    {
+    }
+
+    ~app()
+    {
+
+    }
+
+    void On_Event(Events::Event& e);
 private:
     bool m_running = true;
     Renderer m_render;
@@ -41,25 +59,20 @@ private:
 
     static app* s_instance;
 
-    Layer_Stack stack;
+    Layer_Stack m_stack;
 
     float m_frame_time = 0.0f;
 public:
-    app()
-        :m_camera()
-    {
-
-    }
 
     static app& get() { return *s_instance; }
 
-    void On_Event(Events::Event& e);
+    //void On_Event(Events::Event& e);
     bool OnWindowClose(Events::Window_Close_Event& e);
+    bool OnWindowResize(Events::Window_Resize_Event& e);
     void Camera(Events::Event& e);
     int loop();
 
-    void mouse_click(Events::Mouse_Button_Pressed_Event& e);
-
     Window& GetWindow() { return *m_window; }
+    const Window& GetWindow() const { return *m_window; }
 
 };

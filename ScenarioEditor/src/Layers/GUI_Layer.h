@@ -6,6 +6,8 @@
 #include "../Entity/Text_Box.h"
 #include "../Entity/Text_Menu_object.h"
 
+#include "../Events/Gui_Events.h"
+
 class GUI_Layer : public Layer
 {
 public:
@@ -21,6 +23,7 @@ private:
 	std::unordered_map<std::string, unsigned int> m_textures;
 
 	unsigned int m_base_layer;
+	bool m_render = true;
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 
@@ -39,6 +42,8 @@ private:
 	void create_menu();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
+
+	void exit_func();
 
 };
 

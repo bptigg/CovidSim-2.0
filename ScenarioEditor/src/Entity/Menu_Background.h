@@ -15,7 +15,12 @@ public:
 	virtual void update() override;
 	virtual void event_callback(Events::Event& e) override;
 
-	bool is_mouse_over(); 
+	inline void Bind_function(const std::function<void()> func)
+	{
+		m_exit_func = func;
+	}
+
+	bool is_mouse_over(float width, float height, float x, float y);
 
 	bool on_mouse_click(Events::Mouse_Button_Pressed_Event& e);
 	bool on_keyboard_press(Events::Key_Pressed_Event& e);

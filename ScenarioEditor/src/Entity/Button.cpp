@@ -82,8 +82,15 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 	if (m_zoom == 1)
 	{
 		std::pair<float, float> loc = std::make_pair(e.GetX(), e.GetY());
-		glm::vec4 mouse_loc = glm::vec4((loc.first - 640.0f) + m_camera_position.x, (360.0f - loc.second) + m_camera_position.y, 1.0f, 1.0f);
-		mouse_loc = mouse_loc * m_camera_matrix;
+		
+		float x_scaler = e.get_width() / 1280;
+		float y_scaler = e.get_height() / 720;
+
+		float mouse_x = loc.first - (e.get_width() / 2.0f) + m_camera_position.x;
+		float mouse_y = (e.get_height() / 2.0f - loc.second) + m_camera_position.y;
+		
+		glm::vec4 mouse_loc = glm::vec4(mouse_x, mouse_y, 1.0f, 1.0f);
+		glm::vec4 mouse_loc_new = (mouse_loc * m_camera_matrix) / glm::vec4(x_scaler, y_scaler, 1.0f, 1.0f);
 
 		glm::vec4 vec1 = glm::vec4(m_collison_box.lower_bound, 1.0f, 1.0f) * m_camera_matrix;
 		glm::vec4 vec2 = glm::vec4(m_collison_box.upper_bound, 1.0f, 1.0f) * m_camera_matrix;

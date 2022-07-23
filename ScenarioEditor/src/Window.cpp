@@ -166,13 +166,13 @@ void Window::Init(const properties& props)
 			{
 				double x_pos, y_pos;
 				glfwGetCursorPos(window, &x_pos, &y_pos);
-				Events::Mouse_Button_Pressed_Event event(button, (float)x_pos, (float)y_pos);
+				Events::Mouse_Button_Pressed_Event event(button, (float)x_pos, (float)y_pos, (float)data.width, (float)data.height);
 				data.Event_Call_back(event);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				Events::MouseButtonReleasedEvent event(button);
+				Events::MouseButtonReleasedEvent event(button, (float)data.width, (float)data.height);
 				data.Event_Call_back(event);
 				break;
 			}
@@ -191,7 +191,7 @@ void Window::Init(const properties& props)
 		{
 			window_data& data = *(window_data*)glfwGetWindowUserPointer(window);
 
-			Events::Mouse_Moved_Event event((float)xPos, (float)yPos);
+			Events::Mouse_Moved_Event event((float)xPos, (float)yPos, (float)data.width, (float)data.height);
 			data.Event_Call_back(event);
 		});
 }

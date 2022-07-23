@@ -12,7 +12,7 @@ bool Input::Is_Key_Pressed(const int key)
 bool Input::Is_MouseButton_Pressed(int button)
 {
     auto* window = static_cast<GLFWwindow*>(app::get().GetWindow().Get_Native_Window()); 
-    auto state = glfwGetKey(window, button);
+    auto state = glfwGetMouseButton(window, button);
     return state == GLFW_PRESS;
 }
 

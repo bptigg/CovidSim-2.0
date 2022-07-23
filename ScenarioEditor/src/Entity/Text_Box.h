@@ -27,6 +27,7 @@ protected:
 
 	float x_offset;
 
+
 public:
 	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text);
 	~Text_Box();
