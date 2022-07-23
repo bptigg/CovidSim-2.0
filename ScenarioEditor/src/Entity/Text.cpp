@@ -15,9 +15,9 @@ Text::~Text()
 {
 }
 
-void Text::render(float x_offset, float y_offset, unsigned int layer, float* width)
+void Text::render(float x_offset, float y_offset, unsigned int layer, bool static_obj, float* width)
 {
-	Renderer::draw_text(m_text, { pos.x + x_offset, pos.y + y_offset }, m_colour, layer, m_scale, is_centred, width);
+	Renderer::draw_text(m_text, { pos.x + x_offset, pos.y + y_offset }, m_colour, layer, m_scale, static_obj, is_centred, width);
 }
 
 void Text::update_string(std::string new_string)

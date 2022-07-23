@@ -11,3 +11,4 @@ scriptable_object::scriptable_object(const glm::vec2& location, const glm::vec2&
 scriptable_object::~scriptable_object()
 {
 }
+

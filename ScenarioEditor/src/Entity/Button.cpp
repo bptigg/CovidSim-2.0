@@ -1,12 +1,15 @@
 #include "Button.h"
 
-Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer)
+Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu)
 	:scriptable_object(location, size, layer)
 {
 	m_state = State::None;
 	m_default_func = true;
 	
 	button_func = BIND_BUTTON_FN(Button::m_default_function);
+
+	m_menu_object = menu;
+	m_set_up = false;
 }
 
 Button::~Button()
@@ -23,15 +26,15 @@ void Button::render()
 	switch (m_state)
 	{
 	case Button::State::None:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f }, 1);
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f }, 1, m_menu_object);
 		break;
 	case Button::State::Hover:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f },1);
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2);
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f },1, m_menu_object);
+		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2, m_menu_object);
 		break;
 	case Button::State::Press:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.5f,0.0f,1.0f,1.0f },1);
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2);
+		Renderer::draw_rectangle_color(m_location, m_size, { 0.5f,0.0f,1.0f,1.0f },1, m_menu_object);
+		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2, m_menu_object);
 		break;
 	default:
 		break;
@@ -56,9 +59,17 @@ void Button::event_callback(Events::Event& e)
 
 void Button::update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat)
 {
-	m_zoom = zoom;
-	m_camera_position = camera_pos;
-	m_camera_matrix = camera_mat;
+	if (!m_set_up)
+	{
+		m_zoom = zoom;
+		m_camera_position = camera_pos;
+		m_camera_matrix = camera_mat;
+	}
+
+	if (m_menu_object)
+	{
+		m_set_up = true;
+	}
 }
 
 void Button::m_default_function()

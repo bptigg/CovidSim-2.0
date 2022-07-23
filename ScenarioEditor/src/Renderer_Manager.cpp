@@ -13,29 +13,31 @@ Renderer_Manager::~Renderer_Manager()
 	delete_queue();
 }
 
-void Renderer_Manager::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer)
+void Renderer_Manager::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer, bool static_obj)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::TEXTURED_RECTANGLE, position, size);
 
 	object->texture_id = texture_id;
 	object->layer = layer;
+	object->static_obj = (float)static_obj;
 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer)
+void Renderer_Manager::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::COLOURED_RECTANGLE, position, size);
 
 	object->color = color;
 	object->layer = layer;
+	object->static_obj = (float)static_obj;
 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer)
+void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer, bool static_obj)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::COLOURED_BOX, centre, size);
@@ -43,11 +45,12 @@ void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, 
 	object->color = color;
 	object->border_width = border_width;
 	object->layer = layer;
+	object->static_obj = (float)static_obj;
 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred, float* width)
+void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool static_obj, bool centred, float* width)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::TEXT, centre, size);
@@ -58,6 +61,7 @@ void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, con
 	object->scale = scale;
 	object->centred = centred;
 	object->text_width = width;
+	object->static_obj = (float)static_obj;
 
 	Push_Object(object);
 }
@@ -73,7 +77,7 @@ std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator Re
 		{
 			empty = false;
 			next_layer = false;
-			//m_layer_position++;
+			//m_layer_position = it->first;
 
 			if (it->second.empty())
 			{

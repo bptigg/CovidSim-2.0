@@ -14,6 +14,11 @@ protected:
 	bool m_over;
 	bool m_selected;
 
+	bool m_interger_only;
+	bool m_is_integer_only;
+
+	unsigned int m_rendering_layer;
+
 	bool caps;
 
 	float m_zoom;
@@ -23,7 +28,7 @@ protected:
 	float x_offset;
 
 public:
-	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer);
+	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text);
 	~Text_Box();
 
 	virtual void update() override;
@@ -31,7 +36,7 @@ public:
 
 	virtual void event_callback(Events::Event& e) override;
 
-	void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat);
+	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
 
 	const bool get_selected() const { return m_selected; }
 

@@ -21,7 +21,7 @@ public:
 	}
 	~Text();
 
-	void render(float x_offset, float y_offset, unsigned int layer, float* width = nullptr);
+	void render(float x_offset, float y_offset, unsigned int layer, bool static_obj, float* width = nullptr);
 	void update_string(std::string new_string);
 };
 

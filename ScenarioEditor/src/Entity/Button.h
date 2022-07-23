@@ -24,10 +24,10 @@ protected:
 	glm::mat4 m_camera_matrix;
 
 public:
-	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer);
+	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu);
 	virtual ~Button() override;
 
-	void Bind_function(const std::function<void()> func)
+	inline void Bind_function(const std::function<void()> func)
 	{
 		button_func = func;
 	}
@@ -36,7 +36,7 @@ public:
 	virtual void render() override;
 	virtual void event_callback(Events::Event& e) override;
 
-	void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat);
+	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
 
 private:
 	void m_default_function();

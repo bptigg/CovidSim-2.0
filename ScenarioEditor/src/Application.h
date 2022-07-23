@@ -21,6 +21,7 @@
 
 #include "Layer_Stack.h"
 #include "Scenario_Editor.h"
+#include "Layers/GUI_Layer.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"

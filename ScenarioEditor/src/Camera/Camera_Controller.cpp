@@ -74,7 +74,7 @@ void Camera_Controller::On_Event(Events::Event& e)
 
 bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
 {
-	if (Input::Is_Key_Pressed(CS_KEY_R))
+	if (Input::Is_Key_Pressed(CS_KEY_R) && block == false)
 	{
 		m_camera_position = { 0.0f,0.0f,0.0f };
 		m_camera.Set_Position(m_camera_position);

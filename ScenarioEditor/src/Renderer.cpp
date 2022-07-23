@@ -33,6 +33,7 @@ struct render_data
 	unsigned int current_texture_slot = 1;
 
 	std::unordered_map<char, Character> characters;
+	bool base_uniforms = false;
 };
 
 static render_data s_data;
@@ -105,7 +106,7 @@ void Renderer::init(std::vector<std::string> textures)
 		samplers[i] = i;
 	}
 
-	GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE));
+	GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	s_data.quad_shader = new shader("res/shaders/simple.shader");
 	s_data.quad_shader->set_uniform_1iv("u_Textures", 32, samplers);
@@ -122,6 +123,7 @@ void Renderer::init(std::vector<std::string> textures)
 		layout.Push<float>(4);
 		layout.Push<float>(2);
 		layout.Push<float>(1);
+		layout.Push<float>(1);
 		s_data.VA0->add_buffer(*s_data.VertexBuffer, layout);
 	}
 
@@ -131,9 +133,12 @@ void Renderer::init(std::vector<std::string> textures)
 	
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", mvp);
 	s_data.quad_shader->set_uniform_mat_4f("u_Transform", transform);
+	s_data.quad_shader->set_uniform_mat_4f("u_og_View_Proj", mvp);
+	s_data.quad_shader->set_uniform_mat_4f("u_og_Transform", transform);
 
 	s_data.text_shader->set_uniform_mat_4f("u_MVP", mvp);
 	s_data.text_shader->set_uniform_4f("u_Zoom", 1.0f, 1.0f, 1.0f, 1.0f);
+	s_data.text_shader->set_uniform_mat_4f("u_og_MVP", mvp);
 	
 
 	unsigned int color = 0xffffffff;
@@ -229,19 +234,19 @@ void Renderer::draw()
 				switch (draw->second[i]->type)
 				{
 				case render_type::COLOURED_RECTANGLE:
-					m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color);
+					m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->static_obj);
 					break;
 				case render_type::TEXTURED_RECTANGLE:
-					m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id);
+					m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id, draw->second[i]->static_obj);
 					break;
 				case render_type::COLOURED_BOX:
-					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color);
+					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color, draw->second[i]->static_obj);
 					break;
 				case render_type::TEXT:
 					end_batch();
 					s_data.quad_shader->bind();
 					flush();
-					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale, draw->second[i]->centred, draw->second[i]->text_width);
+					m_draw_text(draw->second[i]->text, draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->scale, draw->second[i]->static_obj, draw->second[i]->centred, draw->second[i]->text_width);
 					break;
 				default:
 					Log::warning("UNKOWN DRAW TYPE");
@@ -271,24 +276,31 @@ void Renderer::update_view(const glm::mat4& projection_view_matrix)
 {
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", projection_view_matrix);
 	s_data.text_shader->set_uniform_mat_4f("u_MVP", projection_view_matrix);
+
+	if (!s_data.base_uniforms)
+	{
+		s_data.quad_shader->set_uniform_mat_4f("u_og_View_Proj", projection_view_matrix);
+		s_data.text_shader->set_uniform_mat_4f("u_og_MVP", projection_view_matrix);
+		s_data.base_uniforms = true;
+	}
 }
 
-void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer)
+void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj)
 {
-	manager.draw_rectangle_color(position, size, color, layer);
+	manager.draw_rectangle_color(position, size, color, layer, static_obj);
 }
 
-void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer)
+void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer, bool static_obj)
 {
-	manager.draw_rectangle_texture(position, size, index, layer);
+	manager.draw_rectangle_texture(position, size, index, layer, static_obj);
 }
 
-void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer)
+void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer, bool static_obj)
 {
-	manager.draw_box(centre, size, border_width, color, layer);
+	manager.draw_box(centre, size, border_width, color, layer, static_obj);
 }
 
-void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred, float* width)
+void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool static_obj, bool centred, float* width)
 {
 	float text_width	= 0.0f;
 	float text_height	= 0.0f;
@@ -310,10 +322,10 @@ void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::v
 		}
 	}
 
-	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, centred, width);
+	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, static_obj, centred, width);
 }
 
-void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float static_obj)
 {
 	if (s_data.Index_Count >= m_MAX_INDICIES)
 	{
@@ -328,30 +340,34 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x - (size.x/ 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Index_Count += 6;
 }
 
-void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id)
+void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, float static_obj)
 {
 	if (s_data.Index_Count >= m_MAX_INDICIES || s_data.current_texture_slot > 31)
 	{
@@ -384,30 +400,34 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x - (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
+	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Index_Count += 6;
 }
 
-void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color)
+void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, float static_obj)
 {
 	if (s_data.Index_Count + 4 >= m_MAX_INDICIES)
 	{
@@ -416,13 +436,13 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 		begin_batch();
 	}
 
-	m_draw_rectangle_color({ centre.x - (size.x / 2.0f) + (border_width / 2.0f), centre.y }, { border_width, size.y }, color);
-	m_draw_rectangle_color({ centre.x + (size.x / 2.0f) - (border_width / 2.0f), centre.y }, { border_width, size.y }, color);
-	m_draw_rectangle_color({ centre.x, centre.y + (size.y / 2.0f) - (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
-	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color);
+	m_draw_rectangle_color({ centre.x - (size.x / 2.0f) + (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj);
+	m_draw_rectangle_color({ centre.x + (size.x / 2.0f) - (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj);
+	m_draw_rectangle_color({ centre.x, centre.y + (size.y / 2.0f) - (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj);
+	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj);
 }
 
-void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred, float* width)
+void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, float static_obj, bool centred, float* width)
 {
 	float x_offset = 0.0f;
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
@@ -462,24 +482,28 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 		s_data.Object_Buffer_Ptr->color = vertecies[0].color;
 		s_data.Object_Buffer_Ptr->texture_coord = vertecies[0].texture_coord;
 		s_data.Object_Buffer_Ptr->tex_id = vertecies[0].tex_id;
+		s_data.Object_Buffer_Ptr->static_obj = static_obj;
 		s_data.Object_Buffer_Ptr++;
 
 		s_data.Object_Buffer_Ptr->position = vertecies[1].position;
 		s_data.Object_Buffer_Ptr->color = vertecies[1].color;
 		s_data.Object_Buffer_Ptr->texture_coord = vertecies[1].texture_coord;
 		s_data.Object_Buffer_Ptr->tex_id = vertecies[1].tex_id;
+		s_data.Object_Buffer_Ptr->static_obj = static_obj;
 		s_data.Object_Buffer_Ptr++;
 
 		s_data.Object_Buffer_Ptr->position = vertecies[2].position;
 		s_data.Object_Buffer_Ptr->color = vertecies[2].color;
 		s_data.Object_Buffer_Ptr->texture_coord = vertecies[2].texture_coord;
 		s_data.Object_Buffer_Ptr->tex_id = vertecies[2].tex_id;
+		s_data.Object_Buffer_Ptr->static_obj = static_obj;
 		s_data.Object_Buffer_Ptr++;
 
 		s_data.Object_Buffer_Ptr->position = vertecies[3].position;
 		s_data.Object_Buffer_Ptr->color = vertecies[3].color;
 		s_data.Object_Buffer_Ptr->texture_coord = vertecies[3].texture_coord;
 		s_data.Object_Buffer_Ptr->tex_id = vertecies[3].tex_id;
+		s_data.Object_Buffer_Ptr->static_obj = static_obj;
 		s_data.Object_Buffer_Ptr++;
 
 		s_data.Index_Count += 6;

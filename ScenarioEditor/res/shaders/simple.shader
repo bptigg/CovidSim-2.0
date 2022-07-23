@@ -5,9 +5,13 @@ layout(location = 0) in vec2 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_Tex_Coord;
 layout(location = 3) in float a_Tex_Index;
+layout(location = 4) in float a_static;
 
 uniform mat4 u_View_Proj;
 uniform mat4 u_Transform;
+
+uniform mat4 u_og_View_Proj;
+uniform mat4 u_og_Transform;
 
 out vec4 v_Color;
 out vec2 v_Tex_Coord;
@@ -18,7 +22,17 @@ void main()
 	v_Color = a_Color;
 	v_Tex_Coord = a_Tex_Coord;
 	v_Tex_Index = a_Tex_Index;
-	gl_Position = u_View_Proj * u_Transform * vec4(a_Position, 1.0, 1.0);
+
+	float invarient = a_static;
+
+	if (invarient == 0.0f)
+	{
+		gl_Position = u_View_Proj * u_Transform * vec4(a_Position, 1.0, 1.0);
+	}
+	else
+	{
+		gl_Position = u_og_View_Proj * u_og_Transform * vec4(a_Position, 1.0, 1.0);
+	}
 }
 
 #shader fragment

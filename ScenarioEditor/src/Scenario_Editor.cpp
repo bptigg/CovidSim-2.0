@@ -21,15 +21,15 @@ void Scenario_Editor::On_Attach(std::vector<std::pair<std::string, std::string>>
 		m_textures[textures[i].first] = Texture::Load_Texture(textures[i].second);
 	}
 
-	Button test({ -60.0f, 60.0f }, { 120.0f, 120.0f }, this);
+	Button test({ -60.0f, 60.0f }, { 120.0f, 120.0f }, this, false);
 	test.Bind_function(BIND_BUTTON_FN(Scenario_Editor::test));
 	buttons.push_back(std::make_unique<Button>(test));
 
 	//std::string base = "";
 	//Text text_box_text(base, {-25.0f, -40.0f}, 50.0f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
 	float size = 320.0f;
-	Text_Box test_box({ 90.0f, -30.0f }, { size, size / 8.0f }, this);
-	box = std::make_unique<Text_Box>(test_box);
+	//Text_Box test_box({ 90.0f, -30.0f }, { size, size / 12.0f }, this);
+	//box = std::make_unique<Text_Box>(test_box);
 	//objects.push_back(std::make_unique<Text_Box>(test_box));
 }
 
@@ -57,7 +57,7 @@ void Scenario_Editor::On_Update(Timestep ts)
 	box->render();
 
 	std::string test = "Hello world";
-	Renderer::draw_text(test, { -60.0f, -60.0f }, { 1.0f,0.0f,0.0f,1.0f }, 3, 50.0f, true);
+	Renderer::draw_text(test, { -60.0f, -60.0f }, { 1.0f,0.0f,0.0f,1.0f }, 3, 50.0f, true, true);
 
 	if (present)
 	{

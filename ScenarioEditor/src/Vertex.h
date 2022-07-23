@@ -8,6 +8,7 @@ struct Vertex
 	glm::vec4 color;
 	glm::vec2 texture_coord;
 	float tex_id;
+	float static_obj;
 };
 
 struct Line_Vertex

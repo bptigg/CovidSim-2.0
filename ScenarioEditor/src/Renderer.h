@@ -54,21 +54,21 @@ public:
 	static void update_view(const glm::mat4& projection_view_matrix);
 
 #pragma region draw_shapes
-	static void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer);
-	static void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer);
+	static void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj);
+	static void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer, bool static_obj);
 
-	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer);
+	static void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer, bool static_obj);
 
-	static void draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool centred, float* width = nullptr);
+	static void draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool static_obj, bool centred, float* width = nullptr);
 
 	static void flush();
 
 private:
-	static void m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-	static void m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index);
+	static void m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float static_obj);
+	static void m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, float static_obj);
 
-	static void m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color);
-	static void m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, bool centred, float* width = nullptr);
+	static void m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, float static_obj);
+	static void m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, float static_obj, bool centred, float* width = nullptr);
 
 	static std::array<Vertex, 4> m_convert_character_to_vertices(Character* ch, float x_offset, float tex_slot, float scale, std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, bool centred);
 

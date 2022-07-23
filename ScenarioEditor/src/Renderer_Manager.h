@@ -53,6 +53,7 @@ public:
 	std::string text;
 	float scale;
 	bool centred;
+	float static_obj;
 
 	float border_width;
 	float* text_width;
@@ -67,12 +68,12 @@ public:
 	~Renderer_Manager();
 
 	//draw objects
-	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer);
-	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer);
+	void draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer, bool static_obj);
+	void draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj);
 
-	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer);
+	void draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer, bool static_obj);
 
-	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool centred = true, float* width = nullptr);
+	void draw_text(std::string& text, const glm::vec2& centre, const glm::vec2& size, const glm::vec4& color, unsigned int layer, float scale, bool static_obj, bool centred = true, float* width = nullptr);
 
 	std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator next_draw();
 	void delete_queue();

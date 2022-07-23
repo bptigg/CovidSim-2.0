@@ -1,6 +1,6 @@
 #include "Text_Box.h"
 
-Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer)
+Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text)
     :scriptable_object(position, size, layer)
 {
     m_over = false;
@@ -9,7 +9,22 @@ Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* laye
 
 	x_offset = 0.0f;
 	
-	m_text = Text("",{position.x - (size.x/ 2.0f) + 15.0f, position.y - (size.y / 2.0f) + 5.0f}, size.y * 1.25f, {1.0f, 1.0f, 1.0f, 1.0f}, false);
+	m_interger_only = int_only;
+	m_is_integer_only = false;
+	
+	if (centred_text)
+	{
+		m_text = Text("", { position.x, position.y }, size.y * 1.5f, { 0.0f, 0.0f, 0.0f, 1.0f }, centred_text);
+	}
+	else
+	{
+		m_text = Text("", { position.x - (size.x / 2.0f) + 15.0f, position.y - (size.y / 2.0f) + 7.0f }, size.y * 1.5f, { 0.0f, 0.0f, 0.0f, 1.0f }, centred_text);
+	}
+
+	m_menu_object = true;
+	m_set_up = false;
+
+	m_rendering_layer = rendering_layer;
 }
 
 Text_Box::~Text_Box()
@@ -18,12 +33,44 @@ Text_Box::~Text_Box()
 
 void Text_Box::update()
 {
+	if (!text.empty() && m_interger_only == true)
+	{
+		m_is_integer_only = true;
+		std::string::const_iterator it = text.begin();
+		while (it != text.end() && std::isdigit(*it)) ++it;
+
+		if (it != text.end())
+		{
+			m_is_integer_only = false;
+		}
+	}
+
+	render();
 }
 
 void Text_Box::render()
 {
-	Renderer::draw_rectangle_color(m_location, m_size, { 0.1f, 0.1f, 0.1f, 1.0f }, 1);
-	m_text.render(0, 0, 2, &x_offset);
+	if (m_interger_only == false || text.empty())
+	{
+		Renderer::draw_rectangle_color(m_location, m_size, { 1.0f, 1.0f, 1.0f, 1.0f }, m_rendering_layer, true);
+		Renderer::draw_box(m_location, { m_size.x + 8.0f, m_size.y + 8.0f }, 4.0f, { 0.2f, 0.2f, 0.2f, 1.0f }, m_rendering_layer + 1, true);
+		if (!text.empty())
+		{
+			m_text.render(0, 0, m_rendering_layer + 2, true, &x_offset);
+		}
+	}
+	else if (m_interger_only && m_is_integer_only)
+	{
+		Renderer::draw_rectangle_color(m_location, m_size, { 1.0f, 1.0f, 1.0f, 1.0f }, m_rendering_layer, true);
+		Renderer::draw_box(m_location, { m_size.x + 8.0f, m_size.y + 8.0f }, 4.0f, { 0.3125f, 0.78125f, 0.46875f, 1.0f }, m_rendering_layer + 1, true);
+		m_text.render(0, 0, m_rendering_layer + 2, true, &x_offset);
+	}
+	else if (m_interger_only && !m_is_integer_only)
+	{
+		Renderer::draw_rectangle_color(m_location, m_size, { 1.0f, 1.0f, 1.0f, 1.0f }, m_rendering_layer, true);
+		Renderer::draw_box(m_location, { m_size.x + 8.0f, m_size.y + 8.0f }, 4.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, m_rendering_layer + 1, true);
+		m_text.render(0, 0, m_rendering_layer + 2, true, &x_offset);
+	}
 }
 
 void Text_Box::event_callback(Events::Event& e)
@@ -44,9 +91,17 @@ void Text_Box::event_callback(Events::Event& e)
 
 void Text_Box::update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat)
 {
-	m_zoom = zoom;
-	m_camera_position = camera_pos;
-	m_camera_matrix = camera_mat;
+	if (!m_set_up)
+	{
+		m_zoom = zoom;
+		m_camera_position = camera_pos;
+		m_camera_matrix = camera_mat;
+	}
+
+	if (m_menu_object)
+	{
+		m_set_up = true;
+	}
 }
 
 bool Text_Box::on_mouse_move(Events::Mouse_Moved_Event& e)

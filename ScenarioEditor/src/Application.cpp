@@ -66,11 +66,19 @@ int app::loop()
 
         m_render.init({ "res/textures/ork.jpg" });
 
+        m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
+        m_camera.Set_Resolution({ 1280.0f, 720.0f });
+        Renderer::update_view(m_camera.get_camera().Get_View_Projection_Matrix());
+
         //m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
         //m_camera.Set_Resolution({ m_window->Get_Width(),m_window->Get_Height() });
         //m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
 
-        stack.Push_Layer(new Scenario_Editor());
+        //stack.Push_Layer(new Scenario_Editor());
+        //stack[0]->On_Attach({});
+        
+
+        stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SetupMenu, 3, std::make_shared<Camera_Controller>(m_camera)));
         stack[0]->On_Attach({});
 
         s_instance = this;
