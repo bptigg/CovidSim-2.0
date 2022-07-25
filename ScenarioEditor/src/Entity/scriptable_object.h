@@ -8,6 +8,16 @@
 
 #define BIND_BUTTON_FN(x) std::bind(&x, this)
 
+enum class entity_type
+{
+	BACKGROUND = 0,
+	BUTTON,
+	TEXT_MENU_OBJECT,
+	TEXT_BOX,
+	DIALOUGE_BOX,
+	NONE
+};
+
 class scriptable_object
 {
 protected:
@@ -24,12 +34,17 @@ protected:
 	Layer* m_Layer;
 	Collision_Box m_collison_box;
 
+	entity_type m_type = entity_type::NONE;
+
 	float m_zoom;
 	glm::vec2 m_camera_position;
 	glm::mat4 m_camera_matrix;
 
 	bool m_menu_object;
 	bool m_set_up;
+
+	bool m_delete_object;
+	bool m_set_inactive;
 
 public:
 	scriptable_object(const glm::vec2& location, const glm::vec2& size, Layer* layer);
@@ -40,6 +55,9 @@ public:
 	virtual void event_callback(Events::Event& e) = 0;
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) = 0;
+	
+	inline void delete_obj(bool obj) { m_delete_object = obj; }
+	inline void inactive_obj(bool obj) { m_set_inactive = obj; }
 
 	glm::vec2 get_position() {
 		return m_location;
@@ -65,5 +83,15 @@ public:
 		return m_size;
 	}
 
+	const entity_type get_type() const {
+		return m_type;
+	}
+
+	entity_type get_type() {
+		return m_type;
+	}
+public:
+	const bool& delete_object = m_delete_object;
+	const bool& set_inactive = m_set_inactive;
 };
 

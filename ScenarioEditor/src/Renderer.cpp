@@ -598,5 +598,6 @@ void Renderer::flush()
 	GlCall(glDrawElements(GL_TRIANGLES, s_data.Index_Count, GL_UNSIGNED_INT, nullptr));
 
 	s_data.Index_Count = 0;
+	s_data.current_texture_slot = 1;
 
 }

@@ -41,6 +41,8 @@ public:
 
 	const bool get_selected() const { return m_selected; }
 
+	unsigned int get_string_length() { return text.length(); }
+
 private:
 
 	void key_to_char(uint32_t key);

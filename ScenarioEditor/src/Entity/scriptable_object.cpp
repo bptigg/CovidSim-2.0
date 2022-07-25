@@ -6,6 +6,8 @@ scriptable_object::scriptable_object(const glm::vec2& location, const glm::vec2&
 	m_collison_box.lower_bound = { location.x - (size.x / 2.0f), location.y - (size.y / 2.0f) };
 	m_collison_box.upper_bound = { location.x + (size.x / 2.0f), location.y + (size.y / 2.0f) };
 	m_collison_box.width = 2.0f;
+
+	m_delete_object = false;
 }
 
 scriptable_object::~scriptable_object()

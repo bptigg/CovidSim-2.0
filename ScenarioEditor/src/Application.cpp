@@ -8,8 +8,23 @@ app* app::s_instance = nullptr;
 void app::On_Event(Events::Event& e)
 {
     Events::Event_Dispatcher dispatch(e);
-    dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(app::OnWindowClose));
-    dispatch.Dispatch<Events::Window_Resize_Event>(BIND_EVENT_FN(app::OnWindowResize));
+
+    bool skip = false;
+
+    for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
+    {
+        if ((*it)->dialog_box == true)
+        {
+            skip = true;
+        }
+
+    }
+
+    if (!skip)
+    {
+        dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(app::OnWindowClose));
+        dispatch.Dispatch<Events::Window_Resize_Event>(BIND_EVENT_FN(app::OnWindowResize));
+    }
 
     for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
     {
@@ -63,19 +78,6 @@ int app::loop()
         s_instance = this;
 
         {
-
-            float positions[] = {
-                 100.0f, 100.0f, 0.0f, 0.0f,
-                 340.0f, 100.0f, 1.0f, 0.0f,
-                 340.0f, 420.0f, 1.0f, 1.0f,
-                 100.0f, 420.0f, 0.0f, 1.0f
-            };
-
-            unsigned int indices[] = {
-                0,1,2,
-                2,3,0
-            };
-           
             while (m_running)
             {
                 m_render.clear();

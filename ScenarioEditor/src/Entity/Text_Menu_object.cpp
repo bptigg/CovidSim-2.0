@@ -6,6 +6,7 @@ Text_Menu_object::Text_Menu_object(Text text, glm::vec2 pos, Layer* layer, unsig
 	m_set_up = false;
 	m_menu_object = true;
 	m_rendering_layer = render_layer;
+	m_type = entity_type::TEXT_MENU_OBJECT;
 }
 
 void Text_Menu_object::render()
@@ -20,6 +21,7 @@ void Text_Menu_object::update()
 
 void Text_Menu_object::event_callback(Events::Event& e)
 {
+	return;
 }
 
 void Text_Menu_object::update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat)

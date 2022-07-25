@@ -25,6 +25,8 @@ Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* laye
 	m_set_up = false;
 
 	m_rendering_layer = rendering_layer;
+
+	m_type = entity_type::TEXT_BOX;
 }
 
 Text_Box::~Text_Box()

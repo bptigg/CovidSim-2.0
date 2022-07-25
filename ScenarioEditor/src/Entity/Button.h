@@ -2,6 +2,7 @@
 
 #include "scriptable_object.h"
 #include "../Events/Mouse_Event.h"
+#include "../Entity/Text.h"
 
 class Button : public scriptable_object
 {
@@ -13,11 +14,23 @@ public:
 		Press
 	};
 
+	glm::vec4 base_colour;
+	glm::vec4 box_colour;
+	glm::vec4 selected_colour;
+
+	bool textured;
+
+	GLuint base_texture;
+	GLuint selected_texture;
+
+	unsigned int rendering_layer;
+
 protected:
 	std::function<void()> button_func;
 	bool m_default_func;
 
 	State m_state;
+	Text m_text;
 
 	float m_zoom;
 	glm::vec2 m_camera_position;
@@ -25,6 +38,7 @@ protected:
 
 public:
 	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu);
+	Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale);
 	virtual ~Button() override;
 
 	inline void Bind_function(const std::function<void()> func)

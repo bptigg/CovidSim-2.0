@@ -16,6 +16,7 @@ class Layer
 {
 public:
 	using Event_Call_back_fn = std::function<void(Events::Event&)>;
+
 public:
 	Layer(const std::string& name = "Layer")
 		:m_debug_name(name)
@@ -38,6 +39,12 @@ protected:
 #if _DEBUG
 	std::string m_debug_name;
 #endif
+
+	bool m_dialog_box = false;
+	bool m_render = true;
+
+public:
+	const bool& dialog_box = m_dialog_box;
 
 };
 

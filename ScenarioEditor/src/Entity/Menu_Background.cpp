@@ -5,7 +5,7 @@ Menu_Background::Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, gl
 {
 	m_menu_object = true;
 	m_rendering_layer = rendering_layer;
-
+	m_type = entity_type::BACKGROUND;
 }
 
 Menu_Background::~Menu_Background()

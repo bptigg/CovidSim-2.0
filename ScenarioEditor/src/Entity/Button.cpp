@@ -10,6 +10,29 @@ Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, b
 
 	m_menu_object = menu;
 	m_set_up = false;
+
+	rendering_layer = 1;
+
+	m_text = Text("", location, 20.f, { 1.0f, 1.0f, 1.0f, 1.0f }, true);
+
+	m_type = entity_type::BUTTON;
+}
+
+Button::Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale)
+	:scriptable_object(location, size, layer)
+{
+	m_state = State::None;
+	m_default_func = true;
+
+	button_func = BIND_BUTTON_FN(Button::m_default_function);
+
+	m_menu_object = menu;
+	m_set_up = false;
+
+	rendering_layer = 1;
+
+	m_text = Text(text, location, scale, { 1.0f, 1.0f, 1.0f, 1.0f }, true);
+	m_type = entity_type::BUTTON;
 }
 
 Button::~Button()
@@ -18,7 +41,8 @@ Button::~Button()
 
 void Button::update()
 {
-
+	render();
+	m_text.render(0,0, rendering_layer + 1, m_menu_object);
 }
 
 void Button::render()
@@ -26,15 +50,15 @@ void Button::render()
 	switch (m_state)
 	{
 	case Button::State::None:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f }, 1, m_menu_object);
+		Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
 		break;
 	case Button::State::Hover:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.0f,1.0f,0.5f,1.0f },1, m_menu_object);
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2, m_menu_object);
+		Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
+		Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);
 		break;
 	case Button::State::Press:
-		Renderer::draw_rectangle_color(m_location, m_size, { 0.5f,0.0f,1.0f,1.0f },1, m_menu_object);
-		Renderer::draw_box(m_location, m_size, 5.0f, { 1.0f,0.0f,0.5f, 1.0f },2, m_menu_object);
+		Renderer::draw_rectangle_color(m_location, m_size, selected_colour , rendering_layer, m_menu_object);
+		Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);
 		break;
 	default:
 		break;
@@ -86,8 +110,18 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 		float x_scaler = e.get_width() / 1280;
 		float y_scaler = e.get_height() / 720;
 
-		float mouse_x = loc.first - (e.get_width() / 2.0f) + m_camera_position.x;
-		float mouse_y = (e.get_height() / 2.0f - loc.second) + m_camera_position.y;
+		float mouse_x, mouse_y;
+
+		if (!m_menu_object)
+		{
+			mouse_x = loc.first - (e.get_width() / 2.0f) + m_camera_position.x;
+			mouse_y = (e.get_height() / 2.0f - loc.second) + m_camera_position.y;
+		}
+		else
+		{
+			mouse_x = loc.first - (e.get_width() / 2.0f);
+			mouse_y = (e.get_height() / 2.0f - loc.second);
+		}
 		
 		glm::vec4 mouse_loc = glm::vec4(mouse_x, mouse_y, 1.0f, 1.0f);
 		glm::vec4 mouse_loc_new = (mouse_loc * m_camera_matrix) / glm::vec4(x_scaler, y_scaler, 1.0f, 1.0f);
@@ -95,9 +129,9 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 		glm::vec4 vec1 = glm::vec4(m_collison_box.lower_bound, 1.0f, 1.0f) * m_camera_matrix;
 		glm::vec4 vec2 = glm::vec4(m_collison_box.upper_bound, 1.0f, 1.0f) * m_camera_matrix;
 
-		if (mouse_loc.x >= vec1.x && mouse_loc.x <= vec2.x)
+		if (mouse_loc_new.x >= vec1.x && mouse_loc_new.x <= vec2.x)
 		{
-			if (mouse_loc.y >= vec1.y && mouse_loc.y <= vec2.y)
+			if (mouse_loc_new.y >= vec1.y && mouse_loc_new.y <= vec2.y)
 			{
 				m_state = State::Hover;
 				return false;
