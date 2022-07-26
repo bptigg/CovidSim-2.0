@@ -35,6 +35,7 @@ protected:
 	Collision_Box m_collison_box;
 
 	entity_type m_type = entity_type::NONE;
+	int m_object_id;
 
 	float m_zoom;
 	glm::vec2 m_camera_position;
@@ -47,7 +48,7 @@ protected:
 	bool m_set_inactive;
 
 public:
-	scriptable_object(const glm::vec2& location, const glm::vec2& size, Layer* layer);
+	scriptable_object(const glm::vec2& location, const glm::vec2& size, Layer* layer, int id);
 	virtual ~scriptable_object();
 
 	virtual void render() = 0;
@@ -58,6 +59,8 @@ public:
 	
 	inline void delete_obj(bool obj) { m_delete_object = obj; }
 	inline void inactive_obj(bool obj) { m_set_inactive = obj; }
+
+	int get_id() { return m_object_id; }
 
 	glm::vec2 get_position() {
 		return m_location;

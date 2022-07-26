@@ -1,7 +1,7 @@
 #include "Text_Menu_object.h"
 
-Text_Menu_object::Text_Menu_object(Text text, glm::vec2 pos, Layer* layer, unsigned int render_layer)
-	:scriptable_object(pos, { 0.0f, 0.0f }, layer), m_text(text)
+Text_Menu_object::Text_Menu_object(Text text, glm::vec2 pos, Layer* layer, unsigned int render_layer, int id)
+	:scriptable_object(pos, { 0.0f, 0.0f }, layer, id), m_text(text)
 {
 	m_set_up = false;
 	m_menu_object = true;

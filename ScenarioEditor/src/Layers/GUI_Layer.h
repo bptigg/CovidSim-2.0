@@ -1,5 +1,6 @@
 #pragma once
 #include "../Layer.h"
+#include "../file.h"
 
 #include "../Entity/Button.h"
 #include "../Entity/Menu_Background.h"
@@ -8,6 +9,7 @@
 #include "../Entity/dialouge_box.h"
 
 #include "../Events/Gui_Events.h"
+
 
 class GUI_Layer : public Layer
 {
@@ -24,6 +26,7 @@ private:
 	Type m_type;
 	std::vector<scriptable_object*> m_objects;
 	std::vector<scriptable_object*> m_inactive_objects;
+
 	std::unordered_map<std::string, unsigned int> m_textures;
 
 	unsigned int m_base_layer;

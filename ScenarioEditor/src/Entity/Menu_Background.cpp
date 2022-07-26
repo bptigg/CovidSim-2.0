@@ -1,7 +1,7 @@
 #include "Menu_Background.h"
 
-Menu_Background::Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, glm::vec4 colour, const std::function<void()> exit_Func, unsigned int rendering_layer)
-	:scriptable_object(pos,size,layer), m_background_color(colour), m_exit_func(exit_Func)
+Menu_Background::Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, glm::vec4 colour, const std::function<void()> exit_Func, unsigned int rendering_layer, int id)
+	:scriptable_object(pos, size, layer, id), m_background_color(colour), m_exit_func(exit_Func)
 {
 	m_menu_object = true;
 	m_rendering_layer = rendering_layer;

@@ -14,7 +14,7 @@ private:
 	unsigned int m_rendering_layer;
 	float m_scale;
 public:
-	dialouge_box(std::string text, const glm::vec2& pos, const glm::vec2& size, Layer* layer, unsigned int rendering_layer);
+	dialouge_box(std::string text, const glm::vec2& pos, const glm::vec2& size, Layer* layer, unsigned int rendering_layer, int id = 0);
 	~dialouge_box();
 
 	virtual void update() override;

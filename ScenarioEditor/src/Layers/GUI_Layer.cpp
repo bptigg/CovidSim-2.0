@@ -41,7 +41,7 @@ void GUI_Layer::On_Detach()
 	}
 	m_objects.clear();
 	m_inactive_objects.clear();
-}
+};
 
 void GUI_Layer::On_Update(Timestep ts)
 {
@@ -185,7 +185,41 @@ void GUI_Layer::save_exit_func()
 	}
 	else
 	{
-		//save them to the file
+		
+		{
+			file_data* temp_file = &file_data::get_file();
+
+			std::ifstream temp;
+
+			std::vector<std::string> text_input;
+			
+			for (scriptable_object* obj : m_objects)
+			{
+				if (obj->get_type() == entity_type::TEXT_BOX)
+				{
+					Text_Box* box = dynamic_cast<Text_Box*>(obj);
+					if (box != nullptr)
+					{
+						text_input.push_back(box->get_string());
+					}
+				}
+			}
+
+			temp.open("scenarios/" + text_input[0] + ".cvsn");
+
+			if(temp.fail())
+			{
+				temp_file->file_exists = true;
+			}
+			else
+			{
+				dialouge_box* file_exists = new dialouge_box("file: " + text_input[0] + " already exists. Provide new filename", {0.0f, 0.0f}, {600.0f, 200.0f}, this, m_base_layer + 4);
+				m_objects.push_back(file_exists);
+				m_dialog_box = true;
+				return;
+			}
+		}
+		
 		for (scriptable_object* obj : m_objects)
 		{
 			obj->delete_obj(true);
@@ -199,21 +233,26 @@ void GUI_Layer::page_one()
 	Menu_Background* settings = new Menu_Background({ 0,0 }, { 500, 600 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, GUI_Layer::m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::setting_exit_func));
 	m_objects.push_back(settings);
+	
 
 	Text title_text("Settings", { 0 + settings->get_position().x , 250 + settings->get_position().y }, 70.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
 	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 250 + settings->get_position().y }, this, m_base_layer + 2);
 	m_objects.push_back(title);
+	
 
 	Text num_name_text("Scenario name", { 0 + settings->get_position().x , 175 + settings->get_position().y }, 50.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* num_name = new Text_Menu_object(num_name_text, { 0 + settings->get_position().x, 110 + settings->get_position().y }, this, m_base_layer + 2);
 	m_objects.push_back(num_name);
+	
 
 	Text_Box* num_name_box = new Text_Box({ 0 + settings->get_position().x, 140 + settings->get_position().y }, { 400, 30 }, this, false, m_base_layer, true);
 	m_objects.push_back(num_name_box);
+	
 
 	Text num_tiles_text("Number of Tiles", { 0 + settings->get_position().x , 90 + settings->get_position().y }, 50.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* num_tiles = new Text_Menu_object(num_tiles_text, { 0 + settings->get_position().x, 100 + settings->get_position().y }, this, m_base_layer + 2);
 	m_objects.push_back(num_tiles);
+	;
 
 	Text_Box* num_tiles_box = new Text_Box({ 0 + settings->get_position().x, 50 + settings->get_position().y }, { 200, 30 }, this, true, m_base_layer, true);
 	m_objects.push_back(num_tiles_box);

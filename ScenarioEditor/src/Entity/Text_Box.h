@@ -29,7 +29,7 @@ protected:
 
 
 public:
-	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text);
+	Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text, int id = 0);
 	~Text_Box();
 
 	virtual void update() override;
@@ -39,9 +39,12 @@ public:
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
 
-	const bool get_selected() const { return m_selected; }
+	inline const bool get_selected() const { return m_selected; }
 
-	unsigned int get_string_length() { return text.length(); }
+	inline unsigned int get_string_length() { return text.length(); }
+	
+	inline const std::string get_string() const { return text; }
+	inline std::string get_string() { return text; }
 
 private:
 

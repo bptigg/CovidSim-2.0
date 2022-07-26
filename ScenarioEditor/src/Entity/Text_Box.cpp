@@ -1,7 +1,7 @@
 #include "Text_Box.h"
 
-Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text)
-    :scriptable_object(position, size, layer)
+Text_Box::Text_Box(const glm::vec2& position, const glm::vec2& size, Layer* layer, bool int_only, unsigned int rendering_layer, bool centred_text, int id)
+    :scriptable_object(position, size, layer, id)
 {
     m_over = false;
 	m_selected = false;

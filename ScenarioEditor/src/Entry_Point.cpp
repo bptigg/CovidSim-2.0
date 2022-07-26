@@ -3,5 +3,6 @@
 int main()
 {
 	app test;
-	test.loop();
+	test.init();
+	test.run();
 }

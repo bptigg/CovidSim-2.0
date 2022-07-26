@@ -8,7 +8,7 @@ private:
 
 	std::function<void()> m_exit_func;
 public:
-	Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, glm::vec4 colour, const std::function<void()> exit_Func, unsigned int rendering_layer);
+	Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, glm::vec4 colour, const std::function<void()> exit_Func, unsigned int rendering_layer, int id = 0);
 	virtual ~Menu_Background() override;
 
 	virtual void render() override;

@@ -1,7 +1,7 @@
 #include "dialouge_box.h"
 
-dialouge_box::dialouge_box(std::string text, const glm::vec2& pos, const glm::vec2& size, Layer* layer, unsigned int rendering_layer)
-	:m_close("CLOSE", {pos.x, pos.y - (size.y / 2.0f) + 30.0f}, {64.0f, 32.0f}, layer, true, 35.0f), scriptable_object(pos, size, layer)
+dialouge_box::dialouge_box(std::string text, const glm::vec2& pos, const glm::vec2& size, Layer* layer, unsigned int rendering_layer, int id)
+	:m_close("CLOSE", {pos.x, pos.y - (size.y / 2.0f) + 30.0f}, {64.0f, 32.0f}, layer, true, 35.0f, id), scriptable_object(pos, size, layer, id)
 {
 	m_rendering_layer = rendering_layer;
 

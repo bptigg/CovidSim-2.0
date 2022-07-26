@@ -41,7 +41,7 @@ public:
 
 	~Renderer();
 	
-	static void init(std::vector<std::string> textures);
+	static void init();
 	static void shutdown();
 	
 	static void begin_batch();

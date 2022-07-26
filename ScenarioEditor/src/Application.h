@@ -29,72 +29,47 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
-#include "buildings_data.h"
+#include "file.h"
 #include "Timestep.h"
 
-struct file_data
-{
-    bool file_exists;
-    std::fstream scenario_file;
-    std::filesystem::path m_filepath;
 
-    struct scenario_data
-    {
-        std::string name;
-        unsigned int max_counts;
-
-        std::string population_pyramid;
-        std::string population_race_dist;
-
-        std::string adult_medical_data;
-        std::string child_medical_data;
-    };
-
-    struct buildings
-    {
-        std::vector<education_buildings> schools;
-        std::vector<public_buildings> pub_buildings;
-        std::vector<transport_buildings> transport;
-    };
-};
 
 class app
 {
 public:
-    app()
-        :m_camera()
-    {
-    }
 
-    ~app()
-    {
-
-    }
+    app();
+    ~app();
 
     void On_Event(Events::Event& e);
 private:
-    bool m_running = true;
+    bool m_running;
+    bool m_minimized;
+    
+    Layer_Stack m_stack;
+
+    float m_frame_time = 0.0f;
+   
     Renderer m_render;
     Window* m_window;
+    
     Camera_Controller m_camera;
     file_data m_file;
 
     static app* s_instance;
-    static file_data* f_instance;
 
-    Layer_Stack m_stack;
 
-    float m_frame_time = 0.0f;
 public:
 
     static app& get() { return *s_instance; }
-    static file_data& get_file() { return *f_instance; }
 
-    //void On_Event(Events::Event& e);
     bool OnWindowClose(Events::Window_Close_Event& e);
     bool OnWindowResize(Events::Window_Resize_Event& e);
+    
     void Camera(Events::Event& e);
-    int loop();
+    
+    void init();
+    void run();
 
     Window& GetWindow() { return *m_window; }
     const Window& GetWindow() const { return *m_window; }

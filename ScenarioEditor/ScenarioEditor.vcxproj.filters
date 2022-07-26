@@ -111,6 +111,9 @@
     <ClCompile Include="src\Entity\dialouge_box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -240,6 +243,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\buildings_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

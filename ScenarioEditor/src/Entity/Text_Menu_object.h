@@ -9,7 +9,7 @@ private:
 	Text m_text;
 	unsigned int m_rendering_layer;
 public:
-	Text_Menu_object(Text text, glm::vec2 pos, Layer* layer, unsigned int render_layer);
+	Text_Menu_object(Text text, glm::vec2 pos, Layer* layer, unsigned int render_layer, int id = 0);
 
 	virtual void render() override;
 	virtual void update() override;

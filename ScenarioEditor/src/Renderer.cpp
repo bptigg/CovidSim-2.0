@@ -47,7 +47,7 @@ Renderer::~Renderer()
 	}
 }
 
-void Renderer::init(std::vector<std::string> textures)
+void Renderer::init()
 {
 	if (s_data.initlized)
 	{
@@ -129,7 +129,6 @@ void Renderer::init(std::vector<std::string> textures)
 
 	glm::mat4 mvp = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 	glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-	//glm::vec4 zoom = glm::vec4(1.0f);
 	
 	s_data.quad_shader->set_uniform_mat_4f("u_View_Proj", mvp);
 	s_data.quad_shader->set_uniform_mat_4f("u_Transform", transform);
@@ -140,7 +139,6 @@ void Renderer::init(std::vector<std::string> textures)
 	s_data.text_shader->set_uniform_4f("u_Zoom", 1.0f, 1.0f, 1.0f, 1.0f);
 	s_data.text_shader->set_uniform_mat_4f("u_og_MVP", mvp);
 	
-
 	unsigned int color = 0xffffffff;
 
 	s_data.texture_slots[0] = Texture::Create_Texture(1,1,color,s_data.White_Texture);
@@ -150,8 +148,6 @@ void Renderer::init(std::vector<std::string> textures)
 	{
 		s_data.texture_slots[i] = 0;
 	}
-
-	Texture::Load_Texture("res/textures/ork.jpg");
 
 	s_data.initlized = true;
 }
@@ -203,26 +199,6 @@ void Renderer::draw(const Vertex_Array& vao, const Index_Buffer& ib, const shade
 
 void Renderer::draw()
 {
-	//for (unsigned int i = 0; i < s_data.texture_slots.size(); i++)
-	//{
-	//	if (s_data.texture_slots[i] != 0)
-	//	{
-	//		GlCall(glBindTextureUnit(i, s_data.texture_slots[i]));
-	//	}
-	//}
-
-	//begin_batch();
-	//draw_rectangle_texture({ -60.0f, -60.0f }, { 120.0f, 120.0f }, 2);
-	//draw_rectangle_texture({ 60.0f,  60.0f }, { 120.0f, 120.0f }, 2);
-	//end_batch();
-
-	//Do one draw call per texture stops the texutre overlap stuff
-
-	//flush();
-	//begin_batch();
-	//draw_rectangle_color({  60.0f, -60.0f }, { 120.0f, 120.0f }, { 0.8f, 0.3f, 0.8f, 1.0f });
-	//draw_rectangle_color({ -60.0f,  60.0f }, { 120.0f, 120.0f }, { 0.5f, 0.2f, 0.1f, 1.0f });
-
 	while (!manager.finished)
 	{
 		auto draw = manager.next_draw();
@@ -264,11 +240,6 @@ void Renderer::draw()
 
 	manager.delete_queue();
 	s_data.current_texture_slot = 1;
-
-	//end_batch();
-
-	//flush();
-
 
 }
 
@@ -587,10 +558,6 @@ void Renderer::flush()
 	{
 		GlCall(glBindTextureUnit(i, s_data.texture_slots[i]));
 	}
-
-	
-	
-	//s_data.quad_shader->bind();
 
 	s_data.VA0->bind();
 	s_data.IndexBuffer->bind();

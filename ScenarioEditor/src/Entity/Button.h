@@ -37,8 +37,8 @@ protected:
 	glm::mat4 m_camera_matrix;
 
 public:
-	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu);
-	Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale);
+	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, int id = 0);
+	Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale, int id = 0);
 	virtual ~Button() override;
 
 	inline void Bind_function(const std::function<void()> func)

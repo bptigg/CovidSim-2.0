@@ -1,7 +1,7 @@
 #include "Button.h"
 
-Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu)
-	:scriptable_object(location, size, layer)
+Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, int id)
+	:scriptable_object(location, size, layer, id)
 {
 	m_state = State::None;
 	m_default_func = true;
@@ -18,8 +18,8 @@ Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, b
 	m_type = entity_type::BUTTON;
 }
 
-Button::Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale)
-	:scriptable_object(location, size, layer)
+Button::Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale, int id)
+	:scriptable_object(location, size, layer, id)
 {
 	m_state = State::None;
 	m_default_func = true;
