@@ -177,6 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\buildings_data.h" />
     <ClInclude Include="src\Camera\Camera_Controller.h" />
     <ClInclude Include="src\Camera\Orthographic_camera.h" />
     <ClInclude Include="src\Entity\Button.h" />

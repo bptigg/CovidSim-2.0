@@ -29,12 +29,33 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+#include "buildings_data.h"
 #include "Timestep.h"
 
 struct file_data
 {
+    bool file_exists;
     std::fstream scenario_file;
     std::filesystem::path m_filepath;
+
+    struct scenario_data
+    {
+        std::string name;
+        unsigned int max_counts;
+
+        std::string population_pyramid;
+        std::string population_race_dist;
+
+        std::string adult_medical_data;
+        std::string child_medical_data;
+    };
+
+    struct buildings
+    {
+        std::vector<education_buildings> schools;
+        std::vector<public_buildings> pub_buildings;
+        std::vector<transport_buildings> transport;
+    };
 };
 
 class app
@@ -58,6 +79,7 @@ private:
     Camera_Controller m_camera;
 
     static app* s_instance;
+    static file_data* f_instance;
 
     Layer_Stack m_stack;
 
@@ -65,6 +87,7 @@ private:
 public:
 
     static app& get() { return *s_instance; }
+    static file_data& get_file() { return *f_instance; }
 
     //void On_Event(Events::Event& e);
     bool OnWindowClose(Events::Window_Close_Event& e);

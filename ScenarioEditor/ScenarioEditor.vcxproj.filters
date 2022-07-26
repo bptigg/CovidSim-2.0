@@ -239,6 +239,9 @@
     <ClInclude Include="src\Entity\dialouge_box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\buildings_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Texture.shader">
