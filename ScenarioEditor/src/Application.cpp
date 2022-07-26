@@ -4,6 +4,7 @@
 
 
 app* app::s_instance = nullptr;
+file_data* app::f_instance = nullptr;
 
 void app::On_Event(Events::Event& e)
 {
@@ -76,6 +77,7 @@ int app::loop()
         m_stack[0]->On_Attach({});
 
         s_instance = this;
+        f_instance = &m_file;
 
         {
             while (m_running)

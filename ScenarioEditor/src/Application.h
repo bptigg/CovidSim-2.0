@@ -77,6 +77,7 @@ private:
     Renderer m_render;
     Window* m_window;
     Camera_Controller m_camera;
+    file_data m_file;
 
     static app* s_instance;
     static file_data* f_instance;
