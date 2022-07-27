@@ -31,6 +31,7 @@ public:
 	}
 
 	const glm::vec3 get_position() const{ return m_camera_position; }
+	inline void set_position() { m_camera_position = glm::vec3{ m_camera.get_Position(),0.0f }; }
 
 private:
 	bool on_mouse_scroll(Events::Mouse_Scrolled_Event& e);

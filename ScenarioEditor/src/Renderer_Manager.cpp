@@ -84,7 +84,7 @@ std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator Re
 				m_layer_position++;
 				m_map_position = 0;
 				empty = true;
-				continue;
+				break;
 			}
 
 			it_2 = it->second.begin();
@@ -124,11 +124,12 @@ void Renderer_Manager::delete_queue()
 	{
 		for (auto it_2 = it->second.begin(); it_2 != it->second.end(); it_2++)
 		{
-			for (render_queue_object* object : it_2->second)
+			for (render_queue_object* obj : it_2->second)
 			{
-				//it->second.erase(it->second.begin());
-				delete object;
-				//index++;
+				if (obj != nullptr)
+				{
+					delete obj;
+				}
 			}
 			it_2->second.clear();
 		}

@@ -28,4 +28,15 @@ namespace Events
 		EVENT_CLASS_TYPE(GUI_Building_Select)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
 	};
+
+	class GUI_Editor_Event : public Event
+	{
+	public:
+		GUI_Editor_Event()
+		{
+		}
+
+		EVENT_CLASS_TYPE(GUI_Editor)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+	};
 }

@@ -46,8 +46,31 @@ void app::On_Event(Events::Event& e)
 
     if (!skip)
     {
+        Camera(e);
         dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(app::OnWindowClose));
         dispatch.Dispatch<Events::Window_Resize_Event>(BIND_EVENT_FN(app::OnWindowResize));
+    }
+
+    if (e.Get_Event_Type() == Events::Event_Type::GUI_Editor)
+    {
+        for (int i = 0; i < m_stack.size(); i++)
+        {
+            if (dynamic_cast<editor*>(m_stack[i]) != nullptr)
+            {
+                m_stack[i]->On_Attach({});
+            }
+        }
+    }
+
+    if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
+    {
+        for (int i = 0; i < m_stack.size(); i++)
+        {
+            if (dynamic_cast<GUI_Layer*>(m_stack[i]) != nullptr)
+            {
+                m_stack[i]->On_Attach({});
+            }
+        }
     }
 
     for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
@@ -58,6 +81,10 @@ void app::On_Event(Events::Event& e)
         }
         (*it)->On_Event(e);
     }
+}
+void app::push_layer(Layer* layer)
+{
+    m_stack.Push_Layer(layer);
 }
 bool app::OnWindowClose(Events::Window_Close_Event& e)
 {
@@ -120,6 +147,12 @@ void app::init()
     m_stack[0]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
     m_stack[0]->On_Attach({});
 
+    m_stack.Push_Layer(new editor(1, std::make_shared<Camera_Controller>(m_camera)));
+    m_stack[1]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSelectMenu, 3, std::make_shared<Camera_Controller>(m_camera))); 
+    m_stack[2]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    
     m_running = true;
 }
 
@@ -135,20 +168,21 @@ void app::run()
 
         if(!m_minimized)
         {
-            for (auto it = m_stack.begin(); it != m_stack.end(); it++)
+            for (int i = 0; i < m_stack.size(); i++)
             {
-                (*it)->On_Update(time);
-                if ((*it)->delete_layer == true)
+                auto it = m_stack[i];
+                it->On_Update(time);
+                if (it->delete_layer == true)
                 {
-                    if (it - m_stack.begin() == m_stack.size() - 1)
+                    if (i == m_stack.size() - 1)
                     {
-                        m_stack.Pop_Layer((*it));
+                        m_stack.Pop_Layer(it);
                         break;
                     }
-                    m_stack.Pop_Layer((*it));
+                    m_stack.Pop_Layer(it);
                 }
-
             }
+            Renderer::draw();
         }
 
         m_window->On_Update();

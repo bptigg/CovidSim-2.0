@@ -42,7 +42,10 @@ Button::~Button()
 void Button::update()
 {
 	render();
-	m_text.render(0,0, rendering_layer + 1, m_menu_object);
+	if (m_text.m_text != "")
+	{
+		m_text.render(0, 0, rendering_layer + 1, m_menu_object);
+	}
 }
 
 void Button::render()

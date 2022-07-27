@@ -21,7 +21,9 @@
 
 #include "Layer_Stack.h"
 #include "Scenario_Editor.h"
+
 #include "Layers/GUI_Layer.h"
+#include "Layers/editor.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -73,5 +75,7 @@ public:
 
     Window& GetWindow() { return *m_window; }
     const Window& GetWindow() const { return *m_window; }
+
+    void push_layer(Layer* layer);
 
 };

@@ -25,12 +25,29 @@ GUI_Layer::~GUI_Layer()
 
 void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
+	if (m_attached)
+	{
+		return;
+	}
+
 	for (std::pair<std::string, std::string> path : textures)
 	{
 		m_textures[path.first] = Texture::Load_Texture(path.second);
 	}
 
-	create_settings_menu(0);
+	switch (m_type)
+	{
+	case Type::SetupMenu:
+		create_settings_menu(0);
+		break;
+	case Type::BuildingSelectMenu:
+		create_building_menu();
+		break;
+	default:
+		break;
+	}
+
+	m_attached = true;
 
 }
 
@@ -46,6 +63,7 @@ void GUI_Layer::On_Detach()
 void GUI_Layer::On_Update(Timestep ts)
 {
 	m_orthographic_controller->On_Update(ts);
+	Renderer::update_view(m_orthographic_controller->get_camera().Get_Projection_Matrix());
 
 	int removed = 0;
 	for (int i = 0; i < m_objects.size() + removed; i++)
@@ -65,10 +83,10 @@ void GUI_Layer::On_Update(Timestep ts)
 
 	}
 
-	if (m_render)
-	{
-		Renderer::draw();
-	}
+	//if (m_render)
+	//{
+		//Renderer::draw();
+	//}
 }
 
 void GUI_Layer::On_ImGui_Render()
@@ -77,6 +95,7 @@ void GUI_Layer::On_ImGui_Render()
 
 void GUI_Layer::On_Event(Events::Event& e)
 {
+	m_orthographic_controller->block = true;
 	if (m_dialog_box)
 	{
 		for (scriptable_object* obj : m_objects)
@@ -100,6 +119,7 @@ void GUI_Layer::On_Event(Events::Event& e)
 			}
 		}
 	}
+	m_orthographic_controller->block = false;
 }
 
 void GUI_Layer::add_scriptable_object(scriptable_object* obj)
@@ -122,6 +142,12 @@ void GUI_Layer::create_settings_menu(unsigned int menu)
 		break;
 	};
 
+}
+
+void GUI_Layer::create_building_menu()
+{
+	Menu_Background* settings = new Menu_Background({ 1070,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	add_scriptable_object(settings);
 }
 
 void GUI_Layer::setting_exit_func()
@@ -320,6 +346,9 @@ void GUI_Layer::save_exit_func_2()
 
 	m_render = false;
 	m_delete_layer = true;
+
+	Events::GUI_Editor_Event event;
+	Event_Call_back(event);
 }
 
 void GUI_Layer::page_one()

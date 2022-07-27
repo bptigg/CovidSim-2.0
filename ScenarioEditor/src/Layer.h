@@ -46,6 +46,7 @@ protected:
 	bool m_dialog_box = false;
 	bool m_render = true;
 	bool m_delete_layer = false;
+	bool m_attached = false;
 
 public:
 	const bool& dialog_box = m_dialog_box;

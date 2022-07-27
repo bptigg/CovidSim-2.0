@@ -55,6 +55,7 @@ private:
 	void add_scriptable_object(scriptable_object* obj);
 	
 	void create_settings_menu(unsigned int menu);
+	void create_building_menu();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
