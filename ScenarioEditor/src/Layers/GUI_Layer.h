@@ -11,6 +11,7 @@
 #include "../Events/Gui_Events.h"
 
 
+
 class GUI_Layer : public Layer
 {
 public:
@@ -25,7 +26,6 @@ public:
 private:
 	Type m_type;
 	std::vector<scriptable_object*> m_objects;
-	std::vector<scriptable_object*> m_inactive_objects;
 
 	std::unordered_map<std::string, unsigned int> m_textures;
 
@@ -63,6 +63,7 @@ private:
 
 	void setting_exit_func();
 	void save_exit_func();
+	void save_exit_func_2();
 
 #pragma endregion
 

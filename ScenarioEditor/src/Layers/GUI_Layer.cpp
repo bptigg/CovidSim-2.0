@@ -2,6 +2,12 @@
 
 #define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
 
+#if _DEBUG
+#define BYPASS 1
+#else
+#define BYPASS 0
+#endif
+
 GUI_Layer::GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll)
 {
 	m_type = menu_type;
@@ -34,13 +40,7 @@ void GUI_Layer::On_Detach()
 	{
 		delete obj;
 	}
-
-	for (scriptable_object* obj : m_inactive_objects)
-	{
-		delete obj;
-	}
 	m_objects.clear();
-	m_inactive_objects.clear();
 };
 
 void GUI_Layer::On_Update(Timestep ts)
@@ -182,6 +182,7 @@ void GUI_Layer::save_exit_func()
 		dialouge_box* entry_fields = new dialouge_box("Incomplete entry fields remaining", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
 		m_objects.push_back(entry_fields);
 		m_dialog_box = true;
+		return;
 	}
 	else
 	{
@@ -218,6 +219,28 @@ void GUI_Layer::save_exit_func()
 				m_dialog_box = true;
 				return;
 			}
+
+			std::string::const_iterator it;
+
+			for (int i = 1; i < 4; i++)
+			{
+				it = text_input[i].begin();
+
+				while (it != text_input[i].end() && std::isdigit(*it)) ++it;
+
+				if (it != text_input[i].end())
+				{
+					dialouge_box* not_int = new dialouge_box(text_input[i] + " is not a valid number", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+					m_objects.push_back(not_int);
+					m_dialog_box = true;
+					return;
+				}
+			}
+
+			temp_file->scenario.name					= text_input[0];
+			temp_file->world_buildings.num_of_tiles		= stoi(text_input[1]);
+			temp_file->scenario.population				= stoi(text_input[2]);
+			temp_file->scenario.max_counts				= stoi(text_input[3]);
 		}
 		
 		for (scriptable_object* obj : m_objects)
@@ -226,6 +249,77 @@ void GUI_Layer::save_exit_func()
 		}
 		page_two();
 	}
+}
+
+void GUI_Layer::save_exit_func_2()
+{
+	bool not_complete = false;
+	for (scriptable_object* obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::TEXT_BOX)
+		{
+			Text_Box* box = dynamic_cast<Text_Box*>(obj);
+			if (box != nullptr)
+			{
+				if (box->get_string_length() == 0)
+				{
+					not_complete = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (not_complete)
+	{
+		dialouge_box* entry_fields = new dialouge_box("Incomplete entry fields remaining", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+		m_objects.push_back(entry_fields);
+		m_dialog_box = true;
+		return;
+	}
+	else
+	{
+		file_data* temp_file = &file_data::get_file();
+
+		std::ifstream temp;
+
+		std::vector<std::string> text_input;
+
+		for (scriptable_object* obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::TEXT_BOX)
+			{
+				Text_Box* box = dynamic_cast<Text_Box*>(obj);
+				if (box != nullptr)
+				{
+					text_input.push_back(box->get_string());
+				}
+			}
+		}
+
+		if (!BYPASS)
+		{
+			for (int i = 0; i < text_input.size(); i++)
+			{
+				temp.open("data/" + text_input[0] + ".json");
+				if (temp.fail())
+				{
+					dialouge_box* entry_fields = new dialouge_box("file: " + text_input[0] + " not present", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+					m_objects.push_back(entry_fields);
+					m_dialog_box = true;
+					return;
+				}
+			}
+		}
+
+		temp_file->scenario.population_pyramid		= text_input[0];
+		temp_file->scenario.population_race_dist	= text_input[1];
+		temp_file->scenario.adult_medical_data		= text_input[2];
+		temp_file->scenario.child_medical_data		= text_input[3];
+	}
+
+	m_render = false;
+	m_delete_layer = true;
 }
 
 void GUI_Layer::page_one()
@@ -249,10 +343,9 @@ void GUI_Layer::page_one()
 	m_objects.push_back(num_name_box);
 	
 
-	Text num_tiles_text("Number of Tiles", { 0 + settings->get_position().x , 90 + settings->get_position().y }, 50.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text num_tiles_text("Size of world (it's a square)", { 0 + settings->get_position().x , 90 + settings->get_position().y }, 50.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* num_tiles = new Text_Menu_object(num_tiles_text, { 0 + settings->get_position().x, 100 + settings->get_position().y }, this, m_base_layer + 2);
 	m_objects.push_back(num_tiles);
-	;
 
 	Text_Box* num_tiles_box = new Text_Box({ 0 + settings->get_position().x, 50 + settings->get_position().y }, { 200, 30 }, this, true, m_base_layer, true);
 	m_objects.push_back(num_tiles_box);
@@ -323,6 +416,7 @@ void GUI_Layer::page_two()
 	confirm->box_colour = { 0.8f, 0.8f, 0.8f, 1.0f };
 	confirm->selected_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
 	confirm->rendering_layer = m_base_layer;
+	confirm->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_exit_func_2));
 	m_objects.push_back(confirm);
 
 }

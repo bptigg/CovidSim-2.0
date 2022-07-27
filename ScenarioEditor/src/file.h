@@ -6,6 +6,7 @@
 struct scenario_data
 {
     std::string name;
+    unsigned int population;
     unsigned int max_counts;
 
     std::string population_pyramid;
@@ -15,8 +16,9 @@ struct scenario_data
     std::string child_medical_data;
 };
 
-struct buildings
+struct world_data
 {
+    unsigned int num_of_tiles;
     std::vector<education_buildings> schools;
     std::vector<public_buildings> pub_buildings;
     std::vector<transport_buildings> transport;
@@ -30,7 +32,7 @@ public:
     std::filesystem::path m_filepath;
     
     scenario_data scenario;
-    buildings world_buildings;
+    world_data world_buildings;
 private:
     static file_data* s_instance;
 public:

@@ -15,6 +15,8 @@ public:
 	void Pop_Layer(Layer* layer);
 	void Pop_Overlay(Layer* layer);
 
+	int size() { return m_layers.size(); }
+
 	std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
 	std::vector<Layer*>::iterator end() { return m_layers.end(); }
 	std::vector<Layer*>::reverse_iterator r_begin() { return m_layers.rbegin(); }

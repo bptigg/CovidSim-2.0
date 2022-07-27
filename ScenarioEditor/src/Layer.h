@@ -21,6 +21,9 @@ public:
 	Layer(const std::string& name = "Layer")
 		:m_debug_name(name)
 	{
+		m_dialog_box = false;
+		m_render = true;
+		m_delete_layer = false;
 	}
 
 	virtual ~Layer() = default;
@@ -42,9 +45,11 @@ protected:
 
 	bool m_dialog_box = false;
 	bool m_render = true;
+	bool m_delete_layer = false;
 
 public:
 	const bool& dialog_box = m_dialog_box;
+	const bool& delete_layer = m_delete_layer;
 
 };
 

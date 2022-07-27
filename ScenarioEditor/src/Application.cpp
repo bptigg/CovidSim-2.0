@@ -4,7 +4,7 @@
 
 #define FALSE 0
 #define TRUE 1
-
+ 
 app* app::s_instance = nullptr;
 
 app::app()
@@ -58,7 +58,6 @@ void app::On_Event(Events::Event& e)
         }
         (*it)->On_Event(e);
     }
-
 }
 bool app::OnWindowClose(Events::Window_Close_Event& e)
 {
@@ -102,6 +101,17 @@ void app::init()
             std::cout << "Created directory\n";
     }
 
+    if (std::filesystem::exists("data") == FALSE)
+    {
+        std::cout << "data directory doesn't exist... creating one\n";
+        std::filesystem::create_directory("data");
+        if (std::filesystem::exists("data"))
+            std::cout << "Created directory\n";
+        std::cout << "Terminating Program" << std::endl;
+        Log::info("TERMINATING PROGRAM DUE TO LACK OF DATA FOLDER");
+        return;
+    }
+
     m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
     m_camera.Set_Resolution({ 1280.0f, 720.0f });
     Renderer::update_view(m_camera.get_camera().Get_View_Projection_Matrix());
@@ -125,9 +135,19 @@ void app::run()
 
         if(!m_minimized)
         {
-            for (auto it = m_stack.begin(); it < m_stack.end(); it++)
+            for (auto it = m_stack.begin(); it != m_stack.end(); it++)
             {
                 (*it)->On_Update(time);
+                if ((*it)->delete_layer == true)
+                {
+                    if (it - m_stack.begin() == m_stack.size() - 1)
+                    {
+                        m_stack.Pop_Layer((*it));
+                        break;
+                    }
+                    m_stack.Pop_Layer((*it));
+                }
+
             }
         }
 
