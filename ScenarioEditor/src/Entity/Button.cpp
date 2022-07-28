@@ -53,7 +53,15 @@ void Button::render()
 	switch (m_state)
 	{
 	case Button::State::None:
-		Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
+		if (m_hover)
+		{
+			Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
+			Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);
+		}
+		else
+		{
+			Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
+		}
 		break;
 	case Button::State::Hover:
 		Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
@@ -142,6 +150,7 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 		}
 	}
 	m_state = State::None;
+
 	return false;
 }
 
@@ -150,6 +159,14 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 	if (m_state == State::Hover)
 	{
 		m_state = State::Press;
+		if (m_persist)
+		{
+			m_hover = true;
+		}
+		else
+		{
+			m_hover = false;
+		}
 		m_Layer->set_selected(m_object_id);
 		button_func();
 		return true;

@@ -32,6 +32,9 @@ protected:
 	State m_state;
 	Text m_text;
 
+	bool m_persist;
+	bool m_hover;
+
 	float m_zoom;
 	glm::vec2 m_camera_position;
 	glm::mat4 m_camera_matrix;
@@ -51,6 +54,9 @@ public:
 	virtual void event_callback(Events::Event& e) override;
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
+
+	void change_state(bool state) { m_hover = state; }
+	void persist_hover(bool persist) { m_persist = persist; }
 
 private:
 	void m_default_function();

@@ -41,6 +41,7 @@ private:
 #pragma endregion
 
 #pragma region zone_menu
+	unsigned int m_selected;
 	scriptable_object* m_caller;
 #pragma endregion;
 
@@ -54,8 +55,12 @@ public:
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
 
-#pragma region
+#pragma region zone_menu
+	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
+
 	void set_caller(scriptable_object* caller);
+	void change_box_colour();
+	void change_box_texture();
 #pragma endregion
 
 private:

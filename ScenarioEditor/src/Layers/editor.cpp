@@ -108,6 +108,7 @@ void editor::draw_buttons(int amount)
 			tile->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 			tile->selected_colour = { 0.3f, 0.3f, 0.3f,1.0f };
 			tile->rendering_layer = m_base_layer;
+			tile->persist_hover(true);
 			tile->Bind_function(BIND_BUTTON_FN(editor::open_zone_selector));
 			add_scriptable_object(tile);
 

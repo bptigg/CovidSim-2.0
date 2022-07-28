@@ -131,6 +131,28 @@ void GUI_Layer::set_caller(scriptable_object* caller)
 	m_caller = caller;
 }
 
+void GUI_Layer::change_box_colour()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Button* caller_button = dynamic_cast<Button*>(m_caller);
+			if (caller_button != nullptr)
+			{
+				caller_button->base_colour = temp_button->base_colour;
+				caller_button->selected_colour = temp_button->selected_colour;
+				caller_button->change_state(false);
+			}
+		}
+	}
+}
+
+void GUI_Layer::change_box_texture()
+{
+}
+
 void GUI_Layer::add_scriptable_object(scriptable_object* obj)
 {
 	m_objects.push_back(obj);
@@ -155,6 +177,7 @@ void GUI_Layer::create_settings_menu(unsigned int menu)
 
 void GUI_Layer::create_building_menu()
 {
+	int button_id = 0;
 	m_render = false;
 	Menu_Background* settings = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
@@ -163,6 +186,32 @@ void GUI_Layer::create_building_menu()
 	Text title_text("Zone selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
 	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(title);
+
+	Button* reset = new Button({ -105.0f + settings->get_position().x, 230.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	reset->base_colour = { 0.3f, 0.3f, 0.3f, 1.0f };
+	reset->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	reset->selected_colour = { 0.3f, 0.3f, 0.3f,1.0f };
+	reset->rendering_layer = m_base_layer;
+	reset->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(reset);
+	button_id++;
+
+	Text reset_text("reset space", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* reset_holder = new Text_Menu_object(reset_text, { 50 + settings->get_position().x, 250 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(reset_holder);
+
+	Button* walking_zone = new Button({ -105.0f + settings->get_position().x, 170.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	walking_zone->base_colour = { 86.0f / 255.0f, 125.0f / 255.0f, 70.0f / 255.0f, 1.0f };
+	walking_zone->selected_colour = walking_zone->base_colour;
+	walking_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	walking_zone->rendering_layer = m_base_layer;
+	walking_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(walking_zone);
+	button_id++;
+
+	Text walking_zone_text("Undeveloped space", { 50 + settings->get_position().x , 170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* walking_zone_holder = new Text_Menu_object(walking_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(walking_zone_holder);
 }
 
 void GUI_Layer::setting_exit_func()
@@ -468,4 +517,9 @@ void GUI_Layer::page_two()
 void GUI_Layer::close_menu()
 {
 	m_render = false;
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	if (caller_button != nullptr)
+	{
+		caller_button->change_state(false);
+	}
 }
