@@ -33,7 +33,6 @@ private:
 
 	
 	//bool m_dialog_box = false;
-	//bool m_render = true;
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 
@@ -66,6 +65,7 @@ private:
 	void save_exit_func();
 	void save_exit_func_2();
 
+	void close_menu();
 #pragma endregion
 
 #pragma region settings_pages

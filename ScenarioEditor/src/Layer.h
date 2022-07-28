@@ -37,6 +37,8 @@ public:
 	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
 
 	const std::string& GetName() const { return m_debug_name; }
+
+	void render(bool render) { m_render = render; }
 protected:
 	Event_Call_back_fn Event_Call_back;
 #if _DEBUG

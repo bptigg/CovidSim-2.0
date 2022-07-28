@@ -8,8 +8,10 @@
 app* app::s_instance = nullptr;
 
 app::app()
-    :m_camera(), m_file()
+    :m_file()
 {
+    m_camera = std::make_shared<Camera_Controller>(new Camera_Controller);
+
     if (s_instance != nullptr)
     {
         Log::crit("Applicaiton already exists", __FILE__, __LINE__);
@@ -46,7 +48,7 @@ void app::On_Event(Events::Event& e)
 
     if (!skip)
     {
-        Camera(e);
+        //Camera(e);
         dispatch.Dispatch<Events::Window_Close_Event>(BIND_EVENT_FN(app::OnWindowClose));
         dispatch.Dispatch<Events::Window_Resize_Event>(BIND_EVENT_FN(app::OnWindowResize));
     }
@@ -68,7 +70,8 @@ void app::On_Event(Events::Event& e)
         {
             if (dynamic_cast<GUI_Layer*>(m_stack[i]) != nullptr)
             {
-                m_stack[i]->On_Attach({});
+               m_stack[i]->On_Attach({});
+               m_stack[i]->render(true);
             }
         }
     }
@@ -114,8 +117,8 @@ bool app::OnWindowResize(Events::Window_Resize_Event& e)
 }
 void app::Camera(Events::Event& e)
 {
-    m_camera.On_Event(e);
-    m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
+    //m_camera.On_Event(e);
+   // m_render.update_view(m_camera.get_camera().Get_View_Projection_Matrix());
 }
 
 void app::init()
@@ -139,19 +142,20 @@ void app::init()
         return;
     }
 
-    m_camera.get_camera().Set_Position({ 0.0f,0.0f,0.0f });
-    m_camera.Set_Resolution({ 1280.0f, 720.0f });
-    Renderer::update_view(m_camera.get_camera().Get_View_Projection_Matrix());
+    m_camera->get_camera().Set_Position({ 0.0f,0.0f,0.0f });
+    m_camera->Set_Resolution({ 1280.0f, 720.0f });
+    Renderer::update_view(m_camera->get_camera().Get_View_Projection_Matrix());
 
-    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SetupMenu, 3, std::make_shared<Camera_Controller>(m_camera))); //WILL BE REMOVED AT SOMEPOINT
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SetupMenu, 3, m_camera)); //WILL BE REMOVED AT SOMEPOINT
     m_stack[0]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
     m_stack[0]->On_Attach({});
 
-    m_stack.Push_Layer(new editor(1, std::make_shared<Camera_Controller>(m_camera)));
+    m_stack.Push_Layer(new editor(1, m_camera));
     m_stack[1]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
-    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSelectMenu, 3, std::make_shared<Camera_Controller>(m_camera))); 
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSelectMenu, 3, m_camera));
     m_stack[2]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
     
     m_running = true;
 }
@@ -161,6 +165,7 @@ void app::run()
     while (m_running)
     {
         m_render.clear();
+        Renderer::update_view(m_camera->get_camera().Get_View_Projection_Matrix());
 
         float c_time = glfwGetTime();
         Timestep time = c_time - m_frame_time;
