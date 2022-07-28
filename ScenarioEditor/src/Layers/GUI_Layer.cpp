@@ -25,12 +25,29 @@ GUI_Layer::~GUI_Layer()
 
 void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
+	if (m_attached)
+	{
+		return;
+	}
+
 	for (std::pair<std::string, std::string> path : textures)
 	{
 		m_textures[path.first] = Texture::Load_Texture(path.second);
 	}
 
-	create_settings_menu(0);
+	switch (m_type)
+	{
+	case Type::SetupMenu:
+		create_settings_menu(0);
+		break;
+	case Type::BuildingSelectMenu:
+		create_building_menu();
+		break;
+	default:
+		break;
+	}
+
+	m_attached = true;
 
 }
 
@@ -45,7 +62,8 @@ void GUI_Layer::On_Detach()
 
 void GUI_Layer::On_Update(Timestep ts)
 {
-	m_orthographic_controller->On_Update(ts);
+	//m_orthographic_controller->On_Update(ts);
+	//Renderer::update_view(m_orthographic_controller->get_camera().Get_Projection_Matrix());
 
 	int removed = 0;
 	for (int i = 0; i < m_objects.size() + removed; i++)
@@ -61,14 +79,14 @@ void GUI_Layer::On_Update(Timestep ts)
 		}
 
 		obj->update_position(m_orthographic_controller->Get_Zoom_Level(), m_orthographic_controller->get_position(), m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
-		obj->update();
+			
+		if (m_render)
+		{
+			obj->update();
+		}
 
 	}
 
-	if (m_render)
-	{
-		Renderer::draw();
-	}
 }
 
 void GUI_Layer::On_ImGui_Render()
@@ -77,11 +95,25 @@ void GUI_Layer::On_ImGui_Render()
 
 void GUI_Layer::On_Event(Events::Event& e)
 {
-	if (m_dialog_box)
+	if (m_render)
 	{
-		for (scriptable_object* obj : m_objects)
+		m_orthographic_controller->block = true;
+		if (m_dialog_box)
 		{
-			if (obj->get_type() == entity_type::DIALOUGE_BOX)
+			for (scriptable_object* obj : m_objects)
+			{
+				if (obj->get_type() == entity_type::DIALOUGE_BOX)
+				{
+					if (e.Handled != true)
+					{
+						obj->event_callback(e);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (scriptable_object* obj : m_objects)
 			{
 				if (e.Handled != true)
 				{
@@ -89,16 +121,7 @@ void GUI_Layer::On_Event(Events::Event& e)
 				}
 			}
 		}
-	}
-	else
-	{
-		for (scriptable_object* obj : m_objects)
-		{
-			if (e.Handled != true)
-			{
-				obj->event_callback(e);
-			}
-		}
+		m_orthographic_controller->block = false;
 	}
 }
 
@@ -122,6 +145,18 @@ void GUI_Layer::create_settings_menu(unsigned int menu)
 		break;
 	};
 
+}
+
+void GUI_Layer::create_building_menu()
+{
+	m_render = false;
+	Menu_Background* settings = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(settings);
+
+	Text title_text("Zone selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
 }
 
 void GUI_Layer::setting_exit_func()
@@ -320,6 +355,9 @@ void GUI_Layer::save_exit_func_2()
 
 	m_render = false;
 	m_delete_layer = true;
+
+	Events::GUI_Editor_Event event;
+	Event_Call_back(event);
 }
 
 void GUI_Layer::page_one()
@@ -419,4 +457,9 @@ void GUI_Layer::page_two()
 	confirm->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_exit_func_2));
 	m_objects.push_back(confirm);
 
+}
+
+void GUI_Layer::close_menu()
+{
+	m_render = false;
 }
