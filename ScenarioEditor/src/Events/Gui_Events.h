@@ -2,6 +2,8 @@
 
 #include "Event.h"
 
+#include "../Entity/scriptable_object.h"
+
 namespace Events
 {
 
@@ -20,13 +22,19 @@ namespace Events
 	class GUI_Building_Select_Event : public Event
 	{
 	public:
-		GUI_Building_Select_Event()
+		GUI_Building_Select_Event(scriptable_object* caller)
 		{
+			m_button = caller;
 		}
+
+		scriptable_object* get_caller() { return m_button; }
 
 
 		EVENT_CLASS_TYPE(GUI_Building_Select)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		scriptable_object* m_button;
 	};
 
 	class GUI_Editor_Event : public Event

@@ -150,6 +150,7 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 	if (m_state == State::Hover)
 	{
 		m_state = State::Press;
+		m_Layer->set_selected(m_object_id);
 		button_func();
 		return true;
 	}

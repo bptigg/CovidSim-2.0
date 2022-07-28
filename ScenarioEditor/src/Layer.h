@@ -5,6 +5,7 @@
 #include "Camera/Camera_Controller.h"
 #include "Texture.h"
 
+
 #include "Renderer.h"
 
 #include <unordered_map>
@@ -33,6 +34,10 @@ public:
 	virtual void On_Update(Timestep ts) = 0;
 	virtual void On_ImGui_Render() = 0;
 	virtual void On_Event(Events::Event& event) = 0;
+
+	inline virtual void set_selected(unsigned int num)
+	{
+	}
 
 	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
 

@@ -97,11 +97,13 @@ void editor::draw_buttons(int amount)
 	x = -width / 2.0f;
 	y = x;
 
+	m_button_num = 0;
+
 	for (int i = 0; i < amount; i++)
 	{
 		for (int e = 0; e < amount; e++)
 		{
-			Button* tile = new Button({ x,y }, { size, size }, this, false);
+			Button* tile = new Button({ x,y }, { size, size }, this, false, m_button_num);
 			tile->base_colour = { 0.3f, 0.3f, 0.3f, 1.0f };
 			tile->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 			tile->selected_colour = { 0.3f, 0.3f, 0.3f,1.0f };
@@ -110,6 +112,7 @@ void editor::draw_buttons(int amount)
 			add_scriptable_object(tile);
 
 			x = x + size;
+			m_button_num++;
 		}
 
 		y = y + size;
@@ -120,7 +123,7 @@ void editor::draw_buttons(int amount)
 
 void editor::open_zone_selector()
 {
-	Events::GUI_Building_Select_Event event;
+	Events::GUI_Building_Select_Event event(m_objects[m_selected]);
 	Event_Call_back(event);
 }
 

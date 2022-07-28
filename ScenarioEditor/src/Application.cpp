@@ -68,9 +68,13 @@ void app::On_Event(Events::Event& e)
     {
         for (int i = 0; i < m_stack.size(); i++)
         {
-            if (dynamic_cast<GUI_Layer*>(m_stack[i]) != nullptr)
+            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+            if (temp_layer != nullptr)
             {
+               Events::GUI_Building_Select_Event* ev = dynamic_cast<Events::GUI_Building_Select_Event*>(&e);
+
                m_stack[i]->On_Attach({});
+               temp_layer->set_caller(ev->get_caller());
                m_stack[i]->render(true);
             }
         }

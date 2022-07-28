@@ -40,6 +40,10 @@ private:
 	bool sm_saved;
 #pragma endregion
 
+#pragma region zone_menu
+	scriptable_object* m_caller;
+#pragma endregion;
+
 public:
 	GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll);
 	virtual ~GUI_Layer() override;
@@ -49,6 +53,10 @@ public:
 	virtual void On_Update(Timestep ts) override;
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
+
+#pragma region
+	void set_caller(scriptable_object* caller);
+#pragma endregion
 
 private:
 	void add_scriptable_object(scriptable_object* obj);

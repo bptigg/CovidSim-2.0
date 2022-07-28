@@ -25,6 +25,7 @@ GUI_Layer::~GUI_Layer()
 
 void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
+
 	if (m_attached)
 	{
 		return;
@@ -123,6 +124,11 @@ void GUI_Layer::On_Event(Events::Event& e)
 		}
 		m_orthographic_controller->block = false;
 	}
+}
+
+void GUI_Layer::set_caller(scriptable_object* caller)
+{
+	m_caller = caller;
 }
 
 void GUI_Layer::add_scriptable_object(scriptable_object* obj)

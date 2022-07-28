@@ -15,6 +15,9 @@ private:
 
 	unsigned int m_base_layer;
 	unsigned int m_size_of_grid;
+	
+	unsigned int m_button_num;
+	unsigned int m_selected;
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 public:
@@ -26,6 +29,8 @@ public:
 	virtual void On_Update(Timestep ts) override;
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
+
+	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
 
 private:
 	void add_scriptable_object(scriptable_object* object);
