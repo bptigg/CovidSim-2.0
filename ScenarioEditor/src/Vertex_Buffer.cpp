@@ -14,7 +14,7 @@ Vertex_Buffer::Vertex_Buffer(unsigned int size)
 {
     GlCall(glGenBuffers(1, &m_renderer_id));
     GlCall(glBindBuffer(GL_ARRAY_BUFFER, m_renderer_id));
-    GlCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_STATIC_DRAW));
+    GlCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW));
 }
 
 Vertex_Buffer::~Vertex_Buffer()
@@ -49,8 +49,8 @@ bool Vertex_Buffer::add_to_buffer(const void* vertices, unsigned int size)
     }
     else
     {
-        GlCall(glBufferSubData(GL_ARRAY_BUFFER,0, size, vertices));
-        //m_offset += size;
+        GlCall(glBufferSubData(GL_ARRAY_BUFFER, m_offset, size, vertices));
+        m_offset += size;
         unbind();
         return true;
     }

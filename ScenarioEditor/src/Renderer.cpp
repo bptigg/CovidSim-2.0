@@ -301,6 +301,7 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	if (s_data.Index_Count >= m_MAX_INDICIES)
 	{
 		end_batch();
+		s_data.quad_shader->bind();
 		flush();
 		begin_batch();
 	}
@@ -343,6 +344,7 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	if (s_data.Index_Count >= m_MAX_INDICIES || s_data.current_texture_slot > 31)
 	{
 		end_batch();
+		s_data.quad_shader->bind();
 		flush();
 		begin_batch();
 	}
@@ -403,6 +405,7 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 	if (s_data.Index_Count + 4 >= m_MAX_INDICIES)
 	{
 		end_batch();
+		s_data.quad_shader->bind();
 		flush();
 		begin_batch();
 	}
@@ -563,7 +566,7 @@ void Renderer::flush()
 	s_data.IndexBuffer->bind();
 
 	GlCall(glDrawElements(GL_TRIANGLES, s_data.Index_Count, GL_UNSIGNED_INT, nullptr));
-
+	s_data.VertexBuffer->clear_buffer();
 	s_data.Index_Count = 0;
 	s_data.current_texture_slot = 1;
 
