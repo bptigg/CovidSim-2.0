@@ -55,7 +55,7 @@ public:
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
 
-	void change_state(bool state) { m_hover = state; }
+	void change_state(bool state) { m_hover = state; m_state = (!m_hover) ? State::None : State::Press; }
 	void persist_hover(bool persist) { m_persist = persist; }
 
 private:

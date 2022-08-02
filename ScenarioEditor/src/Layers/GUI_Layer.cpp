@@ -144,6 +144,8 @@ void GUI_Layer::change_box_colour()
 				caller_button->base_colour = temp_button->base_colour;
 				caller_button->selected_colour = temp_button->selected_colour;
 				caller_button->change_state(false);
+				m_caller = nullptr;
+				break;
 			}
 		}
 	}
@@ -196,12 +198,12 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(reset);
 	button_id++;
 
-	Text reset_text("reset space", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text reset_text("reset zone", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* reset_holder = new Text_Menu_object(reset_text, { 50 + settings->get_position().x, 250 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(reset_holder);
 
 	Button* walking_zone = new Button({ -105.0f + settings->get_position().x, 170.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	walking_zone->base_colour = { 86.0f / 255.0f, 125.0f / 255.0f, 70.0f / 255.0f, 1.0f };
+	walking_zone->base_colour = { 0.5f, 0.5f, 0.5f, 1.0f };
 	walking_zone->selected_colour = walking_zone->base_colour;
 	walking_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	walking_zone->rendering_layer = m_base_layer;
@@ -209,9 +211,36 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(walking_zone);
 	button_id++;
 
-	Text walking_zone_text("Undeveloped space", { 50 + settings->get_position().x , 170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text walking_zone_text("undeveloped space", { 50 + settings->get_position().x , 170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* walking_zone_holder = new Text_Menu_object(walking_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(walking_zone_holder);
+
+	Button* housing_zone = new Button({ -105.0f + settings->get_position().x, 110.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	housing_zone->base_colour = { 86.0f / 255.0f, 125.0f / 255.0f, 70.0f / 255.0f, 1.0f };
+	housing_zone->selected_colour = housing_zone->base_colour;
+	housing_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	housing_zone->rendering_layer = m_base_layer;
+	housing_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(housing_zone);
+	button_id++;
+
+	Text house_zone_text("housing development", { 50 + settings->get_position().x , 110 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* housing_zone_holder = new Text_Menu_object(house_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(housing_zone_holder);
+
+	Button* generic_zone = new Button({ -105.0f + settings->get_position().x, 50.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	generic_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	generic_zone->selected_colour = generic_zone->base_colour;
+	generic_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	generic_zone->rendering_layer = m_base_layer;
+	generic_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(generic_zone);
+	button_id++;
+
+	Text generic_zone_text("generic development", { 50 + settings->get_position().x , 50 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* generic_zone_holder = new Text_Menu_object(generic_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(generic_zone_holder);
+
 }
 
 void GUI_Layer::setting_exit_func()
