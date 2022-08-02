@@ -199,7 +199,7 @@ void GUI_Layer::create_building_menu()
 	button_id++;
 
 	Text reset_text("reset zone", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
-	Text_Menu_object* reset_holder = new Text_Menu_object(reset_text, { 50 + settings->get_position().x, 250 + settings->get_position().y }, this, m_base_layer + 2);
+	Text_Menu_object* reset_holder = new Text_Menu_object(reset_text, { 50 + settings->get_position().x, 230 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(reset_holder);
 
 	Button* walking_zone = new Button({ -105.0f + settings->get_position().x, 170.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
@@ -225,7 +225,7 @@ void GUI_Layer::create_building_menu()
 	button_id++;
 
 	Text house_zone_text("housing development", { 50 + settings->get_position().x , 110 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
-	Text_Menu_object* housing_zone_holder = new Text_Menu_object(house_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
+	Text_Menu_object* housing_zone_holder = new Text_Menu_object(house_zone_text, { 50 + settings->get_position().x, 110 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(housing_zone_holder);
 
 	Button* generic_zone = new Button({ -105.0f + settings->get_position().x, 50.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
@@ -238,8 +238,36 @@ void GUI_Layer::create_building_menu()
 	button_id++;
 
 	Text generic_zone_text("generic development", { 50 + settings->get_position().x , 50 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
-	Text_Menu_object* generic_zone_holder = new Text_Menu_object(generic_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
+	Text_Menu_object* generic_zone_holder = new Text_Menu_object(generic_zone_text, { 50 + settings->get_position().x, 50 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(generic_zone_holder);
+
+
+	//place holders
+	Button* public_building_zone = new Button({ -105.0f + settings->get_position().x, -10.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	public_building_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	public_building_zone->selected_colour = public_building_zone->base_colour;
+	public_building_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	public_building_zone->rendering_layer = m_base_layer;
+	//public_building_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(public_building_zone);
+	button_id++;
+
+	Text public_building_zone_text("public development", { 50 + settings->get_position().x , -10 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* public_building_zone_holder = new Text_Menu_object(public_building_zone_text, { 50 + settings->get_position().x, -10 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(public_building_zone_holder);
+
+	Button* transport_zone = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	transport_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	transport_zone->selected_colour = transport_zone->base_colour;
+	transport_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	transport_zone->rendering_layer = m_base_layer;
+	//transport_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(transport_zone);
+	button_id++;
+
+	Text transport_zone_text("transport development", { 50 + settings->get_position().x , -70 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* transport_zone_holder = new Text_Menu_object(transport_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(transport_zone_holder);
 
 }
 

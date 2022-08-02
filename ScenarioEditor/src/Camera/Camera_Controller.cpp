@@ -59,7 +59,7 @@ void Camera_Controller::On_Update(Timestep ts)
 
 	if (changed)
 	{
-		m_camera.Set_Position(m_camera_position);
+		m_camera.Set_Position(m_camera_position * m_zoom_level);
 	}
 
 }
