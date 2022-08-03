@@ -3,9 +3,9 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-static const unsigned int m_MAX_QUADS = 10000;
-static const unsigned int m_MAX_VERTICIES = m_MAX_QUADS * 4;
-static const unsigned int m_MAX_INDICIES = m_MAX_QUADS * 6;
+static const size_t m_MAX_QUADS = 10;
+static const size_t m_MAX_VERTICIES = m_MAX_QUADS * 4;
+static const size_t m_MAX_INDICIES = m_MAX_QUADS * 6;
 
 struct render_data
 {
@@ -28,6 +28,7 @@ struct render_data
 
 	Vertex* Object_Buffer = nullptr;
 	Vertex* Object_Buffer_Ptr = nullptr;
+	uint32_t Object_Buffer_Size = 0;
 
 	std::array<GLuint, Texture::MAX_TEXTURE_SLOTS> texture_slots;
 	unsigned int current_texture_slot = 1;
@@ -179,9 +180,8 @@ void Renderer::begin_batch()
 
 void Renderer::end_batch()
 {
-	GLsizeiptr buffer_size = (uint8_t*)s_data.Object_Buffer_Ptr - (uint8_t*)s_data.Object_Buffer;
-	s_data.VertexBuffer->add_to_buffer(s_data.Object_Buffer, buffer_size);
-
+	uint32_t buffer_size = (uint32_t)((uint8_t*)s_data.Object_Buffer_Ptr - (uint8_t*)s_data.Object_Buffer);
+	s_data.VertexBuffer->add_to_buffer((void*)s_data.Object_Buffer, buffer_size);
 }
 
 void Renderer::clear()
@@ -314,21 +314,21 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
-
+	
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
-
+	
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
-
+	
 	s_data.Object_Buffer_Ptr->position = { position.x - (size.x/ 2.0f), position.y + (size.y / 2.0f) };
 	s_data.Object_Buffer_Ptr->color = color;
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
@@ -336,6 +336,7 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
+	s_data.Object_Buffer_Size += 4 * sizeof(Vertex);
 	s_data.Index_Count += 6;
 }
 
@@ -397,12 +398,13 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
 	s_data.Object_Buffer_Ptr++;
 
+	s_data.Object_Buffer_Size += 4 * sizeof(Vertex);
 	s_data.Index_Count += 6;
 }
 
 void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, float static_obj)
 {
-	if (s_data.Index_Count + 4 >= m_MAX_INDICIES)
+	if (s_data.Index_Count + 24 >= m_MAX_INDICIES)
 	{
 		end_batch();
 		s_data.quad_shader->bind();
@@ -480,6 +482,7 @@ void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const g
 		s_data.Object_Buffer_Ptr->static_obj = static_obj;
 		s_data.Object_Buffer_Ptr++;
 
+		s_data.Object_Buffer_Size += 4 * sizeof(Vertex);
 		s_data.Index_Count += 6;
 		
 		float new_scale = scale / 100;

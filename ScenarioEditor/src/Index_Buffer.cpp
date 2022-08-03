@@ -15,9 +15,8 @@ Index_Buffer::Index_Buffer(unsigned int count)
 {
     unsigned int* data = new unsigned int[count];
 
-    unsigned int quads = count / 6;
     unsigned int offset = 0;
-    for (unsigned int i = 0; i < quads; i += 6)
+    for (unsigned int i = 0; i < count; i += 6)
     {
         data[i + 0] = 0 + offset;
         data[i + 1] = 1 + offset;

@@ -1,7 +1,7 @@
 #include "Vertex_Buffer.h"
 #include "gl_debug.h"
 
-Vertex_Buffer::Vertex_Buffer(const void* data, unsigned int size)
+Vertex_Buffer::Vertex_Buffer(const void* data, uint32_t size)
     :m_buffer_size(size)
 {
     GlCall(glGenBuffers(1, &m_renderer_id));
@@ -9,7 +9,7 @@ Vertex_Buffer::Vertex_Buffer(const void* data, unsigned int size)
     GlCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
-Vertex_Buffer::Vertex_Buffer(unsigned int size)
+Vertex_Buffer::Vertex_Buffer(uint32_t size)
     :m_buffer_size(size)
 {
     GlCall(glGenBuffers(1, &m_renderer_id));
@@ -38,9 +38,13 @@ void Vertex_Buffer::clear_buffer()
     m_offset = 0;
 }
 
-bool Vertex_Buffer::add_to_buffer(const void* vertices, unsigned int size)
+bool Vertex_Buffer::add_to_buffer(const void* vertices, uint32_t size)
 {
     bind();
+
+    GLint size_of_buffer = 0;
+    GlCall(glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size_of_buffer));
+
     if (!can_store(size))
     {
         Log::error("RENDER BUFFER FULL", __FILE__, __LINE__);

@@ -25,7 +25,7 @@ void Vertex_Array::add_buffer(const Vertex_Buffer& vb, const Vertex_Buffer_Layou
 		offset += element.count * Buffer_Element::size_of_type(element.type);
 	}
 	vb.unbind();
-	unbind();
+	//unbind();
 }
 
 void Vertex_Array::bind() const
