@@ -114,16 +114,15 @@ void Button::m_default_function()
 
 bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 {
-	//if (m_zoom == 1)
+	glm::vec4 mouse_loc_new;
 	{
 		std::pair<float, float> loc = std::make_pair(e.GetX(), e.GetY());
-		
+
 		float x_scaler = e.get_width() / 1280;
 		float y_scaler = e.get_height() / 720;
 
 		float mouse_x, mouse_y;
 
-		glm::vec4 mouse_loc_new;
 
 		if (!m_menu_object)
 		{
@@ -140,18 +139,20 @@ bool Button::on_mouse_move(Events::Mouse_Moved_Event& e)
 			mouse_loc_new = (mouse_loc * m_camera_matrix * m_zoom) / glm::vec4(x_scaler, y_scaler, 1.0f, 1.0f);
 		}
 
-		glm::vec4 vec1 = glm::vec4(m_collison_box.lower_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
-		glm::vec4 vec2 = glm::vec4(m_collison_box.upper_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
+	}
 
-		if (mouse_loc_new.x >= vec1.x && mouse_loc_new.x <= vec2.x)
+	glm::vec4 vec1 = glm::vec4(m_collison_box.lower_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
+	glm::vec4 vec2 = glm::vec4(m_collison_box.upper_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
+
+	if (mouse_loc_new.x >= vec1.x && mouse_loc_new.x <= vec2.x)
+	{
+		if (mouse_loc_new.y >= vec1.y && mouse_loc_new.y <= vec2.y)
 		{
-			if (mouse_loc_new.y >= vec1.y && mouse_loc_new.y <= vec2.y)
-			{
-				m_state = State::Hover;
-				return false;
-			}
+			m_state = State::Hover;
+			return false;
 		}
 	}
+	
 	m_state = State::None;
 
 	return false;

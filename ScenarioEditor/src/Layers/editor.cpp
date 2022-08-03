@@ -73,7 +73,7 @@ void editor::On_Event(Events::Event& e)
 	m_orthographic_controller->On_Event(e);
 	Renderer::update_view(m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
 
-	for (scriptable_object * obj : m_objects)
+	for (scriptable_object* obj : m_objects)
 	{
 		if (e.Handled != true)
 		{

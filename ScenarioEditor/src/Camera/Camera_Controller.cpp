@@ -89,7 +89,7 @@ bool Camera_Controller::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 {
 	m_zoom_level -= e.GetYOffset() * 0.125f;
 	m_zoom_level = std::max(m_zoom_level, 0.25f);
-	m_zoom_level = (m_zoom_level <= 4) ? m_zoom_level : 4;
+	m_zoom_level = (m_zoom_level <= 3) ? m_zoom_level : 3;
 	m_camera.set_projection((-m_resolution.x / 2.0f) * m_zoom_level, (m_resolution.x / 2.0f) * m_zoom_level, (-m_resolution.y / 2.0f) * m_zoom_level, (m_resolution.y / 2.0f) * m_zoom_level);
 	return false;
 }
