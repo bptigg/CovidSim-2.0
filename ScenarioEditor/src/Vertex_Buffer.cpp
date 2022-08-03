@@ -41,10 +41,6 @@ void Vertex_Buffer::clear_buffer()
 bool Vertex_Buffer::add_to_buffer(const void* vertices, uint32_t size)
 {
     bind();
-
-    GLint size_of_buffer = 0;
-    GlCall(glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &size_of_buffer));
-
     if (!can_store(size))
     {
         Log::error("RENDER BUFFER FULL", __FILE__, __LINE__);
