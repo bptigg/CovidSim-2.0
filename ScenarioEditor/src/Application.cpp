@@ -72,10 +72,30 @@ void app::On_Event(Events::Event& e)
             if (temp_layer != nullptr)
             {
                Events::GUI_Building_Select_Event* ev = dynamic_cast<Events::GUI_Building_Select_Event*>(&e);
+               if (temp_layer->get_type() == GUI_Layer::Type::BuildingSelectMenu)
+               {
+                   m_stack[i]->On_Attach({});
+                   temp_layer->set_caller(ev->get_caller());
+                   m_stack[i]->render(true);
+               }
+            }
+        }
+    }
 
-               m_stack[i]->On_Attach({});
-               temp_layer->set_caller(ev->get_caller());
-               m_stack[i]->render(true);
+    if (e.Get_Event_Type() == Events::Event_Type::GUI_Public_Select)
+    {
+        for (int i = 0; i < m_stack.size(); i++)
+        {
+            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+            if (temp_layer != nullptr)
+            {
+                Events::GUI_Public_Building_Event* ev = dynamic_cast<Events::GUI_Public_Building_Event*>(&e);
+                if (temp_layer->get_type() == GUI_Layer::Type::PublicBuildingSubMenu)
+                {
+                    m_stack[i]->On_Attach({});
+                    temp_layer->set_caller(ev->get_caller());
+                    m_stack[i]->render(true);
+                }
             }
         }
     }
@@ -159,6 +179,12 @@ void app::init()
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSelectMenu, 3, m_camera));
     m_stack[2]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::PublicBuildingSubMenu, 3, m_camera));
+    m_stack[3]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::PublicTransportSubMenu, 3, m_camera));
+    m_stack[4]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

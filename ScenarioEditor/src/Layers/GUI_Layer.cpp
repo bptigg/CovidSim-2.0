@@ -44,6 +44,9 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 	case Type::BuildingSelectMenu:
 		create_building_menu();
 		break;
+	case Type::PublicBuildingSubMenu:
+		create_public_building_sub_menu();
+		break;
 	default:
 		break;
 	}
@@ -248,7 +251,7 @@ void GUI_Layer::create_building_menu()
 	public_building_zone->selected_colour = public_building_zone->base_colour;
 	public_building_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	public_building_zone->rendering_layer = m_base_layer;
-	//public_building_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	public_building_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
 	add_scriptable_object(public_building_zone);
 	button_id++;
 
@@ -261,7 +264,7 @@ void GUI_Layer::create_building_menu()
 	transport_zone->selected_colour = transport_zone->base_colour;
 	transport_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	transport_zone->rendering_layer = m_base_layer;
-	//transport_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	transport_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_sub));
 	add_scriptable_object(transport_zone);
 	button_id++;
 
@@ -269,6 +272,173 @@ void GUI_Layer::create_building_menu()
 	Text_Menu_object* transport_zone_holder = new Text_Menu_object(transport_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(transport_zone_holder);
 
+	//generic shop
+
+}
+
+void GUI_Layer::create_public_building_sub_menu()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(settings);
+
+	Text title_text("Public Building selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Button* place_of_worship = new Button({ -105.0f + settings->get_position().x, 230.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	place_of_worship->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	place_of_worship->selected_colour = place_of_worship->base_colour;
+	place_of_worship->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	place_of_worship->rendering_layer = m_base_layer;
+	//place_of_worship->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(place_of_worship);
+	button_id++;
+
+	Text pow_zone_text("place of worship", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* pow_zone_holder = new Text_Menu_object(pow_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(pow_zone_holder);
+
+	Button* park = new Button({ -105.0f + settings->get_position().x, 180.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	park->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	park->selected_colour = park->base_colour;
+	park->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	park->rendering_layer = m_base_layer;
+	//park->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(park);
+	button_id++;
+
+	Text park_zone_text("park", { 50 + settings->get_position().x , 180 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* park_zone_holder = new Text_Menu_object(park_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(park_zone_holder);
+
+	Button* cafe = new Button({ -105.0f + settings->get_position().x, 130.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	cafe->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	cafe->selected_colour = park->base_colour;
+	cafe->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	cafe->rendering_layer = m_base_layer;
+	//cafe->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(cafe);
+	button_id++;
+
+	Text cafe_zone_text("cafe", { 50 + settings->get_position().x , 130 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* cafe_zone_holder = new Text_Menu_object(cafe_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(cafe_zone_holder);
+
+	Button* restaurant = new Button({ -105.0f + settings->get_position().x, 80.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	restaurant->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	restaurant->selected_colour = restaurant->base_colour;
+	restaurant->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	restaurant->rendering_layer = m_base_layer;
+	//restaurant->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(restaurant);
+	button_id++;
+
+	Text rest_zone_text("restaurant", { 50 + settings->get_position().x , 80.0f + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* rest_zone_holder = new Text_Menu_object(rest_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(rest_zone_holder);
+
+	Button* cinema = new Button({ -105.0f + settings->get_position().x, 30.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	cinema->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	cinema->selected_colour = cinema->base_colour;
+	cinema->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	cinema->rendering_layer = m_base_layer;
+	//cinema->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(cinema);
+	button_id++;
+
+	Text cinema_zone_text("cinema", { 50 + settings->get_position().x , 30 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* cinema_zone_holder = new Text_Menu_object(cinema_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(cinema_zone_holder);
+
+	Button* theatre = new Button({ -105.0f + settings->get_position().x, -20.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	theatre->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	theatre->selected_colour = theatre->base_colour;
+	theatre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	theatre->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(theatre);
+	button_id++;
+
+	Text theatre_zone_text("theatre", { 50 + settings->get_position().x , -20 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* theatre_zone_holder = new Text_Menu_object(theatre_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(theatre_zone_holder);
+
+	Button* supermarket = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	supermarket->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	supermarket->selected_colour = supermarket->base_colour;
+	supermarket->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	supermarket->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(supermarket);
+	button_id++;
+
+	Text super_zone_text("supermarket", { 50 + settings->get_position().x , -70 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* super_zone_holder = new Text_Menu_object(super_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(super_zone_holder);
+
+	Button* shopping_centre = new Button({ -105.0f + settings->get_position().x, -120.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	shopping_centre->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	shopping_centre->selected_colour = shopping_centre->base_colour;
+	shopping_centre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	shopping_centre->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(shopping_centre);
+	button_id++;
+
+	Text shop_zone_text("shopping centre", { 50 + settings->get_position().x , -120.0f + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* shop_zone_holder = new Text_Menu_object(shop_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(shop_zone_holder);
+
+	Button* pub= new Button({ -105.0f + settings->get_position().x, -170.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	pub->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	pub->selected_colour = pub->base_colour;
+	pub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pub->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(pub);
+	button_id++;
+
+	Text pub_zone_text("pub", { 50 + settings->get_position().x , -170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* pub_zone_holder = new Text_Menu_object(pub_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(pub_zone_holder);
+
+	Button* nightclub = new Button({ -105.0f + settings->get_position().x, -220.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	nightclub->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	nightclub->selected_colour = nightclub->base_colour;
+	nightclub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	nightclub->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(nightclub);
+	button_id++;
+
+	Text club_zone_text("nightclub", { 50 + settings->get_position().x , -220 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* club_zone_holder = new Text_Menu_object(club_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(club_zone_holder);
+
+	Button* arena = new Button({ -105.0f + settings->get_position().x, -270.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	arena->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	arena->selected_colour = arena->base_colour;
+	arena->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	arena->rendering_layer = m_base_layer;
+	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	add_scriptable_object(arena);
+	button_id++;
+
+	Text arena_zone_text("arena", { 50 + settings->get_position().x , -270 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* arena_zone_holder = new Text_Menu_object(arena_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(arena_zone_holder);
+}
+
+void GUI_Layer::create_public_transport_sub_menu()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(settings);
 }
 
 void GUI_Layer::setting_exit_func()
@@ -569,6 +739,18 @@ void GUI_Layer::page_two()
 	confirm->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_exit_func_2));
 	m_objects.push_back(confirm);
 
+}
+
+void GUI_Layer::open_public_sub()
+{
+	Events::GUI_Public_Building_Event event(m_caller);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::open_transport_sub()
+{
+	Events::GUI_Transport_Building_Event event(m_caller);
+	Event_Call_back(event);
 }
 
 void GUI_Layer::close_menu()

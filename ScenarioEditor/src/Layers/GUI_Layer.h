@@ -19,6 +19,8 @@ public:
 	{
 		Overlay,
 		BuildingSelectMenu,
+		PublicBuildingSubMenu,
+		PublicTransportSubMenu,
 		SetupMenu
 	};
 
@@ -55,6 +57,8 @@ public:
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
 
+	inline Type get_type() { return m_type; }
+
 #pragma region zone_menu
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
 
@@ -68,6 +72,8 @@ private:
 	
 	void create_settings_menu(unsigned int menu);
 	void create_building_menu();
+	void create_public_building_sub_menu();
+	void create_public_transport_sub_menu();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
@@ -85,5 +91,11 @@ private:
 	void page_one();
 	void page_two();
 #pragma endregion
+
+#pragma region sub_menus
+	void open_public_sub();
+	void open_transport_sub();
+#pragma endregion
+
 };
 
