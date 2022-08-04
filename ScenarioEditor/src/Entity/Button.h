@@ -27,6 +27,7 @@ public:
 
 protected:
 	std::function<void()> button_func;
+	std::function<void()> right_button_func;
 	bool m_default_func;
 
 	State m_state;
@@ -49,6 +50,11 @@ public:
 		button_func = func;
 	}
 
+	inline void Bind_right_function(const std::function<void()> func)
+	{
+		right_button_func = func;
+	}
+
 	virtual void update() override;
 	virtual void render() override;
 	virtual void event_callback(Events::Event& e) override;
@@ -57,6 +63,7 @@ public:
 
 	void change_state(bool state) { m_hover = state; m_state = (!m_hover) ? State::None : State::Press; }
 	void persist_hover(bool persist) { m_persist = persist; }
+	const std::string get_text() const { return m_text.m_text; }
 
 private:
 	void m_default_function();

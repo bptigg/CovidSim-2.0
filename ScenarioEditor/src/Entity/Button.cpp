@@ -172,7 +172,18 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 			m_hover = false;
 		}
 		m_Layer->set_selected(m_object_id);
-		button_func();
+		if (e.Get_Mouse_Button() == CS_MOUSE_BUTTON_LEFT)
+		{
+			button_func();
+		}
+		else if (e.Get_Mouse_Button() == CS_MOUSE_BUTTON_RIGHT)
+		{
+
+		}
+		else
+		{
+			return false;
+		}
 		return true;
 	}
 	return false;

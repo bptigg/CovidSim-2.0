@@ -110,6 +110,10 @@ void editor::draw_buttons(int amount)
 			tile->rendering_layer = m_base_layer;
 			tile->persist_hover(true);
 			tile->Bind_function(BIND_BUTTON_FN(editor::open_zone_selector));
+
+			std::shared_ptr<button_data> tile_data(new button_data);
+			m_world_data[m_button_num] = tile_data;
+			m_world_data[m_button_num]->button_id = m_button_num;
 			add_scriptable_object(tile);
 
 			x = x + size;

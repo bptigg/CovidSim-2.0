@@ -1,5 +1,7 @@
 #include "GUI_Layer.h"
 
+#include "editor.h"
+
 #define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
 
 
@@ -171,6 +173,12 @@ void GUI_Layer::change_box_colour()
 				caller_button->base_colour = temp_button->base_colour;
 				caller_button->selected_colour = temp_button->selected_colour;
 				caller_button->change_state(false);
+
+				{
+					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					auto data = temp_layer->get_world_data(caller_button->get_id());
+					//data->building_type = 
+				}
 				m_caller = nullptr;
 				break;
 			}
@@ -191,11 +199,64 @@ void GUI_Layer::change_box_colour_sub_menu()
 				caller_button->base_colour = temp_button->base_colour;
 				caller_button->selected_colour = temp_button->selected_colour;
 				caller_button->change_state(false);
+				
+				{
+					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					auto data = temp_layer->get_world_data(caller_button->get_id());
+					//data->building_type = 
+				}
 				m_caller = nullptr;
 				m_render = false;
 				break;
 			}
 		}
+	}
+}
+
+void GUI_Layer::set_zone_size()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Button* caller_button = dynamic_cast<Button*>(m_caller);
+			Button* menu_button = dynamic_cast<Button*>(m_menu_button);
+			if (caller_button != nullptr && menu_button != nullptr)
+			{
+				caller_button->base_colour = menu_button->base_colour;
+				caller_button->selected_colour = menu_button->selected_colour;
+				caller_button->change_state(false);
+
+				{
+					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					auto data = temp_layer->get_world_data(caller_button->get_id());
+					data->size = temp_button->get_id();
+					
+					std::string button_text = temp_button->get_text();
+					if (button_text == "Large")
+					{
+						data->size = 2;
+					}
+					else if (button_text == "Medium")
+					{
+						data->size = 1;
+					}
+					else
+					{
+						data->size = 0;
+					}
+
+					//data->building_type = 
+				}
+
+				m_caller = nullptr;
+				m_render = false;
+				menu_button->get_layer()->render(false);
+				break;
+			}
+		}
+
 	}
 }
 
@@ -501,21 +562,27 @@ void GUI_Layer::create_building_size_sub_menu()
 	large->selected_colour = large->base_colour;
 	large->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	large->rendering_layer = m_base_layer;
+	large->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_zone_size));
 	add_scriptable_object(large);
+	button_id++;
 
 	Button* medium = new Button("Medium", { -140, menu->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
 	medium->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 	medium->selected_colour = medium->base_colour;
 	medium->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	medium->rendering_layer = m_base_layer + 3;
+	medium->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_zone_size));
 	add_scriptable_object(medium);
+	button_id++;
 
 	Button* small = new Button("Small", { -140, -30 + menu->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
 	small->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 	small->selected_colour = small->base_colour;
 	small->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	small->rendering_layer = m_base_layer + 6;
+	small->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_zone_size));
 	add_scriptable_object(small);
+	button_id++;
 
 }
 

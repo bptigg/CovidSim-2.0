@@ -7,10 +7,22 @@
 
 #include "../Entity/Button.h"
 
+class button_data
+{
+public:
+	uint32_t button_id;
+
+	uint32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
+	uint32_t size; //small - 0, medium - 1, large - 2, ''
+
+
+};
+
 class editor : public Layer
 {
 private:
 	std::vector<scriptable_object*> m_objects;
+	std::unordered_map<uint32_t, std::shared_ptr<button_data>> m_world_data; 
 	std::unordered_map<std::string, unsigned int> m_textures;
 
 	unsigned int m_base_layer;
@@ -31,6 +43,8 @@ public:
 	virtual void On_Event(Events::Event& e) override;
 
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
+
+	inline std::shared_ptr<button_data> get_world_data(uint32_t key) { return m_world_data[key]; };
 
 private:
 	void add_scriptable_object(scriptable_object* object);
