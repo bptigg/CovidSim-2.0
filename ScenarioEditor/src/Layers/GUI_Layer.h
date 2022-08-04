@@ -21,6 +21,7 @@ public:
 		BuildingSelectMenu,
 		PublicBuildingSubMenu,
 		PublicTransportSubMenu,
+		BuildingSizeSubMenu,
 		SetupMenu
 	};
 
@@ -45,7 +46,13 @@ private:
 #pragma region zone_menu
 	unsigned int m_selected;
 	scriptable_object* m_caller;
+	scriptable_object* m_prev_menu;
 #pragma endregion;
+
+#pragma region size_menu
+	scriptable_object* m_menu_button;
+	//also uses the m_caller found in region zone_menu
+#pragma endregion
 
 public:
 	GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll);
@@ -63,8 +70,11 @@ public:
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
 
 	void set_caller(scriptable_object* caller);
+	void set_prev_menu(scriptable_object* caller);
+	void set_menu(scriptable_object* p_menu);
 	void change_box_colour();
 	void change_box_texture();
+	void change_box_colour_sub_menu();
 #pragma endregion
 
 private:
@@ -74,6 +84,7 @@ private:
 	void create_building_menu();
 	void create_public_building_sub_menu();
 	void create_public_transport_sub_menu();
+	void create_building_size_sub_menu();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
@@ -85,6 +96,8 @@ private:
 	void save_exit_func_2();
 
 	void close_menu();
+	void close_pb_menu();
+	void close_size_menu();
 #pragma endregion
 
 #pragma region settings_pages
@@ -95,7 +108,9 @@ private:
 #pragma region sub_menus
 	void open_public_sub();
 	void open_transport_sub();
+	void open_size_sub();
 #pragma endregion
 
+	void defualt_func();
 };
 

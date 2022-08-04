@@ -2,6 +2,7 @@
 
 #define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
 
+
 #if _DEBUG
 #define BYPASS 1
 #else
@@ -28,7 +29,10 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 
 	if (m_attached)
 	{
-		return;
+		if (m_type != Type::BuildingSizeSubMenu)
+		{
+			return;
+		}
 	}
 
 	for (std::pair<std::string, std::string> path : textures)
@@ -46,6 +50,9 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		break;
 	case Type::PublicBuildingSubMenu:
 		create_public_building_sub_menu();
+		break;
+	case Type::BuildingSizeSubMenu:
+		create_building_size_sub_menu();
 		break;
 	default:
 		break;
@@ -76,7 +83,14 @@ void GUI_Layer::On_Update(Timestep ts)
 		if (obj->delete_object)
 		{
 			obj->~scriptable_object();
-			m_objects.erase(m_objects.begin() + i - removed);
+			if (m_objects.size() != 1)
+			{
+				m_objects.erase(m_objects.begin() + i - removed);
+			}
+			else
+			{
+				m_objects.clear();
+			}
 			m_dialog_box = false;
 			removed++;
 			continue;
@@ -134,6 +148,16 @@ void GUI_Layer::set_caller(scriptable_object* caller)
 	m_caller = caller;
 }
 
+void GUI_Layer::set_prev_menu(scriptable_object* caller)
+{
+	m_menu_button = caller;
+}
+
+void GUI_Layer::set_menu(scriptable_object* p_menu)
+{
+	m_prev_menu = p_menu;
+}
+
 void GUI_Layer::change_box_colour()
 {
 	for (scriptable_object* obj : m_objects)
@@ -148,6 +172,27 @@ void GUI_Layer::change_box_colour()
 				caller_button->selected_colour = temp_button->selected_colour;
 				caller_button->change_state(false);
 				m_caller = nullptr;
+				break;
+			}
+		}
+	}
+}
+
+void GUI_Layer::change_box_colour_sub_menu()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Button* caller_button = dynamic_cast<Button*>(m_caller);
+			if (caller_button != nullptr)
+			{
+				caller_button->base_colour = temp_button->base_colour;
+				caller_button->selected_colour = temp_button->selected_colour;
+				caller_button->change_state(false);
+				m_caller = nullptr;
+				m_render = false;
 				break;
 			}
 		}
@@ -281,7 +326,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	int button_id = 0;
 	m_render = false;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_pb_menu));
 	add_scriptable_object(settings);
 
 	Text title_text("Public Building selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
@@ -293,7 +338,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	place_of_worship->selected_colour = place_of_worship->base_colour;
 	place_of_worship->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	place_of_worship->rendering_layer = m_base_layer;
-	//place_of_worship->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	place_of_worship->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(place_of_worship);
 	button_id++;
 
@@ -306,7 +351,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	park->selected_colour = park->base_colour;
 	park->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	park->rendering_layer = m_base_layer;
-	//park->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	park->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(park);
 	button_id++;
 
@@ -319,7 +364,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	cafe->selected_colour = park->base_colour;
 	cafe->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	cafe->rendering_layer = m_base_layer;
-	//cafe->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	cafe->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(cafe);
 	button_id++;
 
@@ -332,7 +377,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	restaurant->selected_colour = restaurant->base_colour;
 	restaurant->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	restaurant->rendering_layer = m_base_layer;
-	//restaurant->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	restaurant->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(restaurant);
 	button_id++;
 
@@ -345,7 +390,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	cinema->selected_colour = cinema->base_colour;
 	cinema->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	cinema->rendering_layer = m_base_layer;
-	//cinema->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	cinema->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(cinema);
 	button_id++;
 
@@ -358,7 +403,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	theatre->selected_colour = theatre->base_colour;
 	theatre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	theatre->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(theatre);
 	button_id++;
 
@@ -371,7 +416,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	supermarket->selected_colour = supermarket->base_colour;
 	supermarket->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	supermarket->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	supermarket->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(supermarket);
 	button_id++;
 
@@ -384,7 +429,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	shopping_centre->selected_colour = shopping_centre->base_colour;
 	shopping_centre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	shopping_centre->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	shopping_centre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(shopping_centre);
 	button_id++;
 
@@ -397,7 +442,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	pub->selected_colour = pub->base_colour;
 	pub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	pub->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	pub->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(pub);
 	button_id++;
 
@@ -410,7 +455,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	nightclub->selected_colour = nightclub->base_colour;
 	nightclub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	nightclub->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	nightclub->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(nightclub);
 	button_id++;
 
@@ -423,7 +468,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	arena->selected_colour = arena->base_colour;
 	arena->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	arena->rendering_layer = m_base_layer;
-	//theatre->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_public_sub));
+	arena->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
 	add_scriptable_object(arena);
 	button_id++;
 
@@ -439,6 +484,39 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
+}
+
+void GUI_Layer::create_building_size_sub_menu()
+{
+	int button_id = 0;
+	m_render = false;
+	float y_pos = m_menu_button->get_position().y; 
+	
+	Menu_Background* menu = new Menu_Background({-140, y_pos}, {160, 90}, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	menu->Bind_function(BIND_FUNCTION(GUI_Layer::close_size_menu));
+	add_scriptable_object(menu);
+
+	Button* large = new Button("Large", { -140, 30 + menu->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	large->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	large->selected_colour = large->base_colour;
+	large->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	large->rendering_layer = m_base_layer;
+	add_scriptable_object(large);
+
+	Button* medium = new Button("Medium", { -140, menu->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	medium->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	medium->selected_colour = medium->base_colour;
+	medium->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	medium->rendering_layer = m_base_layer + 3;
+	add_scriptable_object(medium);
+
+	Button* small = new Button("Small", { -140, -30 + menu->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	small->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	small->selected_colour = small->base_colour;
+	small->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	small->rendering_layer = m_base_layer + 6;
+	add_scriptable_object(small);
+
 }
 
 void GUI_Layer::setting_exit_func()
@@ -743,7 +821,19 @@ void GUI_Layer::page_two()
 
 void GUI_Layer::open_public_sub()
 {
-	Events::GUI_Public_Building_Event event(m_caller);
+	Menu_Background* temp_menu = nullptr;
+	for (scriptable_object* obj : m_objects)
+	{
+		temp_menu = dynamic_cast<Menu_Background*>(obj);
+		if (temp_menu != nullptr)
+		{
+			temp_menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
+			break;
+		}
+	}
+
+
+	Events::GUI_Public_Building_Event event(m_caller, temp_menu);
 	Event_Call_back(event);
 }
 
@@ -751,6 +841,24 @@ void GUI_Layer::open_transport_sub()
 {
 	Events::GUI_Transport_Building_Event event(m_caller);
 	Event_Call_back(event);
+}
+
+void GUI_Layer::open_size_sub()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Events::GUI_Building_Size_Event event(m_caller, obj);
+			Event_Call_back(event);
+		}
+	}
+}
+
+void GUI_Layer::defualt_func()
+{
+	//a empty function
 }
 
 void GUI_Layer::close_menu()
@@ -761,4 +869,28 @@ void GUI_Layer::close_menu()
 	{
 		caller_button->change_state(false);
 	}
+}
+
+void GUI_Layer::close_pb_menu()
+{
+	m_render = false;
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	if (caller_button != nullptr)
+	{
+		caller_button->change_state(false);
+	}
+
+	Menu_Background* temp_menu = dynamic_cast<Menu_Background*>(m_prev_menu);
+	GUI_Layer* menu_layer = dynamic_cast<GUI_Layer*>(temp_menu->get_layer());
+	temp_menu->Bind_function(std::bind(&GUI_Layer::close_menu, menu_layer));
+}
+
+
+void GUI_Layer::close_size_menu()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		obj->delete_obj(true);
+	}
+	m_render = false;
 }

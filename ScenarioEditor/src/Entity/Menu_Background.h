@@ -21,7 +21,6 @@ public:
 	}
 
 
-
 	bool is_mouse_over(float width, float height, float x, float y);
 
 	bool on_mouse_click(Events::Mouse_Button_Pressed_Event& e);
