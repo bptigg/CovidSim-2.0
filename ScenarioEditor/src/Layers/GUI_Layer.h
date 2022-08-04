@@ -77,6 +77,10 @@ public:
 	void change_box_colour_sub_menu(); 
 
 	void set_zone_size();
+	inline void close_public_menu()
+	{
+		close_pb_menu();
+	}
 
 	inline void set_building_type()
 	{

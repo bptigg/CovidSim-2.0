@@ -252,7 +252,11 @@ void GUI_Layer::set_zone_size()
 
 				m_caller = nullptr;
 				m_render = false;
-				menu_button->get_layer()->render(false);
+				close_size_menu();
+				
+				GUI_Layer* menu_layer = dynamic_cast<GUI_Layer*>(menu_button->get_layer());
+				menu_layer->close_public_menu();
+
 				break;
 			}
 		}
