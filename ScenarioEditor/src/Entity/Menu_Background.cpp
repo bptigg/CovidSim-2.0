@@ -82,7 +82,7 @@ bool Menu_Background::is_mouse_over(float width, float height, float x, float y)
 
 bool Menu_Background::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 {
-	if (Input::Is_MouseButton_Pressed(CS_MOUSE_BUTTON_LEFT) && !is_mouse_over(e.get_width(), e.get_height(), e.get_x(), e.get_y()))
+	if (!is_mouse_over(e.get_width(), e.get_height(), e.get_x(), e.get_y()))
 	{
 		if (m_exit_func != nullptr)
 		{

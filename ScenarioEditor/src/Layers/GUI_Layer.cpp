@@ -1,6 +1,7 @@
 #include "GUI_Layer.h"
 
 #include "editor.h"
+#include "../Entity/building_constants.h"
 
 #define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
 
@@ -31,7 +32,7 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 
 	if (m_attached)
 	{
-		if (m_type != Type::BuildingSizeSubMenu)
+		if (m_type != Type::BuildingSizeSubMenu && m_type != Type::ButtonDropDown)
 		{
 			return;
 		}
@@ -55,6 +56,9 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		break;
 	case Type::BuildingSizeSubMenu:
 		create_building_size_sub_menu();
+		break;
+	case Type::ButtonDropDown:
+		create_button_dropdown();
 		break;
 	default:
 		break;
@@ -177,7 +181,7 @@ void GUI_Layer::change_box_colour()
 				{
 					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
 					auto data = temp_layer->get_world_data(caller_button->get_id());
-					//data->building_type = 
+					data->building_type = get_building_code(caller_button->base_colour);
 				}
 				m_caller = nullptr;
 				break;
@@ -186,32 +190,32 @@ void GUI_Layer::change_box_colour()
 	}
 }
 
-void GUI_Layer::change_box_colour_sub_menu()
-{
-	for (scriptable_object* obj : m_objects)
-	{
-		Button* temp_button = dynamic_cast<Button*>(obj);
-		if (temp_button != nullptr && temp_button->get_id() == m_selected)
-		{
-			Button* caller_button = dynamic_cast<Button*>(m_caller);
-			if (caller_button != nullptr)
-			{
-				caller_button->base_colour = temp_button->base_colour;
-				caller_button->selected_colour = temp_button->selected_colour;
-				caller_button->change_state(false);
-				
-				{
-					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
-					auto data = temp_layer->get_world_data(caller_button->get_id());
-					//data->building_type = 
-				}
-				m_caller = nullptr;
-				m_render = false;
-				break;
-			}
-		}
-	}
-}
+//void GUI_Layer::change_box_colour_sub_menu()
+//{
+//	for (scriptable_object* obj : m_objects)
+//	{
+//		Button* temp_button = dynamic_cast<Button*>(obj);
+//		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+//		{
+//			Button* caller_button = dynamic_cast<Button*>(m_caller);
+//			if (caller_button != nullptr)
+//			{
+//				caller_button->base_colour = temp_button->base_colour;
+//				caller_button->selected_colour = temp_button->selected_colour;
+//				caller_button->change_state(false);
+//				
+//				{
+//					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+//					auto data = temp_layer->get_world_data(caller_button->get_id());
+//					//data->building_type = 
+//				}
+//				m_caller = nullptr;
+//				m_render = false;
+//				break;
+//			}
+//		}
+//	}
+//}
 
 void GUI_Layer::set_zone_size()
 {
@@ -247,7 +251,7 @@ void GUI_Layer::set_zone_size()
 						data->size = 0;
 					}
 
-					//data->building_type = 
+					data->building_type = get_building_code(caller_button->base_colour);
 				}
 
 				m_caller = nullptr;
@@ -316,7 +320,7 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(reset_holder);
 
 	Button* walking_zone = new Button({ -105.0f + settings->get_position().x, 170.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	walking_zone->base_colour = { 0.5f, 0.5f, 0.5f, 1.0f };
+	walking_zone->base_colour = building_constants::UNDEVLOPED_SPACE;
 	walking_zone->selected_colour = walking_zone->base_colour;
 	walking_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	walking_zone->rendering_layer = m_base_layer;
@@ -329,7 +333,7 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(walking_zone_holder);
 
 	Button* housing_zone = new Button({ -105.0f + settings->get_position().x, 110.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	housing_zone->base_colour = { 86.0f / 255.0f, 125.0f / 255.0f, 70.0f / 255.0f, 1.0f };
+	housing_zone->base_colour = building_constants::HOUSING_ZONE;
 	housing_zone->selected_colour = housing_zone->base_colour;
 	housing_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	housing_zone->rendering_layer = m_base_layer;
@@ -342,7 +346,7 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(housing_zone_holder);
 
 	Button* generic_zone = new Button({ -105.0f + settings->get_position().x, 50.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	generic_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	generic_zone->base_colour = building_constants::GENERIC_WORK_ZONE;
 	generic_zone->selected_colour = generic_zone->base_colour;
 	generic_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	generic_zone->rendering_layer = m_base_layer;
@@ -588,6 +592,48 @@ void GUI_Layer::create_building_size_sub_menu()
 	add_scriptable_object(small);
 	button_id++;
 
+}
+
+void GUI_Layer::create_button_dropdown()
+{
+	int button_id = 0;
+	m_render = false;
+
+	float y_pos = m_caller->get_position().y;
+	float x_pos = m_caller->get_position().x;
+
+	float x_size = m_caller->get_size().x;
+	float y_size = m_caller->get_size().y;
+
+	float menu_x_pos = x_pos + (x_size / 2.0f) + 80.0f;
+
+	Menu_Background* dropdown = new Menu_Background({menu_x_pos, y_pos + (y_size / 2.0f) - 45.0f }, { 160, 90 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	dropdown->Bind_function(BIND_FUNCTION(GUI_Layer::close_dropdown));
+	add_scriptable_object(dropdown);
+
+	Button* capacity = new Button("set building capacity", { menu_x_pos, 30 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	capacity->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	capacity->selected_colour = capacity->base_colour;
+	capacity->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	capacity->rendering_layer = m_base_layer;
+	add_scriptable_object(capacity);
+	button_id++;
+
+	Button* staff = new Button("set staff", { menu_x_pos, dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	staff->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	staff->selected_colour = staff->base_colour;
+	staff->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	staff->rendering_layer = m_base_layer + 3;
+	add_scriptable_object(staff);
+	button_id++;
+	
+	Button* opening_hours = new Button("set opening hours", { menu_x_pos, -30 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	opening_hours->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	opening_hours->selected_colour = opening_hours->base_colour;
+	opening_hours->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	opening_hours->rendering_layer = m_base_layer + 6;
+	add_scriptable_object(opening_hours);
+	button_id++;
 }
 
 void GUI_Layer::setting_exit_func()
@@ -964,4 +1010,21 @@ void GUI_Layer::close_size_menu()
 		obj->delete_obj(true);
 	}
 	m_render = false;
+}
+
+void GUI_Layer::close_dropdown()
+{
+
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	if (caller_button != nullptr)
+	{
+		caller_button->change_state(false);
+	}
+
+	for (scriptable_object* obj : m_objects)
+	{
+		obj->delete_obj(true);
+	}
+	m_render = false;
+
 }

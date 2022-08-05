@@ -106,4 +106,21 @@ namespace Events
 		EVENT_CLASS_TYPE(GUI_Editor)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
 	};
+
+	class GUI_Dropdown_Event : public Event
+	{
+	public:
+		GUI_Dropdown_Event(scriptable_object* caller)
+		{
+			m_caller = caller;
+		}
+
+		scriptable_object* get_caller() { return m_caller; }
+
+		EVENT_CLASS_TYPE(GUI_Dropdown)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		scriptable_object* m_caller;
+	};
 }

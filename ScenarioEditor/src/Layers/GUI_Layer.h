@@ -22,6 +22,7 @@ public:
 		PublicBuildingSubMenu,
 		PublicTransportSubMenu,
 		BuildingSizeSubMenu,
+		ButtonDropDown,
 		SetupMenu
 	};
 
@@ -74,7 +75,7 @@ public:
 	void set_menu(scriptable_object* p_menu);
 	void change_box_colour();
 	void change_box_texture();
-	void change_box_colour_sub_menu(); 
+	//void change_box_colour_sub_menu(); 
 
 	void set_zone_size();
 	inline void close_public_menu()
@@ -96,6 +97,7 @@ private:
 	void create_public_building_sub_menu();
 	void create_public_transport_sub_menu();
 	void create_building_size_sub_menu();
+	void create_button_dropdown();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
@@ -109,6 +111,7 @@ private:
 	void close_menu();
 	void close_pb_menu();
 	void close_size_menu();
+	void close_dropdown();
 #pragma endregion
 
 #pragma region settings_pages

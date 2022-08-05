@@ -7,6 +7,7 @@ Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, b
 	m_default_func = true;
 	
 	button_func = BIND_BUTTON_FN(Button::m_default_function);
+	right_button_func = BIND_BUTTON_FN(Button::m_default_function);
 
 	m_menu_object = menu;
 	m_set_up = false;
@@ -25,6 +26,7 @@ Button::Button(const std::string text, const glm::vec2& location, const glm::vec
 	m_default_func = true;
 
 	button_func = BIND_BUTTON_FN(Button::m_default_function);
+	right_button_func = BIND_BUTTON_FN(Button::m_default_function);
 
 	m_menu_object = menu;
 	m_set_up = false;
@@ -178,7 +180,7 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 		}
 		else if (e.Get_Mouse_Button() == CS_MOUSE_BUTTON_RIGHT)
 		{
-
+			right_button_func();
 		}
 		else
 		{

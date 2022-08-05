@@ -110,6 +110,7 @@ void editor::draw_buttons(int amount)
 			tile->rendering_layer = m_base_layer;
 			tile->persist_hover(true);
 			tile->Bind_function(BIND_BUTTON_FN(editor::open_zone_selector));
+			tile->Bind_right_function(BIND_BUTTON_FN(editor::open_drop_down));
 
 			std::shared_ptr<button_data> tile_data(new button_data);
 			m_world_data[m_button_num] = tile_data;
@@ -129,6 +130,12 @@ void editor::draw_buttons(int amount)
 void editor::open_zone_selector()
 {
 	Events::GUI_Building_Select_Event event(m_objects[m_selected]);
+	Event_Call_back(event);
+}
+
+void editor::open_drop_down()
+{
+	Events::GUI_Dropdown_Event event(m_objects[m_selected]);
 	Event_Call_back(event);
 }
 

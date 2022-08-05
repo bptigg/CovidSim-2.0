@@ -6,6 +6,7 @@ private:
 	glm::vec4 m_background_color;
 	unsigned int m_rendering_layer;
 
+
 	std::function<void()> m_exit_func;
 public:
 	Menu_Background(glm::vec2 pos, glm::vec2 size, Layer* layer, glm::vec4 colour, const std::function<void()> exit_Func, unsigned int rendering_layer, int id = 0);

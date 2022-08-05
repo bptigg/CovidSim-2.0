@@ -178,6 +178,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Entity\building_constants.h" />
     <ClInclude Include="src\file.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\buildings_data.h" />
