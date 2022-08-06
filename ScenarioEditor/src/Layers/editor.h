@@ -12,7 +12,7 @@ class button_data
 public:
 	uint32_t button_id;
 
-	uint32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
+	int32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
 	uint32_t size; //small - 0, medium - 1, large - 2, ''
 
 

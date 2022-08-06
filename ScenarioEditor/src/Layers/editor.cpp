@@ -115,6 +115,7 @@ void editor::draw_buttons(int amount)
 			std::shared_ptr<button_data> tile_data(new button_data);
 			m_world_data[m_button_num] = tile_data;
 			m_world_data[m_button_num]->button_id = m_button_num;
+			m_world_data[m_button_num]->building_type = -1;
 			add_scriptable_object(tile);
 
 			x = x + size;

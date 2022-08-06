@@ -320,7 +320,7 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(reset_holder);
 
 	Button* walking_zone = new Button({ -105.0f + settings->get_position().x, 170.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	walking_zone->base_colour = building_constants::UNDEVLOPED_SPACE;
+	walking_zone->base_colour = building_constants::WALKING_ZONE;
 	walking_zone->selected_colour = walking_zone->base_colour;
 	walking_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	walking_zone->rendering_layer = m_base_layer;
@@ -596,6 +596,15 @@ void GUI_Layer::create_building_size_sub_menu()
 
 void GUI_Layer::create_button_dropdown()
 {
+	editor* temp_layer = dynamic_cast<editor*>(m_caller->get_layer());
+	auto data = temp_layer->get_world_data(m_caller->get_id());
+	
+	if (data->building_type <= 4)
+	{
+		this->close_dropdown();
+		return;
+	}
+
 	int button_id = 0;
 	m_render = false;
 

@@ -97,7 +97,7 @@ unsigned int get_building_code(glm::vec4 colour)
 	}
 	else
 	{
-		return 0;
+		return -1;
 	}
 
 
