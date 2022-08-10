@@ -15,7 +15,8 @@ namespace Events {
 		App_Tick, App_Update, App_Render,
 		Key_Pressed, Key_Released,Key_Typed,
 		Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled,
-		GUI_Overlay, GUI_Building_Select, GUI_Public_Select, GUI_Transport_Select, GUI_Settings, GUI_Editor, GUI_Size_Select, GUI_Dropdown
+		GUI_Overlay, GUI_Building_Select, GUI_Public_Select, GUI_Transport_Select, GUI_Settings, GUI_Editor, GUI_Size_Select, GUI_Dropdown,
+		Popup_Capacity, Popup_Staff, Popup_Opening
 
 	};
 
@@ -27,7 +28,8 @@ namespace Events {
 		Event_Catagory_Keyboard			= BIT(2),
 		Event_Catagory_Mouse			= BIT(3),
 		Event_Catagory_Mouse_Button		= BIT(4),
-		Event_Catagory_Menu				= BIT(5)
+		Event_Catagory_Menu				= BIT(5),
+		Event_Catagory_Popup			= BIT(6)
 
 	};
 

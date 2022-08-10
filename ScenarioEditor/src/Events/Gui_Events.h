@@ -123,4 +123,52 @@ namespace Events
 	private:
 		scriptable_object* m_caller;
 	};
+
+	class Popup_Staff_Event : public Event
+	{
+	public:
+		Popup_Staff_Event(scriptable_object* caller)
+		{
+			m_caller = caller;
+		}
+
+		scriptable_object* get_caller() { return m_caller; }
+
+		EVENT_CLASS_TYPE(Popup_Staff)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Popup)
+	private:
+		scriptable_object* m_caller;
+	};
+
+	class Popup_Capacity_Event : public Event
+	{
+	public:
+		Popup_Capacity_Event(scriptable_object* caller)
+		{
+			m_caller = caller;
+		}
+
+		scriptable_object* get_caller() { return m_caller; }
+
+		EVENT_CLASS_TYPE(Popup_Capacity)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Popup)
+	private:
+		scriptable_object* m_caller;
+	};
+
+	class Popup_Opening_Event : public Event
+	{
+	public:
+		Popup_Opening_Event(scriptable_object* caller)
+		{
+			m_caller = caller;
+		}
+
+		scriptable_object* get_caller() { return m_caller; }
+
+		EVENT_CLASS_TYPE(Popup_Opening)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Popup)
+	private:
+		scriptable_object* m_caller;
+	};
 }

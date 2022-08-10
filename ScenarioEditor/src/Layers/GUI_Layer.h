@@ -23,6 +23,9 @@ public:
 		PublicTransportSubMenu,
 		BuildingSizeSubMenu,
 		ButtonDropDown,
+		CapacityPopup,
+		StaffPopup,
+		OpeningPopup,
 		SetupMenu
 	};
 
@@ -123,6 +126,9 @@ private:
 	void open_public_sub();
 	void open_transport_sub();
 	void open_size_sub();
+	void open_staff_popup();
+	void open_capacity_popup();
+	void open_opening_popup();
 #pragma endregion
 
 	void defualt_func();

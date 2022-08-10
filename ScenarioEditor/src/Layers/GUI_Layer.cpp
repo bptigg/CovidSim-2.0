@@ -358,10 +358,23 @@ void GUI_Layer::create_building_menu()
 	Text_Menu_object* generic_zone_holder = new Text_Menu_object(generic_zone_text, { 50 + settings->get_position().x, 50 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(generic_zone_holder);
 
+	Button* generic_shop_zone = new Button({ -105.0f + settings->get_position().x, -10.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	generic_shop_zone->base_colour = building_constants::GENERIC_SHOP_ZONE;
+	generic_shop_zone->selected_colour = generic_shop_zone->base_colour;
+	generic_shop_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	generic_shop_zone->rendering_layer = m_base_layer;
+	generic_shop_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
+	add_scriptable_object(generic_shop_zone);
+	button_id++;
+
+	Text generic_shop_zone_text("generic shop development", { 50 + settings->get_position().x , -10 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* generic_shop_zone_holder = new Text_Menu_object(generic_shop_zone_text, { 50 + settings->get_position().x, -10 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(generic_shop_zone_holder);
+
 
 	//place holders
-	Button* public_building_zone = new Button({ -105.0f + settings->get_position().x, -10.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	public_building_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	Button* public_building_zone = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	public_building_zone->base_colour = { 255.0f / 215.0f, 51.0f / 255.0f, 0.0f, 1.0f };
 	public_building_zone->selected_colour = public_building_zone->base_colour;
 	public_building_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	public_building_zone->rendering_layer = m_base_layer;
@@ -369,12 +382,12 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(public_building_zone);
 	button_id++;
 
-	Text public_building_zone_text("public development", { 50 + settings->get_position().x , -10 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
-	Text_Menu_object* public_building_zone_holder = new Text_Menu_object(public_building_zone_text, { 50 + settings->get_position().x, -10 + settings->get_position().y }, this, m_base_layer + 2);
+	Text public_building_zone_text("public development", { 50 + settings->get_position().x , -70 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* public_building_zone_holder = new Text_Menu_object(public_building_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(public_building_zone_holder);
 
-	Button* transport_zone = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
-	transport_zone->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	Button* transport_zone = new Button({ -105.0f + settings->get_position().x, -130.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
+	transport_zone->base_colour = { 255.0f / 255.0f, 144.0f / 255.0f, 0.0f, 1.0f };
 	transport_zone->selected_colour = transport_zone->base_colour;
 	transport_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	transport_zone->rendering_layer = m_base_layer;
@@ -382,8 +395,8 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(transport_zone);
 	button_id++;
 
-	Text transport_zone_text("transport development", { 50 + settings->get_position().x , -70 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
-	Text_Menu_object* transport_zone_holder = new Text_Menu_object(transport_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	Text transport_zone_text("transport development", { 50 + settings->get_position().x , -130 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* transport_zone_holder = new Text_Menu_object(transport_zone_text, { 50 + settings->get_position().x, -130 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(transport_zone_holder);
 
 	//generic shop
@@ -403,7 +416,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(title);
 
 	Button* place_of_worship = new Button({ -105.0f + settings->get_position().x, 230.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	place_of_worship->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	place_of_worship->base_colour = building_constants::PLACE_OF_WORSHIP;
 	place_of_worship->selected_colour = place_of_worship->base_colour;
 	place_of_worship->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	place_of_worship->rendering_layer = m_base_layer;
@@ -416,7 +429,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(pow_zone_holder);
 
 	Button* park = new Button({ -105.0f + settings->get_position().x, 180.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	park->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	park->base_colour = building_constants::PARK;
 	park->selected_colour = park->base_colour;
 	park->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	park->rendering_layer = m_base_layer;
@@ -429,7 +442,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(park_zone_holder);
 
 	Button* cafe = new Button({ -105.0f + settings->get_position().x, 130.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	cafe->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	cafe->base_colour = building_constants::CAFE;
 	cafe->selected_colour = park->base_colour;
 	cafe->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	cafe->rendering_layer = m_base_layer;
@@ -442,7 +455,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(cafe_zone_holder);
 
 	Button* restaurant = new Button({ -105.0f + settings->get_position().x, 80.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	restaurant->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	restaurant->base_colour = building_constants::RESTAURANT;
 	restaurant->selected_colour = restaurant->base_colour;
 	restaurant->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	restaurant->rendering_layer = m_base_layer;
@@ -455,7 +468,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(rest_zone_holder);
 
 	Button* cinema = new Button({ -105.0f + settings->get_position().x, 30.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	cinema->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	cinema->base_colour = building_constants::CINEMA;
 	cinema->selected_colour = cinema->base_colour;
 	cinema->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	cinema->rendering_layer = m_base_layer;
@@ -468,7 +481,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(cinema_zone_holder);
 
 	Button* theatre = new Button({ -105.0f + settings->get_position().x, -20.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	theatre->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	theatre->base_colour = building_constants::THEATRE;
 	theatre->selected_colour = theatre->base_colour;
 	theatre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	theatre->rendering_layer = m_base_layer;
@@ -481,7 +494,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(theatre_zone_holder);
 
 	Button* supermarket = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	supermarket->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	supermarket->base_colour = building_constants::SUPERMARKET;
 	supermarket->selected_colour = supermarket->base_colour;
 	supermarket->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	supermarket->rendering_layer = m_base_layer;
@@ -494,7 +507,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(super_zone_holder);
 
 	Button* shopping_centre = new Button({ -105.0f + settings->get_position().x, -120.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	shopping_centre->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	shopping_centre->base_colour = building_constants::SHOPPING_CENTRE;
 	shopping_centre->selected_colour = shopping_centre->base_colour;
 	shopping_centre->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	shopping_centre->rendering_layer = m_base_layer;
@@ -507,7 +520,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(shop_zone_holder);
 
 	Button* pub= new Button({ -105.0f + settings->get_position().x, -170.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	pub->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	pub->base_colour = building_constants::PUB;
 	pub->selected_colour = pub->base_colour;
 	pub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	pub->rendering_layer = m_base_layer;
@@ -520,7 +533,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(pub_zone_holder);
 
 	Button* nightclub = new Button({ -105.0f + settings->get_position().x, -220.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	nightclub->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	nightclub->base_colour = building_constants::NIGHTCLUB;
 	nightclub->selected_colour = nightclub->base_colour;
 	nightclub->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	nightclub->rendering_layer = m_base_layer;
@@ -533,7 +546,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(club_zone_holder);
 
 	Button* arena = new Button({ -105.0f + settings->get_position().x, -270.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
-	arena->base_colour = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
+	arena->base_colour = building_constants::ARENA;
 	arena->selected_colour = arena->base_colour;
 	arena->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	arena->rendering_layer = m_base_layer;
@@ -625,6 +638,7 @@ void GUI_Layer::create_button_dropdown()
 	capacity->selected_colour = capacity->base_colour;
 	capacity->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	capacity->rendering_layer = m_base_layer;
+	capacity->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_capacity_popup));
 	add_scriptable_object(capacity);
 	button_id++;
 
@@ -633,6 +647,7 @@ void GUI_Layer::create_button_dropdown()
 	staff->selected_colour = staff->base_colour;
 	staff->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	staff->rendering_layer = m_base_layer + 3;
+	staff->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_staff_popup));
 	add_scriptable_object(staff);
 	button_id++;
 	
@@ -641,6 +656,7 @@ void GUI_Layer::create_button_dropdown()
 	opening_hours->selected_colour = opening_hours->base_colour;
 	opening_hours->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	opening_hours->rendering_layer = m_base_layer + 6;
+	opening_hours->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_opening_popup));
 	add_scriptable_object(opening_hours);
 	button_id++;
 }
@@ -980,6 +996,24 @@ void GUI_Layer::open_size_sub()
 			Event_Call_back(event);
 		}
 	}
+}
+
+void GUI_Layer::open_staff_popup()
+{
+	Events::Popup_Staff_Event event(m_caller);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::open_capacity_popup()
+{
+	Events::Popup_Capacity_Event event(m_caller);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::open_opening_popup()
+{
+	Events::Popup_Opening_Event event(m_caller);
+	Event_Call_back(event);
 }
 
 void GUI_Layer::defualt_func()

@@ -7,21 +7,21 @@ namespace building_constants
 	const glm::vec4 UNDEVLOPED_SPACE = { 0.3f, 0.3f, 0.3f,1.0f };
 	const glm::vec4 WALKING_ZONE = { 0.5f, 0.5f, 0.5f, 1.0f };
 	const glm::vec4 HOUSING_ZONE = { 86.0f / 255.0f, 125.0f / 255.0f, 70.0f / 255.0f, 1.0f };
-	const glm::vec4 GENERIC_WORK_ZONE = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
-	const glm::vec4 GENERIC_SHOP_ZONE = {};
+	const glm::vec4 GENERIC_WORK_ZONE = { 64.0f/ 255.0F, 224.0f/ 255.0F, 208.0f/ 255.0f, 1.0f };
+	const glm::vec4 GENERIC_SHOP_ZONE = { 51.0f / 255.0f, 51.0f / 255.0f, 1.0f, 1.0f };
 	const glm::vec4 HOSPITAL = {};
 
-	const glm::vec4 PLACE_OF_WORSHIP = {};
-	const glm::vec4 PARK = {};
-	const glm::vec4 CAFE = {};
-	const glm::vec4 RESTAURANT = {};
-	const glm::vec4 CINEMA = {};
-	const glm::vec4 THEATRE = {};
-	const glm::vec4 SUPERMARKET = {};
-	const glm::vec4 SHOPPING_CENTRE = {};
-	const glm::vec4 PUB = {};
-	const glm::vec4 NIGHTCLUB = {};
-	const glm::vec4 ARENA = {};
+	const glm::vec4 PLACE_OF_WORSHIP = {100.0f / 255.0f, 0.0f, 100.0f/ 200.0f, 1.0f};
+	const glm::vec4 PARK = {2.0f / 255.0f, 48.0f/ 255.0f, 32.0f/ 255.0f, 1.0f};
+	const glm::vec4 CAFE = {101.0f/ 255.0f, 67.0f / 255.0f, 33.0f / 255.0f, 1.0f};
+	const glm::vec4 RESTAURANT = {167.0f / 255.0f, 199.0f / 255.0f, 231.0f / 255.0f, 1.0f};
+	const glm::vec4 CINEMA = {236.0f / 255.0f, 9.0f / 255.0f, 9.0f / 255.0f, 1.0f};
+	const glm::vec4 THEATRE = {177.0f / 255.0f, 39.0f / 255.0f, 74.0f / 255.0f, 1.0f};
+	const glm::vec4 SUPERMARKET = {184.0f / 255.0f, 182.0f / 255.0f, 231.0f / 255.0f, 1.0f};
+	const glm::vec4 SHOPPING_CENTRE = {231.0f / 255.0f, 212.0f / 255.0f, 182.0f / 255.0f, 1.0f};
+	const glm::vec4 PUB = {250.0f / 255.0f, 186.0f / 255.0f, 89.0f / 255.0f, 1.0f};
+	const glm::vec4 NIGHTCLUB = {57.0f / 255.0f, 39.0f / 255.0f, 102.0f / 255.0f, 1.0f};
+	const glm::vec4 ARENA = {213.0f / 255.0f, 220.0f / 255.0f, 95.0f / 255.0f, 1.0f};
 }
 
 
