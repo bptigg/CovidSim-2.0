@@ -78,4 +78,26 @@ public:
 
     void push_layer(Layer* layer);
 
+private:
+    template<typename T>
+    void GUI_event(Events::Event& e, GUI_Layer::Type layer_type, Events::Event_Type event_type)
+    {
+        if (e.Get_Event_Type() == event_type)
+        {
+            for (int i = 0; i < m_stack.size(); i++)
+            {
+                GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                if (temp_layer != nullptr)
+                {
+                    T* ev = dynamic_cast<T*>(&e);
+                    if (temp_layer->get_type() == layer_type)
+                    {
+                        temp_layer->set_caller(ev->get_caller());
+                        m_stack[i]->On_Attach({});
+                        m_stack[i]->render(true);
+                    }
+                }
+            }
+        }
+    }
 };

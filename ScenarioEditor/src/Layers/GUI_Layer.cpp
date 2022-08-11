@@ -60,6 +60,15 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 	case Type::ButtonDropDown:
 		create_button_dropdown();
 		break;
+	case Type::CapacityPopup:
+		create_capacity_popup();
+		break;
+	case Type::StaffPopup:
+		create_staff_popup();
+		break;
+	case Type::OpeningPopup:
+		create_opening_popup();
+		break;
 	default:
 		break;
 	}
@@ -659,6 +668,33 @@ void GUI_Layer::create_button_dropdown()
 	opening_hours->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_opening_popup));
 	add_scriptable_object(opening_hours);
 	button_id++;
+}
+
+void GUI_Layer::create_capacity_popup()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(popup);
+}
+
+void GUI_Layer::create_staff_popup()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(popup);
+}
+
+void GUI_Layer::create_opening_popup()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(popup);
 }
 
 void GUI_Layer::setting_exit_func()

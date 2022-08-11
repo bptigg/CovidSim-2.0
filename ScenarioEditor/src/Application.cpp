@@ -64,24 +64,6 @@ void app::On_Event(Events::Event& e)
         }
     }
 
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
-        {
-            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
-            if (temp_layer != nullptr)
-            {
-               Events::GUI_Building_Select_Event* ev = dynamic_cast<Events::GUI_Building_Select_Event*>(&e);
-               if (temp_layer->get_type() == GUI_Layer::Type::BuildingSelectMenu)
-               {
-                   m_stack[i]->On_Attach({});
-                   temp_layer->set_caller(ev->get_caller());
-                   m_stack[i]->render(true);
-               }
-            }
-        }
-    }
-
     if (e.Get_Event_Type() == Events::Event_Type::GUI_Size_Select)
     {
         for (int i = 0; i < m_stack.size(); i++)
@@ -120,23 +102,63 @@ void app::On_Event(Events::Event& e)
         }
     }
 
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Dropdown)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
-        {
-            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
-            if (temp_layer != nullptr)
-            {
-                Events::GUI_Dropdown_Event* ev = dynamic_cast<Events::GUI_Dropdown_Event*>(&e);
-                if (temp_layer->get_type() == GUI_Layer::Type::ButtonDropDown)
-                {
-                    temp_layer->set_caller(ev->get_caller());
-                    m_stack[i]->On_Attach({});
-                    m_stack[i]->render(true);
-                }
-            }
-        }
-    }
+    GUI_event<Events::GUI_Building_Select_Event>(e, GUI_Layer::Type::BuildingSelectMenu, Events::Event_Type::GUI_Building_Select);
+    GUI_event<Events::GUI_Dropdown_Event>(e, GUI_Layer::Type::ButtonDropDown, Events::Event_Type::GUI_Dropdown);
+    GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);
+
+    //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
+    //{
+    //    for (int i = 0; i < m_stack.size(); i++)
+    //    {
+    //        GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+    //        if (temp_layer != nullptr)
+    //        {
+    //            Events::GUI_Building_Select_Event* ev = dynamic_cast<Events::GUI_Building_Select_Event*>(&e);
+    //            if (temp_layer->get_type() == GUI_Layer::Type::BuildingSelectMenu)
+    //            {
+    //                m_stack[i]->On_Attach({});
+    //                temp_layer->set_caller(ev->get_caller());
+    //                m_stack[i]->render(true);
+    //            }
+    //        }
+    //    }
+    //}
+
+    //if (e.Get_Event_Type() == Events::Event_Type::GUI_Dropdown)
+    //{
+    //    for (int i = 0; i < m_stack.size(); i++)
+    //    {
+    //        GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+    //        if (temp_layer != nullptr)
+    //        {
+    //            Events::GUI_Dropdown_Event* ev = dynamic_cast<Events::GUI_Dropdown_Event*>(&e);
+    //            if (temp_layer->get_type() == GUI_Layer::Type::ButtonDropDown)
+    //            {
+    //                temp_layer->set_caller(ev->get_caller());
+    //                m_stack[i]->On_Attach({});
+    //                m_stack[i]->render(true);
+    //            }
+    //        }
+    //    }
+    //}
+
+    //if (e.Get_Event_Type() == Events::Event_Type::Popup_Capacity)
+    //{
+    //    for (int i = 0; i < m_stack.size(); i++)
+    //    {
+    //        GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+    //        if (temp_layer != nullptr)
+    //        {
+    //            Events::Popup_Capacity_Event* ev = dynamic_cast<Events::Popup_Capacity_Event*>(&e);
+    //            if (temp_layer->get_type() == GUI_Layer::Type::CapacityPopup)
+    //            {
+    //                temp_layer->set_caller(ev->get_caller());
+    //                m_stack[i]->On_Attach({});
+    //                m_stack[i]->render(true);
+    //            }
+    //        }
+    //    }
+    //}
 
     for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
     {
@@ -151,6 +173,7 @@ void app::push_layer(Layer* layer)
 {
     m_stack.Push_Layer(layer);
 }
+
 bool app::OnWindowClose(Events::Window_Close_Event& e)
 {
     m_running = false;
@@ -225,10 +248,19 @@ void app::init()
     m_stack[4]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSizeSubMenu, 3, m_camera));
-    m_stack[4]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    m_stack[5]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::ButtonDropDown, 10, m_camera));
-    m_stack[5]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    m_stack[6]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::CapacityPopup, 13, m_camera));
+    m_stack[7]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::StaffPopup, 13, m_camera));
+    m_stack[8]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::OpeningPopup, 13, m_camera));
+    m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

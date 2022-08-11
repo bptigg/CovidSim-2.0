@@ -102,6 +102,10 @@ private:
 	void create_building_size_sub_menu();
 	void create_button_dropdown();
 
+	void create_capacity_popup();
+	void create_staff_popup();
+	void create_opening_popup();
+
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
 
