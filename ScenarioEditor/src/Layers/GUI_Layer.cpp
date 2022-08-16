@@ -20,6 +20,7 @@ GUI_Layer::GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Ca
 	m_dialog_box = false;
 	
 	m_orthographic_controller = std::move(ortho_controll);
+	m_camera_block = false;
 }
 
 GUI_Layer::~GUI_Layer()
@@ -130,6 +131,7 @@ void GUI_Layer::On_Event(Events::Event& e)
 {
 	if (m_render)
 	{
+		bool dont_unblock = m_orthographic_controller->block;
 		m_orthographic_controller->block = true;
 		if (m_dialog_box)
 		{
@@ -154,7 +156,10 @@ void GUI_Layer::On_Event(Events::Event& e)
 				}
 			}
 		}
-		m_orthographic_controller->block = false;
+		if (!dont_unblock)
+		{
+			m_orthographic_controller->block = false;
+		}
 	}
 }
 
@@ -677,6 +682,14 @@ void GUI_Layer::create_capacity_popup()
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(popup);
+
+	Text title_text("Capacity", { 0 + popup->get_position().x , 280 + popup->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + popup->get_position().x, 280 + popup->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Text_Box* capacity = new Text_Box({ 0 + popup->get_position().x, 200 + popup->get_position().y }, { 200, 30 }, this, true, m_base_layer, true, button_id);
+	add_scriptable_object(capacity);
+	button_id++;
 }
 
 void GUI_Layer::create_staff_popup()
@@ -1042,6 +1055,16 @@ void GUI_Layer::open_staff_popup()
 
 void GUI_Layer::open_capacity_popup()
 {
+	if (!m_orthographic_controller->block)
+	{
+		m_camera_block = false;
+	}
+	else
+	{
+		m_orthographic_controller->block = true;
+		m_camera_block = true;
+	}
+
 	Events::Popup_Capacity_Event event(m_caller);
 	Event_Call_back(event);
 }
@@ -1060,6 +1083,12 @@ void GUI_Layer::defualt_func()
 void GUI_Layer::close_menu()
 {
 	m_render = false;
+
+	if (m_camera_block)
+	{
+		m_orthographic_controller->block = false;
+	}
+
 	Button* caller_button = dynamic_cast<Button*>(m_caller);
 	if (caller_button != nullptr)
 	{

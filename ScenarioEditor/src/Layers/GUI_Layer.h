@@ -42,6 +42,7 @@ private:
 	//bool m_dialog_box = false;
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
+	bool m_camera_block;
 
 #pragma region settings_menu
 	bool sm_saved;
