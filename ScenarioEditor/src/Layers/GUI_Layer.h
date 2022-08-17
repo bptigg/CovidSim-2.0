@@ -120,6 +120,9 @@ private:
 	void close_pb_menu();
 	void close_size_menu();
 	void close_dropdown();
+
+	void save_popup();
+	void close_popup();
 #pragma endregion
 
 #pragma region settings_pages
@@ -137,5 +140,7 @@ private:
 #pragma endregion
 
 	void defualt_func();
+
+	//void save_data();
 };
 

@@ -19,6 +19,10 @@ public:
 	uint32_t capacity;
 	std::pair<uint32_t, uint32_t> opening_hours;
 
+	bool staff_action_needed = false;
+	bool capacity_action_needed = false;
+	bool opening_action_needed = false;
+	bool action_needed = false;
 
 };
 

@@ -266,6 +266,11 @@ void GUI_Layer::set_zone_size()
 					}
 
 					data->building_type = get_building_code(caller_button->base_colour);
+
+					data->capacity_action_needed = true;
+					data->staff_action_needed = true;
+					data->opening_action_needed = true;
+					data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
 				}
 
 				m_caller = nullptr;
@@ -689,6 +694,15 @@ void GUI_Layer::create_capacity_popup()
 
 	Text_Box* capacity = new Text_Box({ 0 + popup->get_position().x, 200 + popup->get_position().y }, { 200, 30 }, this, true, m_base_layer, true, button_id);
 	add_scriptable_object(capacity);
+	button_id++;
+
+	Button* save = new Button("Save", { 0 + popup->get_position().x, -260 + popup->get_position().y}, {150, 60}, this, true, 45.0f, button_id);
+	save->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	save->box_colour = { 0.8f, 0.8f, 0.8f, 1.0f };
+	save->selected_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	save->rendering_layer = m_base_layer;
+	save->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_popup));
+	add_scriptable_object(save);
 	button_id++;
 }
 
@@ -1135,4 +1149,85 @@ void GUI_Layer::close_dropdown()
 	}
 	m_render = false;
 
+}
+
+void GUI_Layer::save_popup()
+{
+	bool not_complete = false;
+
+	for (scriptable_object* obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::TEXT_BOX)
+		{
+			Text_Box* box = dynamic_cast<Text_Box*>(obj);
+			if (box != nullptr)
+			{
+				if (box->get_string_length() == 0)
+				{
+					not_complete = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (not_complete)
+	{
+		dialouge_box* entry_fields = new dialouge_box("Incomplete entry fields remaining", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+		m_objects.push_back(entry_fields);
+		m_dialog_box = true;
+		return;
+	}
+
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+	auto data = temp_layer->get_world_data(caller_button->get_id());
+
+	switch (this->get_type())
+	{
+	case Type::CapacityPopup:
+
+		for (scriptable_object* obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::TEXT_BOX)
+			{
+				Text_Box* box = dynamic_cast<Text_Box*>(obj);
+				if (box != nullptr)
+				{
+					if (box->get_id() == 0)
+					{
+						std::string input = box->get_string();
+						auto it = input.begin();
+
+						while (it != input.end() && std::isdigit(*it)) ++it;
+
+						if (it != input.end())
+						{
+							dialouge_box* not_int = new dialouge_box(input + " is not a valid number", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+							m_objects.push_back(not_int);
+							m_dialog_box = true;
+							return;
+						}
+
+						data->capacity = stoi(box->get_string());
+						data->capacity_action_needed = false;
+						data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
+					}
+				}
+			}
+		}
+		break;
+	case Type::StaffPopup:
+		break;
+	case Type::OpeningPopup:
+		break;
+	default:
+		break;
+	}
+
+	close_menu();
+}
+
+void GUI_Layer::close_popup()
+{
 }
