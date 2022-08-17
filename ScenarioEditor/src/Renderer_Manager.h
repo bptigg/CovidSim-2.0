@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <algorithm>
+
 enum class render_type
 {
 	COLOURED_RECTANGLE = 0,

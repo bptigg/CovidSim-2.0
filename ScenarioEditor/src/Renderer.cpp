@@ -35,6 +35,8 @@ struct render_data
 
 	std::unordered_map<char, Character> characters;
 	bool base_uniforms = false;
+
+	bool batch_ended = false;
 };
 
 static render_data s_data;
@@ -176,12 +178,14 @@ void Renderer::shutdown()
 void Renderer::begin_batch()
 {
 	s_data.Object_Buffer_Ptr = s_data.Object_Buffer;
+	s_data.batch_ended = false;
 }
 
 void Renderer::end_batch()
 {
 	uint32_t buffer_size = (uint32_t)((uint8_t*)s_data.Object_Buffer_Ptr - (uint8_t*)s_data.Object_Buffer);
 	s_data.VertexBuffer->add_to_buffer((void*)s_data.Object_Buffer, buffer_size);
+	s_data.batch_ended = true;
 }
 
 void Renderer::clear()
@@ -207,6 +211,11 @@ void Renderer::draw()
 			begin_batch();
 			for (int i = 0; i < draw->second.size(); i++)
 			{
+				if (s_data.batch_ended)
+				{
+					begin_batch();
+				}
+
 				switch (draw->second[i]->type)
 				{
 				case render_type::COLOURED_RECTANGLE:
@@ -277,6 +286,7 @@ void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::v
 	float text_height	= 0.0f;
 	float min_y			= 0.0f;
 	float new_scale		= scale / 100;
+
 	for (std::string::const_iterator c = text.begin(); c != text.end(); c++)
 	{
 		Character* ch = &s_data.characters[*c];

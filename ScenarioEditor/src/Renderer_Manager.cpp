@@ -62,12 +62,14 @@ void Renderer_Manager::draw_text(std::string& text, const glm::vec2& centre, con
 	object->centred = centred;
 	object->text_width = width;
 	object->static_obj = (float)static_obj;
+	//object->texture_id = 
 
 	Push_Object(object);
 }
 
 std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator Renderer_Manager::next_draw()
 {
+	//Sort_Queue();
 	auto it = m_layer_queue.begin();
 	std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator it_2;
 	
@@ -88,7 +90,7 @@ std::unordered_map<unsigned int, std::vector<render_queue_object*>>::iterator Re
 			}
 
 			it_2 = it->second.begin();
-			for (int a = 0; it_2 != it->second.end(); it++)
+			for (int a = 0; it_2 != it->second.end(); it_2++)
 			{
 				if (a == m_map_position)
 				{
@@ -174,3 +176,4 @@ void Renderer_Manager::Pop_Object(render_queue_object* object)
 		m_layer_queue[object->layer].erase(object->texture_id);
 	}
 }
+
