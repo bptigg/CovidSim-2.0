@@ -60,24 +60,28 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		menu_key = 3;
 		create_public_building_sub_menu();
 		break;
-	case Type::BuildingSizeSubMenu:
+	case Type::PublicTransportSubMenu:
 		menu_key = 4;
+		create_public_transport_sub_menu();
+		break;
+	case Type::BuildingSizeSubMenu:
+		menu_key = 5;
 		create_building_size_sub_menu();
 		break;
 	case Type::ButtonDropDown:
-		menu_key = 5;
+		menu_key = 6;
 		create_button_dropdown();
 		break;
 	case Type::CapacityPopup:
-		menu_key = 6;
+		menu_key = 7;
 		create_capacity_popup();
 		break;
 	case Type::StaffPopup:
-		menu_key = 7;
+		menu_key = 8;
 		create_staff_popup();
 		break;
 	case Type::OpeningPopup:
-		menu_key = 8;
+		menu_key = 9;
 		create_opening_popup();
 		break;
 	default:
@@ -400,8 +404,6 @@ void GUI_Layer::create_building_menu()
 	Text_Menu_object* generic_shop_zone_holder = new Text_Menu_object(generic_shop_zone_text, { 50 + settings->get_position().x, -10 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(generic_shop_zone_holder);
 
-
-	//place holders
 	Button* public_building_zone = new Button({ -105.0f + settings->get_position().x, -70.0f + settings->get_position().y }, { 50.0f, 50.f }, this, true, button_id);
 	public_building_zone->base_colour = { 255.0f / 215.0f, 51.0f / 255.0f, 0.0f, 1.0f };
 	public_building_zone->selected_colour = public_building_zone->base_colour;
@@ -595,6 +597,62 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
+
+	Text title_text("Public transport selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Button*	Bus = new Button({ -105.0f + settings->get_position().x, 230.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	Bus->base_colour = building_constants::BUS;
+	Bus->selected_colour = Bus->base_colour;
+	Bus->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Bus->rendering_layer = m_base_layer;
+	Bus->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	add_scriptable_object(Bus);
+	button_id++;
+
+	Text bus_zone_text("bus", { 50 + settings->get_position().x , 230 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* bus_zone_holder = new Text_Menu_object(bus_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(bus_zone_holder);
+
+	Button* Light_Rail = new Button({ -105.0f + settings->get_position().x, 180.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	Light_Rail->base_colour = building_constants::LIGHT_RAIL;
+	Light_Rail->selected_colour = Bus->base_colour;
+	Light_Rail->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Light_Rail->rendering_layer = m_base_layer;
+	Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	add_scriptable_object(Light_Rail);
+	button_id++;
+
+	Text light_rail_zone_text("light rail", { 50 + settings->get_position().x , 180 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* light_rail_zone_holder = new Text_Menu_object(light_rail_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(light_rail_zone_holder);
+
+	Button* Rapid_Transit = new Button({ -105.0f + settings->get_position().x, 130.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	Rapid_Transit->base_colour = building_constants::RAPID_TRANSIT;
+	Rapid_Transit->selected_colour = Bus->base_colour;
+	Rapid_Transit->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Rapid_Transit->rendering_layer = m_base_layer;
+	Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	add_scriptable_object(Rapid_Transit);
+	button_id++;
+
+	Text rapid_transit_zone_text("rapid transit", { 50 + settings->get_position().x , 130 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* rt_zone_holder = new Text_Menu_object(rapid_transit_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(rt_zone_holder);
+
+	Button* Trains = new Button({ -105.0f + settings->get_position().x, 80.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	Trains->base_colour = building_constants::TRAINS;
+	Trains->selected_colour = Bus->base_colour;
+	Trains->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Trains->rendering_layer = m_base_layer;
+	Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	add_scriptable_object(Trains);
+	button_id++;
+
+	Text train_zone_text("train", { 50 + settings->get_position().x , 80 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text_Menu_object* train_zone_holder = new Text_Menu_object(train_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(train_zone_holder);
 }
 
 void GUI_Layer::create_building_size_sub_menu()
@@ -1112,7 +1170,18 @@ void GUI_Layer::open_public_sub()
 
 void GUI_Layer::open_transport_sub()
 {
-	Events::GUI_Transport_Building_Event event(m_caller);
+	Menu_Background* temp_menu = nullptr;
+	for (scriptable_object* obj : m_objects)
+	{
+		temp_menu = dynamic_cast<Menu_Background*>(obj);
+		if (temp_menu != nullptr)
+		{
+			temp_menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
+			break;
+		}
+	}
+
+	Events::GUI_Transport_Building_Event event(m_caller, temp_menu);
 	Event_Call_back(event);
 }
 

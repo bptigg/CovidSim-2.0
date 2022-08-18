@@ -61,12 +61,14 @@ namespace Events
 	class GUI_Transport_Building_Event : public Event
 	{
 	public:
-		GUI_Transport_Building_Event(scriptable_object* caller)
+		GUI_Transport_Building_Event(scriptable_object* caller, scriptable_object* menu)
 		{
 			m_button = caller;
+			m_menu = menu;
 		}
 
 		scriptable_object* get_caller() { return m_button; }
+		scriptable_object* get_menu() { return m_menu; }
 
 
 		EVENT_CLASS_TYPE(GUI_Transport_Select)
@@ -74,6 +76,7 @@ namespace Events
 
 	private:
 		scriptable_object* m_button;
+		scriptable_object* m_menu;
 	};
 
 	class GUI_Building_Size_Event : public Event

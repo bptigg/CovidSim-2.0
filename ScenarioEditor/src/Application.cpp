@@ -102,6 +102,25 @@ void app::On_Event(Events::Event& e)
         }
     }
 
+    if (e.Get_Event_Type() == Events::Event_Type::GUI_Transport_Select)
+    {
+        for (int i = 0; i < m_stack.size(); i++)
+        {
+            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+            if (temp_layer != nullptr)
+            {
+                Events::GUI_Transport_Building_Event* ev = dynamic_cast<Events::GUI_Transport_Building_Event*>(&e);
+                if (temp_layer->get_type() == GUI_Layer::Type::PublicTransportSubMenu)
+                {
+                    m_stack[i]->On_Attach({});
+                    temp_layer->set_menu(ev->get_menu());
+                    temp_layer->set_caller(ev->get_caller());
+                    m_stack[i]->render(true);
+                }
+            }
+        }
+    }
+
     GUI_event<Events::GUI_Building_Select_Event>(e, GUI_Layer::Type::BuildingSelectMenu, Events::Event_Type::GUI_Building_Select);
     GUI_event<Events::GUI_Dropdown_Event>(e, GUI_Layer::Type::ButtonDropDown, Events::Event_Type::GUI_Dropdown);
     GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);

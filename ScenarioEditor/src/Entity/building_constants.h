@@ -22,6 +22,11 @@ namespace building_constants
 	const glm::vec4 PUB = {250.0f / 255.0f, 186.0f / 255.0f, 89.0f / 255.0f, 1.0f};
 	const glm::vec4 NIGHTCLUB = {57.0f / 255.0f, 39.0f / 255.0f, 102.0f / 255.0f, 1.0f};
 	const glm::vec4 ARENA = {213.0f / 255.0f, 220.0f / 255.0f, 95.0f / 255.0f, 1.0f};
+
+	const glm::vec4 BUS = {};
+	const glm::vec4 LIGHT_RAIL = {};
+	const glm::vec4 RAPID_TRANSIT = {};
+	const glm::vec4 TRAINS = {};
 }
 
 

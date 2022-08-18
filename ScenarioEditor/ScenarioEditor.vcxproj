@@ -159,6 +159,7 @@
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Layers\editor.cpp" />
     <ClCompile Include="src\Layers\GUI_Layer.cpp" />
+    <ClCompile Include="src\Layers\Transport_Layer.cpp" />
     <ClCompile Include="src\Layer_Stack.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="src\Layer.h" />
     <ClInclude Include="src\Layers\editor.h" />
     <ClInclude Include="src\Layers\GUI_Layer.h" />
+    <ClInclude Include="src\Layers\Transport_Layer.h" />
     <ClInclude Include="src\Layer_Stack.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Renderer.h" />
