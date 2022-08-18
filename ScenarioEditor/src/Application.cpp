@@ -127,6 +127,8 @@ void app::On_Event(Events::Event& e)
     GUI_event<Events::Popup_Opening_Event>(e, GUI_Layer::Type::OpeningPopup, Events::Event_Type::Popup_Opening);
     GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
 
+    GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
+
     //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
     //{
     //    for (int i = 0; i < m_stack.size(); i++)
@@ -281,6 +283,9 @@ void app::init()
     m_stack[8]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::OpeningPopup, 13, m_camera));
+    m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SettingsMenu, 3, m_camera));
     m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     

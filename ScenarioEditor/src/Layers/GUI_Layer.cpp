@@ -84,6 +84,10 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		menu_key = 9;
 		create_opening_popup();
 		break;
+	case Type::SettingsMenu:
+		menu_key = 10;
+		create_settings_menu();
+		break;
 	default:
 		break;
 	}
@@ -692,6 +696,19 @@ void GUI_Layer::create_building_size_sub_menu()
 	add_scriptable_object(small);
 	button_id++;
 
+}
+
+void GUI_Layer::create_settings_menu()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(settings);
+
+	Text title_text("Options", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
 }
 
 void GUI_Layer::create_button_dropdown()

@@ -79,6 +79,15 @@ void editor::On_Event(Events::Event& e)
 	m_orthographic_controller->On_Event(e);
 	Renderer::update_view(m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
 
+	if (e.Get_Event_Type() == Events::Event_Type::Key_Pressed)
+	{
+		if (Input::Is_Key_Pressed(CS_KEY_TAB))
+		{
+			Events::Event_Dispatcher dispatch(e);
+			dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(editor::open_settings_panel));
+		}
+	}
+
 	for (scriptable_object* obj : m_objects)
 	{
 		if (e.Handled != true)
@@ -144,6 +153,13 @@ void editor::open_drop_down()
 {
 	Events::GUI_Dropdown_Event event(m_objects[m_selected]);
 	Event_Call_back(event);
+}
+
+bool editor::open_settings_panel(Events::Key_Pressed_Event& e)
+{
+	Events::GUI_Settings_Event event(m_objects[m_selected]);
+	Event_Call_back(event);
+	return true;
 }
 
 

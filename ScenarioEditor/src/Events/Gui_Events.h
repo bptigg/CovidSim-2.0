@@ -37,6 +37,24 @@ namespace Events
 		scriptable_object* m_button;
 	};
 
+	class GUI_Settings_Event : public Event
+	{
+	public:
+		GUI_Settings_Event(scriptable_object* caller)
+		{
+			m_button = caller;
+		}
+
+		scriptable_object* get_caller() { return m_button; }
+
+
+		EVENT_CLASS_TYPE(GUI_Settings_Select)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		scriptable_object* m_button;
+	};
+
 	class GUI_Public_Building_Event : public Event
 	{
 	public:

@@ -26,6 +26,7 @@ public:
 		CapacityPopup,
 		StaffPopup,
 		OpeningPopup,
+		SettingsMenu,
 		SetupMenu
 	};
 
@@ -103,6 +104,7 @@ private:
 	void create_public_building_sub_menu();
 	void create_public_transport_sub_menu();
 	void create_building_size_sub_menu();
+	void create_settings_menu();
 	void create_button_dropdown();
 
 	void create_capacity_popup();
