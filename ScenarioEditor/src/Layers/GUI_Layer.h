@@ -84,6 +84,7 @@ public:
 	void change_box_texture();
 	//void change_box_colour_sub_menu(); 
 
+	void set_transport_type();
 	void set_zone_size();
 	inline void close_public_menu()
 	{

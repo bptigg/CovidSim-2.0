@@ -249,6 +249,38 @@ void GUI_Layer::change_box_colour()
 //	}
 //}
 
+void GUI_Layer::set_transport_type()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Button* caller_button = dynamic_cast<Button*>(m_caller);
+			if (caller_button != nullptr)
+			{
+				caller_button->base_colour = temp_button->base_colour;
+				caller_button->selected_colour = temp_button->selected_colour;
+				caller_button->change_state(false);
+
+				{
+					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					auto data = temp_layer->get_world_data(caller_button->get_id());
+					data->building_type = get_building_code(caller_button->base_colour);
+					data->transport_building = true;
+
+					data->capacity_action_needed = true;
+					data->staff_action_needed = true;
+					data->opening_action_needed = true;
+					data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
+				}
+				m_caller = nullptr;
+				break;
+			}
+		}
+	}
+}
+
 void GUI_Layer::set_zone_size()
 {
 	for (scriptable_object* obj : m_objects)
@@ -611,7 +643,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Bus->selected_colour = Bus->base_colour;
 	Bus->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Bus->rendering_layer = m_base_layer;
-	Bus->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	Bus->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Bus);
 	button_id++;
 
@@ -624,7 +656,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Light_Rail->selected_colour = Bus->base_colour;
 	Light_Rail->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Light_Rail->rendering_layer = m_base_layer;
-	Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Light_Rail);
 	button_id++;
 
@@ -637,7 +669,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Rapid_Transit->selected_colour = Bus->base_colour;
 	Rapid_Transit->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Rapid_Transit->rendering_layer = m_base_layer;
-	Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Rapid_Transit);
 	button_id++;
 
@@ -650,7 +682,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Trains->selected_colour = Bus->base_colour;
 	Trains->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Trains->rendering_layer = m_base_layer;
-	Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Trains);
 	button_id++;
 
@@ -709,6 +741,15 @@ void GUI_Layer::create_settings_menu()
 	Text title_text("Options", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
 	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(title);
+
+	Button* Transport_overlay = new Button("Transport overlay", { settings->get_position().x, 220 + settings->get_position().y}, {320, 60}, this, true, 50.0f, button_id);
+	Transport_overlay->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	Transport_overlay->selected_colour = Transport_overlay->base_colour;
+	Transport_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Transport_overlay->rendering_layer = m_base_layer + 6;
+	//Transport_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_zone_size));
+	add_scriptable_object(Transport_overlay);
+	button_id++;
 }
 
 void GUI_Layer::create_button_dropdown()

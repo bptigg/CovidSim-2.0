@@ -15,6 +15,8 @@ public:
 	int32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
 	uint32_t size; //small - 0, medium - 1, large - 2, ''
 
+	bool transport_building; 
+
 	uint32_t staff;
 	uint32_t capacity;
 	std::pair<uint32_t, uint32_t> opening_hours;
