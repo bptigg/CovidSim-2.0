@@ -17,6 +17,8 @@ Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, b
 	m_text = Text("", location, 20.f, { 1.0f, 1.0f, 1.0f, 1.0f }, true);
 
 	m_type = entity_type::BUTTON;
+
+	action_needed = false;
 }
 
 Button::Button(const std::string text, const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, float scale, int id)
@@ -35,6 +37,8 @@ Button::Button(const std::string text, const glm::vec2& location, const glm::vec
 
 	m_text = Text(text, location, scale, { 1.0f, 1.0f, 1.0f, 1.0f }, true);
 	m_type = entity_type::BUTTON;
+
+	action_needed = false;
 }
 
 Button::~Button()
@@ -75,6 +79,12 @@ void Button::render()
 		break;
 	default:
 		break;
+	}
+
+	//editor specific
+	if (action_needed && m_state == Button::State::None)
+	{
+		Renderer::draw_box(m_location, m_size, 2.0f, { 1.0f, 0.0f, 0.0f, 1.0f }, rendering_layer + 1, m_menu_object);
 	}
 }
 

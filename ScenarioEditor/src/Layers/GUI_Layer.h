@@ -44,6 +44,8 @@ private:
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 	bool m_camera_block;
 
+	uint32_t menu_key;
+
 #pragma region settings_menu
 	bool sm_saved;
 #pragma endregion

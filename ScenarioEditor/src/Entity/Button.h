@@ -25,6 +25,9 @@ public:
 
 	unsigned int rendering_layer;
 
+	//editor specfic
+	bool action_needed;
+
 protected:
 	std::function<void()> button_func;
 	std::function<void()> right_button_func;

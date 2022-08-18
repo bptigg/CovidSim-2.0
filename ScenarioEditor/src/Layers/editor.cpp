@@ -59,6 +59,12 @@ void editor::On_Update(Timestep ts)
 	{
 		obj->update_position(m_orthographic_controller->Get_Zoom_Level(), m_orthographic_controller->get_position(), m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
 		obj->update();
+
+		auto button = dynamic_cast<Button*>(obj);
+		if (button != nullptr)
+		{
+			button->action_needed = m_world_data[button->get_id()]->action_needed;
+		}
 	}
 
 	//Renderer::draw();

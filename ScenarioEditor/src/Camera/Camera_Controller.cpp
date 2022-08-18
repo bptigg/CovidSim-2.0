@@ -7,6 +7,7 @@ Camera_Controller::Camera_Controller(bool rotation)
 	m_aspect_ratio = 1.0f;
 	m_rotation = rotation;
 	m_camera_translation_speed = 0.005f;
+	m_block = false;
 }
 
 void Camera_Controller::On_Update(Timestep ts)
@@ -14,7 +15,7 @@ void Camera_Controller::On_Update(Timestep ts)
 	m_camera_translation_speed = 100.0f;
 	m_camera_translation_speed = m_zoom_level * m_camera_translation_speed;
 	bool changed = false;
-	if (!block)
+	if (!m_block)
 	{
 		if (Input::Is_Key_Pressed(CS_KEY_A))
 		{
@@ -74,7 +75,7 @@ void Camera_Controller::On_Event(Events::Event& e)
 
 bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
 {
-	if (Input::Is_Key_Pressed(CS_KEY_R) && block == false)
+	if (Input::Is_Key_Pressed(CS_KEY_R) && m_block == false)
 	{
 		m_camera_position = { 0.0f,0.0f,0.0f };
 		m_camera.Set_Position(m_camera_position);
@@ -87,10 +88,13 @@ bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
 
 bool Camera_Controller::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 {
-	m_zoom_level -= e.GetYOffset() * 0.125f;
-	m_zoom_level = std::max(m_zoom_level, 0.25f);
-	m_zoom_level = (m_zoom_level <= 3) ? m_zoom_level : 3;
-	m_camera.set_projection((-m_resolution.x / 2.0f) * m_zoom_level, (m_resolution.x / 2.0f) * m_zoom_level, (-m_resolution.y / 2.0f) * m_zoom_level, (m_resolution.y / 2.0f) * m_zoom_level);
+	if (!m_block)
+	{
+		m_zoom_level -= e.GetYOffset() * 0.125f;
+		m_zoom_level = std::max(m_zoom_level, 0.25f);
+		m_zoom_level = (m_zoom_level <= 3) ? m_zoom_level : 3;
+		m_camera.set_projection((-m_resolution.x / 2.0f) * m_zoom_level, (m_resolution.x / 2.0f) * m_zoom_level, (-m_resolution.y / 2.0f) * m_zoom_level, (m_resolution.y / 2.0f) * m_zoom_level);
+	}
 	return false;
 }
 

@@ -5,6 +5,8 @@
 
 #define BIND_FUNCTION(x) std::bind(&GUI_Layer::x, this)
 
+#define EVENT_KEY 0
+
 
 #if _DEBUG
 #define BYPASS 1
@@ -47,27 +49,35 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 	switch (m_type)
 	{
 	case Type::SetupMenu:
+		menu_key = 1;
 		create_settings_menu(0);
 		break;
 	case Type::BuildingSelectMenu:
+		menu_key = 2;
 		create_building_menu();
 		break;
 	case Type::PublicBuildingSubMenu:
+		menu_key = 3;
 		create_public_building_sub_menu();
 		break;
 	case Type::BuildingSizeSubMenu:
+		menu_key = 4;
 		create_building_size_sub_menu();
 		break;
 	case Type::ButtonDropDown:
+		menu_key = 5;
 		create_button_dropdown();
 		break;
 	case Type::CapacityPopup:
+		menu_key = 6;
 		create_capacity_popup();
 		break;
 	case Type::StaffPopup:
+		menu_key = 7;
 		create_staff_popup();
 		break;
 	case Type::OpeningPopup:
+		menu_key = 8;
 		create_opening_popup();
 		break;
 	default:
@@ -131,8 +141,8 @@ void GUI_Layer::On_Event(Events::Event& e)
 {
 	if (m_render)
 	{
-		bool dont_unblock = m_orthographic_controller->block;
-		m_orthographic_controller->block = true;
+		//bool dont_unblock = m_orthographic_controller->get_block();
+		//m_orthographic_controller->block_camera(true, EVENT_KEY);
 		if (m_dialog_box)
 		{
 			for (scriptable_object* obj : m_objects)
@@ -156,10 +166,10 @@ void GUI_Layer::On_Event(Events::Event& e)
 				}
 			}
 		}
-		if (!dont_unblock)
-		{
-			m_orthographic_controller->block = false;
-		}
+		//if (!dont_unblock)
+		//{
+			//m_orthographic_controller->block_camera(false, EVENT_KEY);
+		//}
 	}
 }
 
@@ -628,6 +638,17 @@ void GUI_Layer::create_building_size_sub_menu()
 
 void GUI_Layer::create_button_dropdown()
 {
+
+	if (m_orthographic_controller->get_block())
+	{
+		m_camera_block = false;
+	}
+	else
+	{
+		m_orthographic_controller->block_camera(true, menu_key);
+		m_camera_block = true;
+	}
+
 	editor* temp_layer = dynamic_cast<editor*>(m_caller->get_layer());
 	auto data = temp_layer->get_world_data(m_caller->get_id());
 	
@@ -640,7 +661,7 @@ void GUI_Layer::create_button_dropdown()
 	int button_id = 0;
 	m_render = false;
 
-	float y_pos = m_caller->get_position().y;
+	float y_pos = m_caller->get_position().y - m_orthographic_controller->get_position().y;
 	float x_pos = m_caller->get_position().x;
 
 	float x_size = m_caller->get_size().x;
@@ -685,7 +706,7 @@ void GUI_Layer::create_capacity_popup()
 	int button_id = 0;
 	m_render = false;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
 
 	Text title_text("Capacity", { 0 + popup->get_position().x , 280 + popup->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
@@ -711,8 +732,25 @@ void GUI_Layer::create_staff_popup()
 	int button_id = 0;
 	m_render = false;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
+
+	Text title_text("Staff amount", { 0 + popup->get_position().x , 280 + popup->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + popup->get_position().x, 280 + popup->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Text_Box* staff = new Text_Box({ 0 + popup->get_position().x, 200 + popup->get_position().y }, { 200, 30 }, this, true, m_base_layer, true, button_id);
+	add_scriptable_object(staff);
+	button_id++;
+
+	Button* save = new Button("Save", { 0 + popup->get_position().x, -260 + popup->get_position().y }, { 150, 60 }, this, true, 45.0f, button_id);
+	save->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	save->box_colour = { 0.8f, 0.8f, 0.8f, 1.0f };
+	save->selected_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	save->rendering_layer = m_base_layer;
+	save->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_popup));
+	add_scriptable_object(save);
+	button_id++;
 }
 
 void GUI_Layer::create_opening_popup()
@@ -720,8 +758,38 @@ void GUI_Layer::create_opening_popup()
 	int button_id = 0;
 	m_render = false;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
+
+	Text title_text("Hours (1 count = 1 minute)", { 0 + popup->get_position().x , 280 + popup->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + popup->get_position().x, 280 + popup->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+
+	Text open_text("Open", { 0 + popup->get_position().x , 240 + popup->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* open_container = new Text_Menu_object(open_text, { 0 + popup->get_position().x, 280 + popup->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(open_container);
+
+	Text_Box* open = new Text_Box({ 0 + popup->get_position().x, 200 + popup->get_position().y }, { 200, 30 }, this, true, m_base_layer, true, button_id);
+	add_scriptable_object(open);
+	button_id++;
+
+	Text closed_text("Closed", { 0 + popup->get_position().x , 120 + popup->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* closed_container = new Text_Menu_object(closed_text, { 0 + popup->get_position().x, 280 + popup->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(closed_container);
+
+	Text_Box* close = new Text_Box({ 0 + popup->get_position().x, 80 + popup->get_position().y }, { 200, 30 }, this, true, m_base_layer, true, button_id);
+	add_scriptable_object(close);
+	button_id++;
+
+	Button* save = new Button("Save", { 0 + popup->get_position().x, -260 + popup->get_position().y }, { 150, 60 }, this, true, 45.0f, button_id);
+	save->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+	save->box_colour = { 0.8f, 0.8f, 0.8f, 1.0f };
+	save->selected_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	save->rendering_layer = m_base_layer;
+	save->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_popup));
+	add_scriptable_object(save);
+	button_id++;
 }
 
 void GUI_Layer::setting_exit_func()
@@ -1069,13 +1137,13 @@ void GUI_Layer::open_staff_popup()
 
 void GUI_Layer::open_capacity_popup()
 {
-	if (!m_orthographic_controller->block)
+	if (m_orthographic_controller->get_block())
 	{
 		m_camera_block = false;
 	}
 	else
 	{
-		m_orthographic_controller->block = true;
+		m_orthographic_controller->block_camera(true, menu_key);
 		m_camera_block = true;
 	}
 
@@ -1100,7 +1168,7 @@ void GUI_Layer::close_menu()
 
 	if (m_camera_block)
 	{
-		m_orthographic_controller->block = false;
+		m_orthographic_controller->block_camera(false, menu_key);
 	}
 
 	Button* caller_button = dynamic_cast<Button*>(m_caller);
@@ -1218,8 +1286,72 @@ void GUI_Layer::save_popup()
 		}
 		break;
 	case Type::StaffPopup:
+		for (scriptable_object* obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::TEXT_BOX)
+			{
+				Text_Box* box = dynamic_cast<Text_Box*>(obj);
+				if (box != nullptr)
+				{
+					if (box->get_id() == 0)
+					{
+						std::string input = box->get_string();
+						auto it = input.begin();
+
+						while (it != input.end() && std::isdigit(*it)) ++it;
+
+						if (it != input.end())
+						{
+							dialouge_box* not_int = new dialouge_box(input + " is not a valid number", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+							m_objects.push_back(not_int);
+							m_dialog_box = true;
+							return;
+						}
+
+						data->staff = stoi(box->get_string());
+						data->staff_action_needed = false;
+						data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
+					}
+				}
+			}
+		}
 		break;
 	case Type::OpeningPopup:
+		for (scriptable_object* obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::TEXT_BOX)
+			{
+				Text_Box* box = dynamic_cast<Text_Box*>(obj);
+				if (box != nullptr)
+				{
+					std::string input = box->get_string();
+					auto it = input.begin();
+
+					while (it != input.end() && std::isdigit(*it)) ++it;
+
+					if (it != input.end())
+					{
+						dialouge_box* not_int = new dialouge_box(input + " is not a valid number", { 0.0f, 0.0f }, { 600.0f, 200.0f }, this, m_base_layer + 4);
+						m_objects.push_back(not_int);
+						m_dialog_box = true;
+						return;
+					}
+
+					if (box->get_id() == 0)
+					{
+						data->opening_hours.first = stoi(box->get_string());
+					}
+					else if (box->get_id() == 1)
+					{
+						data->opening_hours.second = stoi(box->get_string());
+					}
+				}
+			}
+		}
+
+		data->opening_action_needed = false;
+		data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
+
 		break;
 	default:
 		break;
@@ -1230,4 +1362,5 @@ void GUI_Layer::save_popup()
 
 void GUI_Layer::close_popup()
 {
+	close_menu();
 }

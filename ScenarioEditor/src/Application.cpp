@@ -105,6 +105,8 @@ void app::On_Event(Events::Event& e)
     GUI_event<Events::GUI_Building_Select_Event>(e, GUI_Layer::Type::BuildingSelectMenu, Events::Event_Type::GUI_Building_Select);
     GUI_event<Events::GUI_Dropdown_Event>(e, GUI_Layer::Type::ButtonDropDown, Events::Event_Type::GUI_Dropdown);
     GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);
+    GUI_event<Events::Popup_Opening_Event>(e, GUI_Layer::Type::OpeningPopup, Events::Event_Type::Popup_Opening);
+    GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
 
     //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
     //{

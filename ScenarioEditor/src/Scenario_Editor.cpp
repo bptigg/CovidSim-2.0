@@ -40,7 +40,7 @@ void Scenario_Editor::On_Detach()
 
 void Scenario_Editor::On_Update(Timestep ts)
 {
-	m_orthographic_controller.block = box->get_selected();
+	//m_orthographic_controller.block_camera(box->get_selected());
 	m_orthographic_controller.On_Update(ts);
 
 	//Renderer::begin_batch();

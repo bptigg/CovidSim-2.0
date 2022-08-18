@@ -12,6 +12,35 @@
 
 #include "../Timestep.h"
 
+class Camera_Lock
+{
+private:
+	bool lock = false;
+	uint32_t owner; 
+public:
+	bool Lock(uint32_t key)
+	{
+		if (lock)
+		{
+			return false;
+		}
+
+		lock = true;
+		owner = key;
+		return true;
+	}
+
+	bool Unlock(uint32_t key)
+	{
+		if (key == owner)
+		{
+			lock = false;
+			return true;
+		}
+		return false;
+	}
+};
+
 class Camera_Controller
 {
 public:
@@ -33,6 +62,25 @@ public:
 	const glm::vec3 get_position() const{ return m_camera_position; }
 	inline void set_position() { m_camera_position = glm::vec3{ m_camera.get_Position(),0.0f }; }
 
+	void block_camera(bool state, uint32_t key) {
+		if (state == true)
+		{
+			if (m_lock.Lock(key))
+			{
+				m_block = true;
+			}
+		}
+		if (state == false)
+		{
+			if (m_lock.Unlock(key) == true)
+			{
+				m_block = false;
+			}
+		}
+	}
+
+	bool get_block() { return m_block; }
+
 private:
 	bool on_mouse_scroll(Events::Mouse_Scrolled_Event& e);
 	bool on_window_resize(Events::Window_Resize_Event& e);
@@ -50,7 +98,9 @@ private:
 	float m_camera_rotation = 0.0f;
 	float m_camera_translation_speed = 1.0f;
 	float m_rotation_speed = 180.0f;
-public:
-	bool block;
+
+	bool m_block;
+	Camera_Lock m_lock;
+
 };
 
