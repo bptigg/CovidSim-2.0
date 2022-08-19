@@ -13,7 +13,7 @@ Renderer_Manager::~Renderer_Manager()
 	delete_queue();
 }
 
-void Renderer_Manager::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer, bool static_obj)
+void Renderer_Manager::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, unsigned int layer, bool static_obj, bool blur)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::TEXTURED_RECTANGLE, position, size);
@@ -21,11 +21,12 @@ void Renderer_Manager::draw_rectangle_texture(const glm::vec2& position, const g
 	object->texture_id = texture_id;
 	object->layer = layer;
 	object->static_obj = (float)static_obj;
+	object->blur = blur;
 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj)
+void Renderer_Manager::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj, bool blur)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::COLOURED_RECTANGLE, position, size);
@@ -33,11 +34,12 @@ void Renderer_Manager::draw_rectangle_color(const glm::vec2& position, const glm
 	object->color = color;
 	object->layer = layer;
 	object->static_obj = (float)static_obj;
+	object->blur = blur;
 
 	Push_Object(object);
 }
 
-void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer, bool static_obj)
+void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4& color, unsigned int layer, bool static_obj, bool blur)
 {
 	finished = false;
 	render_queue_object* object = new render_queue_object(render_type::COLOURED_BOX, centre, size);
@@ -46,6 +48,7 @@ void Renderer_Manager::draw_box(const glm::vec2& centre, const glm::vec2& size, 
 	object->border_width = border_width;
 	object->layer = layer;
 	object->static_obj = (float)static_obj;
+	object->blur = blur;
 
 	Push_Object(object);
 }

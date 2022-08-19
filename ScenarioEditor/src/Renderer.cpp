@@ -127,6 +127,7 @@ void Renderer::init()
 		layout.Push<float>(2);
 		layout.Push<float>(1);
 		layout.Push<float>(1);
+		layout.Push<float>(1);
 		s_data.VA0->add_buffer(*s_data.VertexBuffer, layout);
 	}
 
@@ -219,13 +220,13 @@ void Renderer::draw()
 				switch (draw->second[i]->type)
 				{
 				case render_type::COLOURED_RECTANGLE:
-					m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->static_obj);
+					m_draw_rectangle_color(draw->second[i]->position, draw->second[i]->size, draw->second[i]->color, draw->second[i]->static_obj, draw->second[i]->blur);
 					break;
 				case render_type::TEXTURED_RECTANGLE:
-					m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id, draw->second[i]->static_obj);
+					m_draw_rectangle_texture(draw->second[i]->position, draw->second[i]->size, draw->second[i]->texture_id, draw->second[i]->static_obj, draw->second[i]->blur);
 					break;
 				case render_type::COLOURED_BOX:
-					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color, draw->second[i]->static_obj);
+					m_draw_box(draw->second[i]->position, draw->second[i]->size, draw->second[i]->border_width, draw->second[i]->color, draw->second[i]->static_obj, draw->second[i]->blur);
 					break;
 				case render_type::TEXT:
 					end_batch();
@@ -267,17 +268,32 @@ void Renderer::update_view(const glm::mat4& projection_view_matrix)
 
 void Renderer::draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj)
 {
-	manager.draw_rectangle_color(position, size, color, layer, static_obj);
+	manager.draw_rectangle_color(position, size, color, layer, static_obj, false);
 }
 
 void Renderer::draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer, bool static_obj)
 {
-	manager.draw_rectangle_texture(position, size, index, layer, static_obj);
+	manager.draw_rectangle_texture(position, size, index, layer, static_obj, false);
 }
 
 void Renderer::draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer, bool static_obj)
 {
-	manager.draw_box(centre, size, border_width, color, layer, static_obj);
+	manager.draw_box(centre, size, border_width, color, layer, static_obj, false);
+}
+
+void Renderer::draw_blurred_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, unsigned int layer, bool static_obj)
+{
+	manager.draw_rectangle_color(position, size, color, layer, static_obj, true);
+}
+
+void Renderer::draw_blurred_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int index, unsigned int layer, bool static_obj)
+{
+	manager.draw_rectangle_texture(position, size, index, layer, static_obj, true);
+}
+
+void Renderer::draw_blurred_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, unsigned int layer, bool static_obj)
+{
+	manager.draw_box(centre, size, border_width, color, layer, static_obj, true);
 }
 
 void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::vec4& color, unsigned int layer, float scale, bool static_obj, bool centred, float* width)
@@ -306,7 +322,7 @@ void Renderer::draw_text(std::string& text, const glm::vec2 centre, const glm::v
 	manager.draw_text(text, centre, { text_width, text_height - min_y }, color, layer, scale, static_obj, centred, width);
 }
 
-void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float static_obj)
+void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float static_obj, bool blur)
 {
 	if (s_data.Index_Count >= m_MAX_INDICIES)
 	{
@@ -323,6 +339,7 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 	
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
@@ -330,6 +347,7 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f};
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 	
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
@@ -337,6 +355,7 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 	
 	s_data.Object_Buffer_Ptr->position = { position.x - (size.x/ 2.0f), position.y + (size.y / 2.0f) };
@@ -344,13 +363,14 @@ void Renderer::m_draw_rectangle_color(const glm::vec2& position, const glm::vec2
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Size += 4 * sizeof(Vertex);
 	s_data.Index_Count += 6;
 }
 
-void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, float static_obj)
+void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::vec2& size, const unsigned int texture_id, float static_obj, bool blur)
 {
 	if (s_data.Index_Count >= m_MAX_INDICIES || s_data.current_texture_slot > 31)
 	{
@@ -385,6 +405,7 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y - (size.y / 2.0f) };
@@ -392,6 +413,7 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 0.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x + (size.x / 2.0f), position.y + (size.y / 2.0f) };
@@ -399,6 +421,7 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->texture_coord = { 1.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Ptr->position = { position.x - (size.x / 2.0f), position.y + (size.y / 2.0f) };
@@ -406,13 +429,14 @@ void Renderer::m_draw_rectangle_texture(const glm::vec2& position, const glm::ve
 	s_data.Object_Buffer_Ptr->texture_coord = { 0.0f, 1.0f };
 	s_data.Object_Buffer_Ptr->tex_id = texture_index;
 	s_data.Object_Buffer_Ptr->static_obj = static_obj;
+	s_data.Object_Buffer_Ptr->blur = blur;
 	s_data.Object_Buffer_Ptr++;
 
 	s_data.Object_Buffer_Size += 4 * sizeof(Vertex);
 	s_data.Index_Count += 6;
 }
 
-void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, float static_obj)
+void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const float border_width, const glm::vec4 color, float static_obj, bool blur)
 {
 	if (s_data.Index_Count + 24 >= m_MAX_INDICIES)
 	{
@@ -422,10 +446,10 @@ void Renderer::m_draw_box(const glm::vec2& centre, const glm::vec2& size, const 
 		begin_batch();
 	}
 
-	m_draw_rectangle_color({ centre.x - (size.x / 2.0f) + (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj);
-	m_draw_rectangle_color({ centre.x + (size.x / 2.0f) - (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj);
-	m_draw_rectangle_color({ centre.x, centre.y + (size.y / 2.0f) - (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj);
-	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj);
+	m_draw_rectangle_color({ centre.x - (size.x / 2.0f) + (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj, blur);
+	m_draw_rectangle_color({ centre.x + (size.x / 2.0f) - (border_width / 2.0f), centre.y }, { border_width, size.y }, color, static_obj, blur);
+	m_draw_rectangle_color({ centre.x, centre.y + (size.y / 2.0f) - (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj, blur);
+	m_draw_rectangle_color({ centre.x, centre.y - (size.y / 2.0f) + (border_width / 2.0f) }, { size.x - 2 * border_width, border_width }, color, static_obj, blur);
 }
 
 void Renderer::m_draw_text(std::string& text, const glm::vec2& position, const glm::vec2& size, glm::vec4& color, float scale, float static_obj, bool centred, float* width)

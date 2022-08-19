@@ -9,6 +9,7 @@ struct Vertex
 	glm::vec2 texture_coord;
 	float tex_id;
 	float static_obj;
+	float blur;
 };
 
 struct Line_Vertex
