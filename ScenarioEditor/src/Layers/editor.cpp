@@ -67,6 +67,8 @@ void editor::On_Update(Timestep ts)
 		}
 	}
 
+	Renderer::draw_blurred_rectangle_color({ 0,0 }, { 200,200 }, { 1.0f, 0.5f, 0.3f, 1.0f }, 1, true);
+
 	//Renderer::draw();
 }
 

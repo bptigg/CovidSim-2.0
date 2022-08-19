@@ -6,6 +6,7 @@ layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_Tex_Coord;
 layout(location = 3) in float a_Tex_Index;
 layout(location = 4) in float a_static;
+layout(location = 5) in float a_blur;
 
 uniform mat4 u_View_Proj;
 uniform mat4 u_Transform;
@@ -16,12 +17,14 @@ uniform mat4 u_og_Transform;
 out vec4 v_Color;
 out vec2 v_Tex_Coord;
 out float v_Tex_Index;
+out float v_Blur;
 
 void main()
 {
 	v_Color = a_Color;
 	v_Tex_Coord = a_Tex_Coord;
 	v_Tex_Index = a_Tex_Index;
+	v_Blur = a_blur;
 
 	float invarient = a_static;
 
@@ -43,6 +46,7 @@ layout(location = 0) out vec4 o_Color;
 in vec4 v_Color;
 in vec2 v_Tex_Coord;
 in float v_Tex_Index;
+in float v_Blur;
 
 uniform sampler2D u_Textures[32];
 
