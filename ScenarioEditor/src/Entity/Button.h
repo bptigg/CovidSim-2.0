@@ -73,5 +73,7 @@ private:
 
 	bool on_mouse_move(Events::Mouse_Moved_Event& e);
 	bool on_mouse_click(Events::Mouse_Button_Pressed_Event& e);
+
+	bool is_mouse_over();
 };
 

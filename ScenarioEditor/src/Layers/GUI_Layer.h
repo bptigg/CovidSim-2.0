@@ -99,6 +99,11 @@ public:
 
 private:
 	void add_scriptable_object(scriptable_object* obj);
+	inline std::vector<scriptable_object*> reverse_vector(std::vector<scriptable_object*> vec)
+	{
+		std::reverse(vec.begin(), vec.end());
+		return vec;
+	}
 	
 	void create_settings_menu(unsigned int menu);
 	void create_building_menu();

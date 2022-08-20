@@ -13,4 +13,6 @@ public:
 	static glm::vec2 Get_Mouse_Position();
 	static float Get_Mouse_X();
 	static float Get_Mouse_Y();
+
+	static glm::vec2 Get_Window_Size();
 };

@@ -27,6 +27,8 @@ void Menu_Background::event_callback(Events::Event& e)
 	Events::Event_Dispatcher dispatcher(e);
 	switch (e.Get_Event_Type())
 	{
+	case Events::Event_Type::Mouse_Moved:
+		dispatcher.Dispatch<Events::Mouse_Moved_Event>(BIND_EVENT_FN(Menu_Background::on_mouse_move));
 	case Events::Event_Type::Key_Pressed:
 		dispatcher.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Menu_Background::on_keyboard_press));
 		break;
@@ -78,6 +80,11 @@ bool Menu_Background::is_mouse_over(float width, float height, float x, float y)
 		}
 	}
 	return false;
+}
+
+bool Menu_Background::on_mouse_move(Events::Mouse_Moved_Event& e)
+{
+	return is_mouse_over(e.get_width(), e.get_height(), e.GetX(), e.GetY());
 }
 
 bool Menu_Background::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)

@@ -34,3 +34,11 @@ float Input::Get_Mouse_Y()
 {
     return Get_Mouse_Position().y;
 }
+
+glm::vec2 Input::Get_Window_Size()
+{
+    float height = app::get().GetWindow().Get_Height();
+    float width = app::get().GetWindow().Get_Width();
+
+    return { width, height };
+}

@@ -166,7 +166,8 @@ void GUI_Layer::On_Event(Events::Event& e)
 		}
 		else
 		{
-			for (scriptable_object* obj : m_objects)
+			std::vector<scriptable_object*> reverse = reverse_vector(m_objects);
+			for (auto obj : reverse)
 			{
 				if (e.Handled != true)
 				{
