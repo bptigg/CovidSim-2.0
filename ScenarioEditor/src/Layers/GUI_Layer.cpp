@@ -748,7 +748,7 @@ void GUI_Layer::create_settings_menu()
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
 
-	Text title_text("Options", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text title_text("Overlays", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
 	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(title);
 
@@ -759,6 +759,15 @@ void GUI_Layer::create_settings_menu()
 	Transport_overlay->rendering_layer = m_base_layer + 6;
 	Transport_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
 	add_scriptable_object(Transport_overlay);
+	button_id++;
+
+	Button* Editor_overlay = new Button("Editor overlay", { settings->get_position().x, 150 + settings->get_position().y }, { 320, 60 }, this, true, 50.0f, button_id);
+	Editor_overlay->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	Editor_overlay->selected_colour = Editor_overlay->base_colour;
+	Editor_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Editor_overlay->rendering_layer = m_base_layer + 6;
+	//Editor_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	add_scriptable_object(Editor_overlay);
 	button_id++;
 }
 

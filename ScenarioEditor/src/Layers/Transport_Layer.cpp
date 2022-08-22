@@ -18,6 +18,8 @@ Transport_Layer::~Transport_Layer()
 
 void Transport_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
+	m_overlay = editor::get()->get_overlay();
+
 	if (m_attached)
 	{
 		return;
@@ -28,8 +30,9 @@ void Transport_Layer::On_Attach(std::vector<std::pair<std::string, std::string>>
 		m_textures[path.first] = Texture::Load_Texture(path.second);
 	}
 
-	m_overlay = editor::get()->get_overlay();
+	editor::get()->only_transport(true);
 	m_render = false;
+	m_attached = true;
 }
 
 void Transport_Layer::On_Detach()
@@ -60,4 +63,17 @@ void Transport_Layer::On_ImGui_Render()
 
 void Transport_Layer::On_Event(Events::Event& e)
 {
+}
+
+void Transport_Layer::disable_overlay()
+{
+	editor::get()->only_transport(false);
+	m_render = false;
+}
+
+void Transport_Layer::enable_overlay()
+{
+	m_overlay = editor::get()->get_overlay();
+	editor::get()->only_transport(true);
+	m_render = true;
 }

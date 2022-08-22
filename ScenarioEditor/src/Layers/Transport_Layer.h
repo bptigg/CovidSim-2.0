@@ -25,6 +25,11 @@ public:
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
 
+	void disable_overlay();
+	void enable_overlay();
+
+	inline bool get_attached() { return m_attached; }
+
 private:
 
 };

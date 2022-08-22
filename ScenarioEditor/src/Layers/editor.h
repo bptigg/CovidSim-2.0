@@ -41,6 +41,8 @@ private:
 	unsigned int m_button_num;
 	unsigned int m_selected;
 
+	bool m_disable_non_transport_events; 
+
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 public:
 	editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_control);
@@ -60,6 +62,8 @@ public:
 
 	glm::vec4 get_grid();
 	std::vector<glm::vec4> get_overlay();
+
+	void only_transport(bool arg);
 
 private:
 	void add_scriptable_object(scriptable_object* object);

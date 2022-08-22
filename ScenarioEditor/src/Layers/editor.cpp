@@ -9,7 +9,8 @@ editor::editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho
 	m_dialog_box = false;
 
 	m_orthographic_controller = std::move(ortho_control);
-	
+	m_disable_non_transport_events = false;
+
 	e_instance = this;
 }
 
@@ -62,7 +63,19 @@ void editor::On_Update(Timestep ts)
 	for (scriptable_object* obj : m_objects)
 	{
 		obj->update_position(m_orthographic_controller->Get_Zoom_Level(), m_orthographic_controller->get_position(), m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
-		obj->update();
+		
+		if (!m_disable_non_transport_events)
+		{
+			obj->update();
+		}
+		else
+		{
+			if (m_world_data[obj->get_id()]->transport_building)
+			{
+				obj->update();
+			}
+				
+		}
 
 		auto button = dynamic_cast<Button*>(obj);
 		if (button != nullptr)
@@ -96,7 +109,18 @@ void editor::On_Event(Events::Event& e)
 	{
 		if (e.Handled != true)
 		{
-			obj->event_callback(e);
+			if (!m_disable_non_transport_events)
+			{
+				obj->event_callback(e);
+			}
+			else
+			{
+				if (m_world_data[obj->get_id()]->transport_building)
+				{
+					obj->event_callback(e);
+				}
+
+			}
 		}
 	}
 }
@@ -195,6 +219,11 @@ std::vector<glm::vec4> editor::get_overlay()
 	}
 	
 	return overlay;
+}
+
+void editor::only_transport(bool arg)
+{
+	m_disable_non_transport_events = arg;
 }
 
 void editor::add_scriptable_object(scriptable_object* object)

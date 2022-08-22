@@ -68,10 +68,18 @@ void app::On_Event(Events::Event& e)
     {
         for (int i = 0; i < m_stack.size(); i++)
         {
-            if (dynamic_cast<Transport_Layer*>(m_stack[i]) != nullptr)
+            auto overlay = dynamic_cast<Transport_Layer*>(m_stack[i]);
+            if (overlay != nullptr)
             {
-                m_stack[i]->On_Attach({});
-                m_stack[i]->render(true);
+                if (overlay->get_attached())
+                {
+                    overlay->enable_overlay();
+                }
+                else
+                {
+                    m_stack[i]->On_Attach({});
+                    m_stack[i]->render(true);
+                }
             }
         }
     }
@@ -297,7 +305,7 @@ void app::init()
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::OpeningPopup, 13, m_camera));
     m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
-    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SettingsMenu, 3, m_camera));
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SettingsMenu, 18, m_camera));
     m_stack[10]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     m_stack.Push_Layer(new Transport_Layer(16, m_camera));
