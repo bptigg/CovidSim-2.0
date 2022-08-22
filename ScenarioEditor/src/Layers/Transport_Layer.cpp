@@ -1,1 +1,63 @@
 #include "Transport_Layer.h"
+
+#include "editor.h"
+
+Transport_Layer::Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll)
+{
+	m_base_layer = base_layer;
+	m_orthographic_controller = std::move(ortho_controll);
+
+	m_render = false;
+	m_dialog_box = false;
+}
+
+Transport_Layer::~Transport_Layer()
+{
+	On_Detach();
+}
+
+void Transport_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
+{
+	if (m_attached)
+	{
+		return;
+	}
+
+	for (std::pair<std::string, std::string> path : textures)
+	{
+		m_textures[path.first] = Texture::Load_Texture(path.second);
+	}
+
+	m_overlay = editor::get()->get_overlay();
+	m_render = false;
+}
+
+void Transport_Layer::On_Detach()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		delete obj;
+	}
+	m_objects.clear();
+	m_overlay.clear();
+}
+
+void Transport_Layer::On_Update(Timestep ts)
+{
+	for (auto rec : m_overlay)
+	{
+		float x_pos = (rec.z + rec.x) / 2.0f;
+		float y_pos = (rec.w + rec.y) / 2.0f;
+		Renderer::draw_rectangle_color({ x_pos, y_pos }, { rec.z - rec.x, rec.w - rec.y }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
+	}
+
+	//Renderer::draw_rectangle_color({ 600, 360 }, { 60,60 }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
+}
+
+void Transport_Layer::On_ImGui_Render()
+{
+}
+
+void Transport_Layer::On_Event(Events::Event& e)
+{
+}

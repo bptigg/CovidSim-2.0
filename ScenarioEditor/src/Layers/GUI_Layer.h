@@ -9,6 +9,7 @@
 #include "../Entity/dialouge_box.h"
 
 #include "../Events/Gui_Events.h"
+#include "../Events/Transport_Events.h"
 
 
 
@@ -73,6 +74,7 @@ public:
 	virtual void On_Event(Events::Event& e) override;
 
 	inline Type get_type() { return m_type; }
+	inline virtual unsigned int get_selected() override { return m_selected; }
 
 #pragma region zone_menu
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
@@ -128,6 +130,7 @@ private:
 
 	void close_menu();
 	void close_pb_menu();
+	void close_tb_menu();
 	void close_size_menu();
 	void close_dropdown();
 
@@ -139,6 +142,8 @@ private:
 	void page_one();
 	void page_two();
 #pragma endregion
+
+	void open_transport_overlay();
 
 #pragma region sub_menus
 	void open_public_sub();

@@ -215,6 +215,15 @@ void GUI_Layer::change_box_colour()
 					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
 					auto data = temp_layer->get_world_data(caller_button->get_id());
 					data->building_type = get_building_code(caller_button->base_colour);
+
+					if (data->building_type < 4)
+					{
+						data->action_needed = false;
+						data->transport_building = false;
+						data->capacity_action_needed = false;
+						data->staff_action_needed = false;
+						data->opening_action_needed = false;
+					}
 				}
 				m_caller = nullptr;
 				break;
@@ -632,7 +641,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	int button_id = 0;
 	m_render = false;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_tb_menu));
 	add_scriptable_object(settings);
 
 	Text title_text("Public transport selection", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
@@ -748,7 +757,7 @@ void GUI_Layer::create_settings_menu()
 	Transport_overlay->selected_colour = Transport_overlay->base_colour;
 	Transport_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Transport_overlay->rendering_layer = m_base_layer + 6;
-	//Transport_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_zone_size));
+	Transport_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
 	add_scriptable_object(Transport_overlay);
 	button_id++;
 }
@@ -1209,6 +1218,13 @@ void GUI_Layer::page_two()
 
 }
 
+void GUI_Layer::open_transport_overlay()
+{
+	//editor::get()->get_overlay();
+	Events::Transport_Overlay_Event event;
+	Event_Call_back(event);
+}
+
 void GUI_Layer::open_public_sub()
 {
 	Menu_Background* temp_menu = nullptr;
@@ -1307,6 +1323,20 @@ void GUI_Layer::close_menu()
 }
 
 void GUI_Layer::close_pb_menu()
+{
+	m_render = false;
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	if (caller_button != nullptr)
+	{
+		caller_button->change_state(false);
+	}
+
+	Menu_Background* temp_menu = dynamic_cast<Menu_Background*>(m_prev_menu);
+	GUI_Layer* menu_layer = dynamic_cast<GUI_Layer*>(temp_menu->get_layer());
+	temp_menu->Bind_function(std::bind(&GUI_Layer::close_menu, menu_layer));
+}
+
+void GUI_Layer::close_tb_menu()
 {
 	m_render = false;
 	Button* caller_button = dynamic_cast<Button*>(m_caller);

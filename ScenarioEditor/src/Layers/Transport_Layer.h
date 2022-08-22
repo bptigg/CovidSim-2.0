@@ -1,8 +1,32 @@
 #pragma once
 #include "../Layer.h"
+#include "../Entity/scriptable_object.h"
 
 class Transport_Layer : public Layer
 {
+private:
+	std::vector<scriptable_object*> m_objects;
+	std::unordered_map<std::string, unsigned int> m_textures;
+	std::vector<glm::vec4> m_overlay;
+
+	unsigned int m_base_layer;
+
+	unsigned int m_button_num;
+	unsigned int m_selected;
+
+	std::shared_ptr<Camera_Controller> m_orthographic_controller;
+public:
+	Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll);
+	virtual ~Transport_Layer() override;
+
+	virtual void On_Attach(std::vector<std::pair<std::string, std::string>> textures) override;
+	virtual void On_Detach() override;
+	virtual void On_Update(Timestep ts) override;
+	virtual void On_ImGui_Render() override;
+	virtual void On_Event(Events::Event& e) override;
+
+private:
+
 };
 
 //Idea for this layer is to highlight all the transport all the transport zones and disable clicking on none transport zones

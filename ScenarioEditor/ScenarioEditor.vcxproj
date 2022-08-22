@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Entity\building_constants.h" />
+    <ClInclude Include="src\Events\Transport_Events.h" />
     <ClInclude Include="src\file.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\buildings_data.h" />

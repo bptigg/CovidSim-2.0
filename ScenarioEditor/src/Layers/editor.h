@@ -56,6 +56,11 @@ public:
 
 	inline std::shared_ptr<button_data> get_world_data(uint32_t key) { return m_world_data[key]; };
 
+	static editor* get();
+
+	glm::vec4 get_grid();
+	std::vector<glm::vec4> get_overlay();
+
 private:
 	void add_scriptable_object(scriptable_object* object);
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }

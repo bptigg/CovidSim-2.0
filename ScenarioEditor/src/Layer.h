@@ -39,6 +39,11 @@ public:
 	{
 	}
 
+	inline virtual unsigned int get_selected()
+	{
+		return 0;
+	}
+
 	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
 
 	const std::string& GetName() const { return m_debug_name; }

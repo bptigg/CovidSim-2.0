@@ -64,6 +64,18 @@ void app::On_Event(Events::Event& e)
         }
     }
 
+    if (e.Get_Event_Type() == Events::Event_Type::Transport_Overlay_Select)
+    {
+        for (int i = 0; i < m_stack.size(); i++)
+        {
+            if (dynamic_cast<Transport_Layer*>(m_stack[i]) != nullptr)
+            {
+                m_stack[i]->On_Attach({});
+                m_stack[i]->render(true);
+            }
+        }
+    }
+
     if (e.Get_Event_Type() == Events::Event_Type::GUI_Size_Select)
     {
         for (int i = 0; i < m_stack.size(); i++)
@@ -286,7 +298,10 @@ void app::init()
     m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SettingsMenu, 3, m_camera));
-    m_stack[9]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    m_stack[10]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new Transport_Layer(16, m_camera));
+    m_stack[11]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

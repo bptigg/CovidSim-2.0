@@ -67,7 +67,7 @@ void Button::render()
 	switch (m_state)
 	{
 	case Button::State::None:
-		if (m_hover)
+		if (m_hover && m_Layer->get_selected() != m_object_id)
 		{
 			Renderer::draw_rectangle_color(m_location, m_size, base_colour, rendering_layer, m_menu_object);
 			Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);

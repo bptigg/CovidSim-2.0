@@ -1,5 +1,7 @@
 #include "editor.h"
 
+static editor* e_instance;
+
 editor::editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_control)
 {
 	m_base_layer = base_layer;
@@ -7,6 +9,8 @@ editor::editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho
 	m_dialog_box = false;
 
 	m_orthographic_controller = std::move(ortho_control);
+	
+	e_instance = this;
 }
 
 editor::~editor()
@@ -97,6 +101,102 @@ void editor::On_Event(Events::Event& e)
 	}
 }
 
+editor* editor::get()
+{
+	return e_instance;
+}
+
+glm::vec4 editor::get_grid()
+{
+	std::pair<float, float> min = { 0.0f, 0.0f };
+	std::pair<float, float> max = { 0.0f, 0.0f };
+
+	min.first  = m_objects[0]->get_position().x - (m_objects[0]->get_size().x / 2.0f);
+	min.second = m_objects[0]->get_position().y - (m_objects[0]->get_size().y / 2.0f);
+
+	max.first = m_objects[m_button_num - 1]->get_position().x + (m_objects[m_button_num - 1]->get_size().x / 2.0f);
+	max.second = m_objects[m_button_num - 1]->get_position().y + (m_objects[m_button_num - 1]->get_size().y / 2.0f);
+
+	return { min.first, min.second, max.first, max.second };
+}
+
+std::vector<glm::vec4> editor::get_overlay()
+{
+	glm::vec4 grid = get_grid();
+	
+	std::vector<glm::vec4> overlay = {};
+	
+	float min_x = grid.x;
+	float min_y = grid.y;
+
+	float max_x = grid.z;
+	float max_y = grid.w;
+
+	float x = min_x;
+	float y = min_y;
+	for (int i = 0; i < m_objects.size();)
+	{
+		glm::vec4 current_rectangle(0.0f);
+		if (m_world_data[i]->transport_building)
+		{
+			x = m_objects[i]->get_position().x - (m_objects[i]->get_size().x / 2.0f);
+			y = m_objects[i]->get_position().y - (m_objects[i]->get_size().y / 2.0f);
+
+			if (y != min_y - 60.0f)
+			{
+				current_rectangle.z = max_x;
+				current_rectangle.x = min_x;
+
+				current_rectangle.w = y;
+				current_rectangle.y = min_y;
+				float old_min_y = min_y;
+				min_y = y + 60.0f;
+
+				if (y != old_min_y)
+				{
+					overlay.push_back(current_rectangle);
+				}
+				overlay.push_back({ min_x, y, x, (m_objects[i]->get_position().y + (m_objects[i]->get_size().y / 2.0f)) });
+
+				float diff = y - grid.y;
+				int row = diff / 60.0f;
+
+				int offset = row * m_size_of_grid;
+				int index = i - offset;
+
+				float x_pos = m_objects[i]->get_position().x + (m_objects[i]->get_size().x / 2.0f);
+
+				for (int e = index + 1; e < m_size_of_grid; e++)
+				{
+					if (m_world_data[e + offset]->transport_building)
+					{
+						if (m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) != x_pos)
+						{
+							overlay.push_back({ x_pos, y, m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) , y + 60.0f });
+						}
+						x_pos = m_objects[e + offset]->get_position().x + (m_objects[e + offset]->get_size().x / 2.0f);
+					}
+				}
+
+				if (x_pos != max_x)
+				{
+					overlay.push_back({ x_pos, y, max_x, y + 60 });
+				}
+
+				i = ((row + 1) * m_size_of_grid) - 1;
+			}
+		}
+		i++;
+	}
+
+	if (y + 60.0f != max_y)
+	{
+		overlay.push_back({ min_x, (y == grid.y) ? y : y + 60.0f, max_x, max_y});
+	}
+	
+	return overlay;
+}
+
 void editor::add_scriptable_object(scriptable_object* object)
 {
 	m_objects.push_back(object);
@@ -131,6 +231,7 @@ void editor::draw_buttons(int amount)
 			m_world_data[m_button_num] = tile_data;
 			m_world_data[m_button_num]->button_id = m_button_num;
 			m_world_data[m_button_num]->building_type = -1;
+			m_world_data[m_button_num]->transport_building = false;
 			add_scriptable_object(tile);
 
 			x = x + size;

@@ -23,6 +23,7 @@
 #include "Scenario_Editor.h"
 
 #include "Layers/GUI_Layer.h"
+#include "Layers/Transport_Layer.h"
 #include "Layers/editor.h"
 
 #include "glm/glm.hpp"
