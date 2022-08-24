@@ -165,7 +165,23 @@ void app::On_Event(Events::Event& e)
         GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
 
         GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
-        GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::LineManager, Events::Event_Type::Transport_Line_Manager);
+       
+        if (e.Get_Event_Type() == Events::Event_Type::Transport_Line_Manager)
+        {
+            for (int i = 0; i < m_stack.size(); i++)
+            {
+                GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                if (temp_layer != nullptr)
+                {
+                    Events::GUI_Line_Manager_Event* ev = dynamic_cast<Events::GUI_Line_Manager_Event*>(&e);
+                    if (temp_layer->get_type() == GUI_Layer::Type::LineManager)
+                    {
+                        m_stack[i]->On_Attach({});
+                        m_stack[i]->render(true);
+                    }
+                }
+            }
+        }
     }
 
     //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
@@ -329,6 +345,9 @@ void app::init()
 
     m_stack.Push_Layer(new Transport_Layer(16, m_camera));
     m_stack[11]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::LineManager, 18, m_camera));
+    m_stack[12]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

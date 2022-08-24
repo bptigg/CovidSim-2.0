@@ -56,6 +56,7 @@ public:
 	virtual void event_callback(Events::Event& e) = 0;
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) = 0;
+	void change_position(const glm::vec2& pos) { m_location = pos; }
 	
 	inline void delete_obj(bool obj) { m_delete_object = obj; }
 	inline void inactive_obj(bool obj) { m_set_inactive = obj; }

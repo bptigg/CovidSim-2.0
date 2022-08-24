@@ -94,6 +94,10 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		menu_key = 10;
 		create_settings_menu();
 		break;
+	case Type::LineManager:
+		menu_key = 11;
+		create_line_manager();
+		break;
 	default:
 		break;
 	}
@@ -983,6 +987,28 @@ void GUI_Layer::create_opening_popup()
 	save->rendering_layer = m_base_layer;
 	save->Bind_function(BIND_BUTTON_FN(GUI_Layer::save_popup));
 	add_scriptable_object(save);
+	button_id++;
+}
+
+void GUI_Layer::create_line_manager()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(settings);
+
+	Text title_text("Line Manager", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Button* new_line= new Button("Add new line", { settings->get_position().x, 220 + settings->get_position().y }, { 320, 60 }, this, true, 50.0f, button_id);
+	new_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	new_line->selected_colour = new_line->base_colour;
+	new_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	new_line->rendering_layer = m_base_layer + 6;
+	//new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	add_scriptable_object(new_line);
 	button_id++;
 }
 

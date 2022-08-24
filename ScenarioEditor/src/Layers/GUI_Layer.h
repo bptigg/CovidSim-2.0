@@ -121,6 +121,8 @@ private:
 	void create_staff_popup();
 	void create_opening_popup();
 
+	void create_line_manager();
+
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
 

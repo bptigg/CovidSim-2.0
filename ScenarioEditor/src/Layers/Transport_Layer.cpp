@@ -49,7 +49,7 @@ void Transport_Layer::On_Update(Timestep ts)
 {
 	if (m_render)
 	{
-		for (auto rec : m_overlay)
+		for (glm::vec4 rec : m_overlay)
 		{
 			float x_pos = (rec.z + rec.x) / 2.0f;
 			float y_pos = (rec.w + rec.y) / 2.0f;
