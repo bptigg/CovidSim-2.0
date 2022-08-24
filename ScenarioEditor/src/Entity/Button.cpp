@@ -182,6 +182,7 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 {
 	if (m_state == State::Hover)
 	{
+		m_Layer->Set_Text_Box(false);
 		m_state = State::Press;
 		if (m_persist)
 		{

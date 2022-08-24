@@ -23,6 +23,7 @@ public:
 		:m_debug_name(name)
 	{
 		m_dialog_box = false;
+		m_text_box = false;
 		m_render = true;
 		m_delete_layer = false;
 	}
@@ -45,6 +46,7 @@ public:
 	}
 
 	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
+	inline void Set_Text_Box(bool box) { m_text_box = box; }
 
 	const std::string& GetName() const { return m_debug_name; }
 
@@ -56,6 +58,7 @@ protected:
 #endif
 
 	bool m_dialog_box = false;
+	bool m_text_box = false;
 	bool m_render = true;
 	bool m_delete_layer = false;
 	bool m_attached = false;
@@ -63,6 +66,6 @@ protected:
 public:
 	const bool& dialog_box = m_dialog_box;
 	const bool& delete_layer = m_delete_layer;
-
+	const bool& text_box = m_text_box;
 };
 

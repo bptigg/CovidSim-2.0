@@ -36,6 +36,7 @@ void app::On_Event(Events::Event& e)
     Events::Event_Dispatcher dispatch(e);
 
     bool skip = false;
+    bool skip_gui = false;
 
     for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
     {
@@ -43,7 +44,13 @@ void app::On_Event(Events::Event& e)
         {
             skip = true;
         }
-
+        if ((*it)->text_box == true)
+        {
+            if (dynamic_cast<Events::Key_Pressed_Event*>(&e) != nullptr)
+            {
+                skip_gui = true;
+            }
+        }
     }
 
     if (!skip)
@@ -53,109 +60,112 @@ void app::On_Event(Events::Event& e)
         dispatch.Dispatch<Events::Window_Resize_Event>(BIND_EVENT_FN(app::OnWindowResize));
     }
 
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Editor)
+    if (!skip_gui)
     {
-        for (int i = 0; i < m_stack.size(); i++)
+        if (e.Get_Event_Type() == Events::Event_Type::GUI_Editor)
         {
-            if (dynamic_cast<editor*>(m_stack[i]) != nullptr)
+            for (int i = 0; i < m_stack.size(); i++)
             {
-                m_stack[i]->On_Attach({});
+                if (dynamic_cast<editor*>(m_stack[i]) != nullptr)
+                {
+                    m_stack[i]->On_Attach({});
+                }
             }
         }
-    }
 
-    if (e.Get_Event_Type() == Events::Event_Type::Transport_Overlay_Select)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
+        if (e.Get_Event_Type() == Events::Event_Type::Transport_Overlay_Select)
         {
-            auto overlay = dynamic_cast<Transport_Layer*>(m_stack[i]);
-            if (overlay != nullptr)
+            for (int i = 0; i < m_stack.size(); i++)
             {
-                auto event = dynamic_cast<Events::Transport_Overlay_Event*>(&e);
-                if (event->get_enable())
+                auto overlay = dynamic_cast<Transport_Layer*>(m_stack[i]);
+                if (overlay != nullptr)
                 {
-                    if (overlay->get_attached())
+                    auto event = dynamic_cast<Events::Transport_Overlay_Event*>(&e);
+                    if (event->get_enable())
                     {
-                        overlay->enable_overlay();
+                        if (overlay->get_attached())
+                        {
+                            overlay->enable_overlay();
+                        }
+                        else
+                        {
+                            m_stack[i]->On_Attach({});
+                            m_stack[i]->render(true);
+                        }
                     }
                     else
                     {
+                        overlay->disable_overlay();
+                    }
+                }
+            }
+        }
+
+        if (e.Get_Event_Type() == Events::Event_Type::GUI_Size_Select)
+        {
+            for (int i = 0; i < m_stack.size(); i++)
+            {
+                GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                if (temp_layer != nullptr)
+                {
+                    Events::GUI_Building_Size_Event* ev = dynamic_cast<Events::GUI_Building_Size_Event*>(&e);
+                    if (temp_layer->get_type() == GUI_Layer::Type::BuildingSizeSubMenu)
+                    {
+                        temp_layer->set_prev_menu(ev->get_menu_caller());
                         m_stack[i]->On_Attach({});
+                        temp_layer->set_caller(ev->get_caller());
                         m_stack[i]->render(true);
                     }
                 }
-                else
-                {
-                    overlay->disable_overlay();
-                }
             }
         }
-    }
 
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Size_Select)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
+        if (e.Get_Event_Type() == Events::Event_Type::GUI_Public_Select)
         {
-            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
-            if (temp_layer != nullptr)
+            for (int i = 0; i < m_stack.size(); i++)
             {
-                Events::GUI_Building_Size_Event* ev = dynamic_cast<Events::GUI_Building_Size_Event*>(&e);
-                if (temp_layer->get_type() == GUI_Layer::Type::BuildingSizeSubMenu)
+                GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                if (temp_layer != nullptr)
                 {
-                    temp_layer->set_prev_menu(ev->get_menu_caller());
-                    m_stack[i]->On_Attach({});
-                    temp_layer->set_caller(ev->get_caller());
-                    m_stack[i]->render(true);
+                    Events::GUI_Public_Building_Event* ev = dynamic_cast<Events::GUI_Public_Building_Event*>(&e);
+                    if (temp_layer->get_type() == GUI_Layer::Type::PublicBuildingSubMenu)
+                    {
+                        m_stack[i]->On_Attach({});
+                        temp_layer->set_menu(ev->get_menu());
+                        temp_layer->set_caller(ev->get_caller());
+                        m_stack[i]->render(true);
+                    }
                 }
             }
         }
-    }
 
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Public_Select)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
+        if (e.Get_Event_Type() == Events::Event_Type::GUI_Transport_Select)
         {
-            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
-            if (temp_layer != nullptr)
+            for (int i = 0; i < m_stack.size(); i++)
             {
-                Events::GUI_Public_Building_Event* ev = dynamic_cast<Events::GUI_Public_Building_Event*>(&e);
-                if (temp_layer->get_type() == GUI_Layer::Type::PublicBuildingSubMenu)
+                GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                if (temp_layer != nullptr)
                 {
-                    m_stack[i]->On_Attach({});
-                    temp_layer->set_menu(ev->get_menu());
-                    temp_layer->set_caller(ev->get_caller());
-                    m_stack[i]->render(true);
+                    Events::GUI_Transport_Building_Event* ev = dynamic_cast<Events::GUI_Transport_Building_Event*>(&e);
+                    if (temp_layer->get_type() == GUI_Layer::Type::PublicTransportSubMenu)
+                    {
+                        m_stack[i]->On_Attach({});
+                        temp_layer->set_menu(ev->get_menu());
+                        temp_layer->set_caller(ev->get_caller());
+                        m_stack[i]->render(true);
+                    }
                 }
             }
         }
+
+        GUI_event<Events::GUI_Building_Select_Event>(e, GUI_Layer::Type::BuildingSelectMenu, Events::Event_Type::GUI_Building_Select);
+        GUI_event<Events::GUI_Dropdown_Event>(e, GUI_Layer::Type::ButtonDropDown, Events::Event_Type::GUI_Dropdown);
+        GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);
+        GUI_event<Events::Popup_Opening_Event>(e, GUI_Layer::Type::OpeningPopup, Events::Event_Type::Popup_Opening);
+        GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
+
+        GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
     }
-
-    if (e.Get_Event_Type() == Events::Event_Type::GUI_Transport_Select)
-    {
-        for (int i = 0; i < m_stack.size(); i++)
-        {
-            GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
-            if (temp_layer != nullptr)
-            {
-                Events::GUI_Transport_Building_Event* ev = dynamic_cast<Events::GUI_Transport_Building_Event*>(&e);
-                if (temp_layer->get_type() == GUI_Layer::Type::PublicTransportSubMenu)
-                {
-                    m_stack[i]->On_Attach({});
-                    temp_layer->set_menu(ev->get_menu());
-                    temp_layer->set_caller(ev->get_caller());
-                    m_stack[i]->render(true);
-                }
-            }
-        }
-    }
-
-    GUI_event<Events::GUI_Building_Select_Event>(e, GUI_Layer::Type::BuildingSelectMenu, Events::Event_Type::GUI_Building_Select);
-    GUI_event<Events::GUI_Dropdown_Event>(e, GUI_Layer::Type::ButtonDropDown, Events::Event_Type::GUI_Dropdown);
-    GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);
-    GUI_event<Events::Popup_Opening_Event>(e, GUI_Layer::Type::OpeningPopup, Events::Event_Type::Popup_Opening);
-    GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
-
-    GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
 
     //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)
     //{

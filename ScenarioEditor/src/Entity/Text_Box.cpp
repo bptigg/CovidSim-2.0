@@ -160,9 +160,11 @@ bool Text_Box::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 	if (m_over == true)
 	{
 		m_selected = true;
+		m_Layer->Set_Text_Box(true);
 		return true;
 	}
 	m_selected = false;
+	m_Layer->Set_Text_Box(false);
 	return false;
 }
 

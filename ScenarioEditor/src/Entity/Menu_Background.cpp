@@ -93,6 +93,7 @@ bool Menu_Background::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 	{
 		if (m_exit_func != nullptr)
 		{
+			m_Layer->Set_Text_Box(false);
 			m_exit_func();
 			return false;
 		}
