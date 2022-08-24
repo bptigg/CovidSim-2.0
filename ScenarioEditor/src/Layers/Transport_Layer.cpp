@@ -66,6 +66,17 @@ void Transport_Layer::On_ImGui_Render()
 
 void Transport_Layer::On_Event(Events::Event& e)
 {
+	if (m_render)
+	{
+		if (e.Get_Event_Type() == Events::Event_Type::Key_Pressed)
+		{
+			if (Input::Is_Key_Pressed(CS_KEY_L))
+			{
+				Events::Event_Dispatcher dispatch(e);
+				dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Transport_Layer::open_line_manager));
+			}
+		}
+	}
 }
 
 void Transport_Layer::disable_overlay()
@@ -79,4 +90,11 @@ void Transport_Layer::enable_overlay()
 	m_overlay = editor::get()->get_overlay();
 	editor::get()->only_transport(true);
 	m_render = true;
+}
+
+bool Transport_Layer::open_line_manager(Events::Key_Pressed_Event& e)
+{
+	Events::GUI_Line_Manager_Event event(this);
+	Event_Call_back(event);
+	return true;
 }

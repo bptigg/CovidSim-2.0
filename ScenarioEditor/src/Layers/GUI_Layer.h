@@ -28,7 +28,8 @@ public:
 		StaffPopup,
 		OpeningPopup,
 		SettingsMenu,
-		SetupMenu
+		SetupMenu,
+		LineManager
 	};
 
 	//const bool dialog_box = &m_dialog_box;
@@ -72,6 +73,7 @@ public:
 	virtual void On_Update(Timestep ts) override;
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
+	virtual void render(bool render) override;
 
 	inline Type get_type() { return m_type; }
 	inline virtual unsigned int get_selected() override { return m_selected; }

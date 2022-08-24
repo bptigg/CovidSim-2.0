@@ -68,6 +68,7 @@ public:
 	std::vector<glm::vec4> get_overlay();
 
 	void only_transport(bool arg);
+	inline bool get_only_transport() { return m_disable_non_transport_events; }
 
 private:
 	void add_scriptable_object(scriptable_object* object);

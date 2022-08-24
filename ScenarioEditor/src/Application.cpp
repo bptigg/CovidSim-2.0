@@ -165,6 +165,7 @@ void app::On_Event(Events::Event& e)
         GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
 
         GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
+        GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::LineManager, Events::Event_Type::Transport_Line_Manager);
     }
 
     //if (e.Get_Event_Type() == Events::Event_Type::GUI_Building_Select)

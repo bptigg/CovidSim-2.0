@@ -31,7 +31,7 @@ public:
 	inline bool get_attached() { return m_attached; }
 
 private:
-
+	bool open_line_manager(Events::Key_Pressed_Event& e);
 };
 
 //Idea for this layer is to highlight all the transport all the transport zones and disable clicking on none transport zones

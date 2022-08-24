@@ -53,8 +53,11 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		create_settings_menu(0);
 		break;
 	case Type::BuildingSelectMenu:
-		menu_key = 2;
-		create_building_menu();
+		if (!editor::get()->get_only_transport())
+		{
+			menu_key = 2;
+			create_building_menu();
+		}
 		break;
 	case Type::PublicBuildingSubMenu:
 		menu_key = 3;
@@ -69,8 +72,11 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		create_building_size_sub_menu();
 		break;
 	case Type::ButtonDropDown:
-		menu_key = 6;
-		create_button_dropdown();
+		if (!editor::get()->get_only_transport())
+		{
+			menu_key = 6;
+			create_button_dropdown();
+		}
 		break;
 	case Type::CapacityPopup:
 		menu_key = 7;
@@ -179,6 +185,58 @@ void GUI_Layer::On_Event(Events::Event& e)
 		//{
 			//m_orthographic_controller->block_camera(false, EVENT_KEY);
 		//}
+	}
+}
+
+void GUI_Layer::render(bool render)
+{
+	if (!editor::get()->get_only_transport())
+	{
+		m_render = true;
+	}
+	else
+	{
+		switch (m_type)
+		{
+		case GUI_Layer::Type::Overlay:
+			m_render = true;
+			break;
+		case GUI_Layer::Type::BuildingSelectMenu:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::PublicBuildingSubMenu:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::PublicTransportSubMenu:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::BuildingSizeSubMenu:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::ButtonDropDown:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::CapacityPopup:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::StaffPopup:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::OpeningPopup:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::SettingsMenu:
+			m_render = true;
+			break;
+		case GUI_Layer::Type::SetupMenu:
+			m_render = false;
+			break;
+		case GUI_Layer::Type::LineManager:
+			m_render = true;
+			break;
+		default:
+			break;
+		}
 	}
 }
 

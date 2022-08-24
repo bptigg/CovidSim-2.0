@@ -3,6 +3,7 @@
 #include "Event.h"
 
 #include "../Entity/scriptable_object.h"
+#include "../Layers/Transport_Layer.h"
 
 namespace Events
 {
@@ -126,6 +127,23 @@ namespace Events
 
 		EVENT_CLASS_TYPE(GUI_Editor)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+	};
+
+	class GUI_Line_Manager_Event : public Event
+	{
+	public:
+		GUI_Line_Manager_Event(Transport_Layer* layer)
+		{
+			m_layer = layer;
+		}
+
+		Transport_Layer* get_layer() { return m_layer; }
+
+		EVENT_CLASS_TYPE(Transport_Line_Manager)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		Transport_Layer* m_layer;
 	};
 
 	class GUI_Dropdown_Event : public Event

@@ -50,7 +50,7 @@ public:
 
 	const std::string& GetName() const { return m_debug_name; }
 
-	void render(bool render) { m_render = render; }
+	virtual void render(bool render) { m_render = render; }
 protected:
 	Event_Call_back_fn Event_Call_back;
 #if _DEBUG
