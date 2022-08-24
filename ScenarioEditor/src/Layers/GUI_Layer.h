@@ -144,6 +144,7 @@ private:
 #pragma endregion
 
 	void open_transport_overlay();
+	void close_transport_overlay();
 
 #pragma region sub_menus
 	void open_public_sub();

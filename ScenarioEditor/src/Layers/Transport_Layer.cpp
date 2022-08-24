@@ -47,11 +47,14 @@ void Transport_Layer::On_Detach()
 
 void Transport_Layer::On_Update(Timestep ts)
 {
-	for (auto rec : m_overlay)
+	if (m_render)
 	{
-		float x_pos = (rec.z + rec.x) / 2.0f;
-		float y_pos = (rec.w + rec.y) / 2.0f;
-		Renderer::draw_rectangle_color({ x_pos, y_pos }, { rec.z - rec.x, rec.w - rec.y }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
+		for (auto rec : m_overlay)
+		{
+			float x_pos = (rec.z + rec.x) / 2.0f;
+			float y_pos = (rec.w + rec.y) / 2.0f;
+			Renderer::draw_rectangle_color({ x_pos, y_pos }, { rec.z - rec.x, rec.w - rec.y }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
+		}
 	}
 
 	//Renderer::draw_rectangle_color({ 600, 360 }, { 60,60 }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);

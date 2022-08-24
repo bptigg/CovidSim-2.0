@@ -71,14 +71,22 @@ void app::On_Event(Events::Event& e)
             auto overlay = dynamic_cast<Transport_Layer*>(m_stack[i]);
             if (overlay != nullptr)
             {
-                if (overlay->get_attached())
+                auto event = dynamic_cast<Events::Transport_Overlay_Event*>(&e);
+                if (event->get_enable())
                 {
-                    overlay->enable_overlay();
+                    if (overlay->get_attached())
+                    {
+                        overlay->enable_overlay();
+                    }
+                    else
+                    {
+                        m_stack[i]->On_Attach({});
+                        m_stack[i]->render(true);
+                    }
                 }
                 else
                 {
-                    m_stack[i]->On_Attach({});
-                    m_stack[i]->render(true);
+                    overlay->disable_overlay();
                 }
             }
         }

@@ -42,6 +42,9 @@ private:
 	unsigned int m_selected;
 
 	bool m_disable_non_transport_events; 
+	bool m_cached_transport_overlay;
+
+	std::vector<glm::vec4> m_transport_overlay = {};
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 public:
@@ -55,6 +58,7 @@ public:
 	virtual void On_Event(Events::Event& e) override;
 
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
+	inline void delete_transport_cache() { m_cached_transport_overlay = false; }
 
 	inline std::shared_ptr<button_data> get_world_data(uint32_t key) { return m_world_data[key]; };
 

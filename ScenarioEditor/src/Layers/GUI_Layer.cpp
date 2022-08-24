@@ -275,6 +275,7 @@ void GUI_Layer::set_transport_type()
 
 				{
 					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					temp_layer->delete_transport_cache();
 					auto data = temp_layer->get_world_data(caller_button->get_id());
 					data->building_type = get_building_code(caller_button->base_colour);
 					data->transport_building = true;
@@ -766,7 +767,7 @@ void GUI_Layer::create_settings_menu()
 	Editor_overlay->selected_colour = Editor_overlay->base_colour;
 	Editor_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Editor_overlay->rendering_layer = m_base_layer + 6;
-	//Editor_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	Editor_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::close_transport_overlay));
 	add_scriptable_object(Editor_overlay);
 	button_id++;
 }
@@ -1229,8 +1230,14 @@ void GUI_Layer::page_two()
 
 void GUI_Layer::open_transport_overlay()
 {
+	Events::Transport_Overlay_Event event(true);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::close_transport_overlay()
+{
 	//editor::get()->get_overlay();
-	Events::Transport_Overlay_Event event;
+	Events::Transport_Overlay_Event event(false);
 	Event_Call_back(event);
 }
 

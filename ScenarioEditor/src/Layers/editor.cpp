@@ -10,6 +10,7 @@ editor::editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho
 
 	m_orthographic_controller = std::move(ortho_control);
 	m_disable_non_transport_events = false;
+	m_cached_transport_overlay = false;
 
 	e_instance = this;
 }
@@ -146,79 +147,83 @@ glm::vec4 editor::get_grid()
 
 std::vector<glm::vec4> editor::get_overlay()
 {
-	glm::vec4 grid = get_grid();
-	
-	std::vector<glm::vec4> overlay = {};
-	
-	float min_x = grid.x;
-	float min_y = grid.y;
-
-	float max_x = grid.z;
-	float max_y = grid.w;
-
-	float x = min_x;
-	float y = min_y;
-	for (int i = 0; i < m_objects.size();)
+	if (!m_cached_transport_overlay)
 	{
-		glm::vec4 current_rectangle(0.0f);
-		if (m_world_data[i]->transport_building)
+		glm::vec4 grid = get_grid();
+
+		std::vector<glm::vec4> overlay = {};
+		float min_x = grid.x;
+		float min_y = grid.y;
+
+		float max_x = grid.z;
+		float max_y = grid.w;
+
+		float x = min_x;
+		float y = min_y;
+		for (int i = 0; i < m_objects.size();)
 		{
-			x = m_objects[i]->get_position().x - (m_objects[i]->get_size().x / 2.0f);
-			y = m_objects[i]->get_position().y - (m_objects[i]->get_size().y / 2.0f);
-
-			if (y != min_y - 60.0f)
+			glm::vec4 current_rectangle(0.0f);
+			if (m_world_data[i]->transport_building)
 			{
-				current_rectangle.z = max_x;
-				current_rectangle.x = min_x;
+				x = m_objects[i]->get_position().x - (m_objects[i]->get_size().x / 2.0f);
+				y = m_objects[i]->get_position().y - (m_objects[i]->get_size().y / 2.0f);
 
-				current_rectangle.w = y;
-				current_rectangle.y = min_y;
-				float old_min_y = min_y;
-				min_y = y + 60.0f;
-
-				if (y != old_min_y)
+				if (y != min_y - 60.0f)
 				{
-					overlay.push_back(current_rectangle);
-				}
-				overlay.push_back({ min_x, y, x, (m_objects[i]->get_position().y + (m_objects[i]->get_size().y / 2.0f)) });
+					current_rectangle.z = max_x;
+					current_rectangle.x = min_x;
 
-				float diff = y - grid.y;
-				int row = diff / 60.0f;
+					current_rectangle.w = y;
+					current_rectangle.y = min_y;
+					float old_min_y = min_y;
+					min_y = y + 60.0f;
 
-				int offset = row * m_size_of_grid;
-				int index = i - offset;
-
-				float x_pos = m_objects[i]->get_position().x + (m_objects[i]->get_size().x / 2.0f);
-
-				for (int e = index + 1; e < m_size_of_grid; e++)
-				{
-					if (m_world_data[e + offset]->transport_building)
+					if (y != old_min_y)
 					{
-						if (m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) != x_pos)
-						{
-							overlay.push_back({ x_pos, y, m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) , y + 60.0f });
-						}
-						x_pos = m_objects[e + offset]->get_position().x + (m_objects[e + offset]->get_size().x / 2.0f);
+						overlay.push_back(current_rectangle);
 					}
-				}
+					overlay.push_back({ min_x, y, x, (m_objects[i]->get_position().y + (m_objects[i]->get_size().y / 2.0f)) });
 
-				if (x_pos != max_x)
-				{
-					overlay.push_back({ x_pos, y, max_x, y + 60 });
-				}
+					float diff = y - grid.y;
+					int row = diff / 60.0f;
 
-				i = ((row + 1) * m_size_of_grid) - 1;
+					int offset = row * m_size_of_grid;
+					int index = i - offset;
+
+					float x_pos = m_objects[i]->get_position().x + (m_objects[i]->get_size().x / 2.0f);
+
+					for (int e = index + 1; e < m_size_of_grid; e++)
+					{
+						if (m_world_data[e + offset]->transport_building)
+						{
+							if (m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) != x_pos)
+							{
+								overlay.push_back({ x_pos, y, m_objects[e + offset]->get_position().x - (m_objects[e + offset]->get_size().x / 2.0f) , y + 60.0f });
+							}
+							x_pos = m_objects[e + offset]->get_position().x + (m_objects[e + offset]->get_size().x / 2.0f);
+						}
+					}
+
+					if (x_pos != max_x)
+					{
+						overlay.push_back({ x_pos, y, max_x, y + 60 });
+					}
+
+					i = ((row + 1) * m_size_of_grid) - 1;
+				}
 			}
+			i++;
 		}
-		i++;
-	}
 
-	if (y + 60.0f != max_y)
-	{
-		overlay.push_back({ min_x, (y == grid.y) ? y : y + 60.0f, max_x, max_y});
+		if (y + 60.0f != max_y)
+		{
+			overlay.push_back({ min_x, (y == grid.y) ? y : y + 60.0f, max_x, max_y });
+		}
+		m_transport_overlay = overlay;
+		m_cached_transport_overlay = true;
 	}
 	
-	return overlay;
+	return m_transport_overlay;
 }
 
 void editor::only_transport(bool arg)
