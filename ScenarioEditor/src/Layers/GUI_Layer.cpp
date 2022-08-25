@@ -1007,7 +1007,7 @@ void GUI_Layer::create_line_manager()
 	new_line->selected_colour = new_line->base_colour;
 	new_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	new_line->rendering_layer = m_base_layer + 6;
-	//new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
 	add_scriptable_object(new_line);
 	button_id++;
 }
@@ -1323,6 +1323,35 @@ void GUI_Layer::close_transport_overlay()
 	//editor::get()->get_overlay();
 	Events::Transport_Overlay_Event event(false);
 	Event_Call_back(event);
+}
+
+void GUI_Layer::new_line()
+{
+	int button_id = 0;
+	glm::vec2 pos(0);
+	for (scriptable_object* obj : m_objects)
+	{
+		if (dynamic_cast<Button*>(obj) != nullptr)
+		{
+			if (obj->get_id() == 0)
+			{
+				pos = obj->get_position();
+				obj->change_position({ pos.x, pos.y - 80.0f });
+			}
+			if (obj->get_id() >= button_id)
+			{
+				button_id = obj->get_id();
+			}
+		}
+	}
+
+	Button* new_line = new Button("new line", { pos.x, pos.y }, { 320, 60 }, this, true, 50.0f, button_id + 1);
+	new_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	new_line->selected_colour = new_line->base_colour;
+	new_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	new_line->rendering_layer = m_base_layer + 6;
+	//new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	add_scriptable_object(new_line);
 }
 
 void GUI_Layer::open_public_sub()

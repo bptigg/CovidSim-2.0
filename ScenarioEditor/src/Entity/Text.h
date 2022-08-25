@@ -23,5 +23,6 @@ public:
 
 	void render(float x_offset, float y_offset, unsigned int layer, bool static_obj, float* width = nullptr);
 	void update_string(std::string new_string);
+	void update_location(glm::vec2 loc) { pos = loc; }
 };
 

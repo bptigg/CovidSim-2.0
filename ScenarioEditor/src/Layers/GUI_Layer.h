@@ -150,6 +150,8 @@ private:
 	void open_transport_overlay();
 	void close_transport_overlay();
 
+	void new_line();
+
 #pragma region sub_menus
 	void open_public_sub();
 	void open_transport_sub();

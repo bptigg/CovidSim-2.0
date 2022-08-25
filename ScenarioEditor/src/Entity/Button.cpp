@@ -127,6 +127,16 @@ void Button::update_position(const float& zoom, const glm::vec2& camera_pos, con
 	}
 }
 
+void Button::change_position(const glm::vec2& pos)
+{
+	m_location = pos;
+	m_text.update_location(pos);
+
+	m_collison_box.lower_bound = { m_location.x - (m_size.x / 2.0f), m_location.y - (m_size.y / 2.0f) };
+	m_collison_box.upper_bound = { m_location.x + (m_size.x / 2.0f), m_location.y + (m_size.y / 2.0f) };
+	m_collison_box.width = 2.0f;
+}
+
 void Button::m_default_function()
 {
 	Log::info("Button pressed");
