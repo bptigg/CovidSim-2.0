@@ -7,6 +7,7 @@
 #include "../Entity/Text_Box.h"
 #include "../Entity/Text_Menu_object.h"
 #include "../Entity/dialouge_box.h"
+#include "../Entity/Scrollable_Menu.h"
 
 #include "../Events/Gui_Events.h"
 #include "../Events/Transport_Events.h"

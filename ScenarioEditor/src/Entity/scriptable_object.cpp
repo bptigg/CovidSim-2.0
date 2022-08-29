@@ -8,6 +8,7 @@ scriptable_object::scriptable_object(const glm::vec2& location, const glm::vec2&
 	m_collison_box.width = 2.0f;
 
 	m_delete_object = false;
+	//m_render = true;
 }
 
 scriptable_object::~scriptable_object()

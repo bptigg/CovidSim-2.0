@@ -11,6 +11,7 @@ Button::Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, b
 
 	m_menu_object = menu;
 	m_set_up = false;
+	m_render = true;
 
 	rendering_layer = 1;
 
@@ -32,6 +33,7 @@ Button::Button(const std::string text, const glm::vec2& location, const glm::vec
 
 	m_menu_object = menu;
 	m_set_up = false;
+	m_render = true;
 
 	rendering_layer = 1;
 
@@ -47,6 +49,11 @@ Button::~Button()
 
 void Button::update()
 {
+	if (!m_render)
+	{
+		return;
+	}
+
 	if (m_state == State::Hover && !m_hover)
 	{
 		if (is_mouse_over() == false)
@@ -82,7 +89,7 @@ void Button::render()
 		Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);
 		break;
 	case Button::State::Press:
-		Renderer::draw_rectangle_color(m_location, m_size, selected_colour , rendering_layer, m_menu_object);
+		Renderer::draw_rectangle_color(m_location, m_size, selected_colour, rendering_layer, m_menu_object);
 		Renderer::draw_box(m_location, m_size, 2.0f, box_colour, rendering_layer + 1, m_menu_object);
 		break;
 	default:
@@ -98,6 +105,11 @@ void Button::render()
 
 void Button::event_callback(Events::Event& e)
 {
+	if (!m_render)
+	{
+		return;
+	}
+
 	Events::Event_Dispatcher dispatcher(e);
 	switch (e.Get_Event_Type())
 	{

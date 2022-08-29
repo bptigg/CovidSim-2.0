@@ -1002,6 +1002,9 @@ void GUI_Layer::create_line_manager()
 	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(title);
 
+	Scrollable_Menu* menu = new Scrollable_Menu({ settings->get_position().x, settings->get_position().y }, {400, 500}, this, 0, 0);
+	add_scriptable_object(menu);
+
 	Button* new_line= new Button("Add new line", { settings->get_position().x, 220 + settings->get_position().y }, { 320, 60 }, this, true, 50.0f, button_id);
 	new_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
 	new_line->selected_colour = new_line->base_colour;
@@ -1009,6 +1012,7 @@ void GUI_Layer::create_line_manager()
 	new_line->rendering_layer = m_base_layer + 6;
 	new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
 	add_scriptable_object(new_line);
+	menu->add_object(new_line);
 	button_id++;
 }
 
@@ -1327,8 +1331,29 @@ void GUI_Layer::close_transport_overlay()
 
 void GUI_Layer::new_line()
 {
+	//glm::vec2 menu_size(0);
+	//for (scriptable_object* obj : m_objects)
+	//{
+	//	if (dynamic_cast<Menu_Background*>(obj) != nullptr)
+	//	{
+	//		menu_size = { obj->get_position().y + obj->get_size().y / 2.0f, obj->get_position().y - obj->get_size().y / 2.0f };
+	//		break;
+	//	}
+	//}
+
+	Scrollable_Menu* menu = nullptr;
+	for (auto obj : m_objects)
+	{
+		menu = dynamic_cast<Scrollable_Menu*>(obj);
+		if (menu != nullptr)
+		{
+			break;
+		}
+	}
+
 	int button_id = 0;
 	glm::vec2 pos(0);
+	scriptable_object* button;
 	for (scriptable_object* obj : m_objects)
 	{
 		if (dynamic_cast<Button*>(obj) != nullptr)
@@ -1336,7 +1361,17 @@ void GUI_Layer::new_line()
 			if (obj->get_id() == 0)
 			{
 				pos = obj->get_position();
-				obj->change_position({ pos.x, pos.y - 80.0f });
+
+				if (!menu->check_valid(pos.y - 80.0f))
+				{
+					pos.y = menu->get_top() + 80.0f;
+				}
+				else
+				{
+					obj->change_position({ pos.x, pos.y - 80.0f });
+				}
+
+				button = obj;
 			}
 			if (obj->get_id() >= button_id)
 			{
@@ -1352,6 +1387,8 @@ void GUI_Layer::new_line()
 	new_line->rendering_layer = m_base_layer + 6;
 	//new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
 	add_scriptable_object(new_line);
+
+	menu->add_object(new_line);
 }
 
 void GUI_Layer::open_public_sub()

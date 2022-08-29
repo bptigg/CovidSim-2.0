@@ -120,6 +120,9 @@
     <ClCompile Include="src\Layers\Transport_Layer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Entity\Scrollable_Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -264,6 +267,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\Transport_Events.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity\Scrollable_Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

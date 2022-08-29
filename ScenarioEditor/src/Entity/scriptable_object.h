@@ -46,6 +46,7 @@ protected:
 
 	bool m_delete_object;
 	bool m_set_inactive;
+	//bool m_render;
 
 public:
 	scriptable_object(const glm::vec2& location, const glm::vec2& size, Layer* layer, int id);
@@ -60,6 +61,8 @@ public:
 	
 	inline void delete_obj(bool obj) { m_delete_object = obj; }
 	inline void inactive_obj(bool obj) { m_set_inactive = obj; }
+	inline virtual void render_obj(bool obj) {}
+	inline virtual bool get_render() { return true; }
 
 	int get_id() { return m_object_id; }
 

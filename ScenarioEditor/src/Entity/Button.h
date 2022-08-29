@@ -39,6 +39,8 @@ protected:
 	bool m_persist;
 	bool m_hover;
 
+	bool m_render;
+
 	float m_zoom;
 	glm::vec2 m_camera_position;
 	glm::mat4 m_camera_matrix;
@@ -57,6 +59,9 @@ public:
 	{
 		right_button_func = func;
 	}
+
+	inline void render_obj(bool obj) override { m_render = obj; } 
+	inline bool get_render() override { return m_render; }
 
 	virtual void update() override;
 	virtual void render() override;
