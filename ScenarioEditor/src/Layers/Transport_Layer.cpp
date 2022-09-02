@@ -76,6 +76,11 @@ void Transport_Layer::On_Event(Events::Event& e)
 				dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Transport_Layer::open_line_manager));
 			}
 		}
+		if (e.Get_Event_Type() == Events::Event_Type::Transport_Line_Editor)
+		{
+			open_line_editor();
+			e.Handled = true; 
+		}
 
 		//m_scroll.event_callback(e);
 	}
@@ -99,4 +104,11 @@ bool Transport_Layer::open_line_manager(Events::Key_Pressed_Event& e)
 	Events::GUI_Line_Manager_Event event(this);
 	Event_Call_back(event);
 	return true;
+}
+
+void Transport_Layer::open_line_editor()
+{
+	Events::GUI_Line_Editor_Event event(true);
+	event.add_layer(this);
+	Event_Call_back(event);
 }

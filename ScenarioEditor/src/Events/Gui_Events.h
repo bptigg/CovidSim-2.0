@@ -146,6 +146,27 @@ namespace Events
 		Transport_Layer* m_layer;
 	};
 
+	class GUI_Line_Editor_Event : public Event
+	{
+	public:
+		GUI_Line_Editor_Event(bool open)
+		{
+			m_active = open;
+			m_layer = nullptr;
+		}
+
+		void add_layer(Transport_Layer* layer) { m_layer = layer; }
+		Transport_Layer* get_layer() { return m_layer; }
+		bool get_active() { return m_active; }
+
+		EVENT_CLASS_TYPE(Transport_Line_Editor)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		Transport_Layer* m_layer;
+		bool m_active;
+	};
+
 	class GUI_Dropdown_Event : public Event
 	{
 	public:

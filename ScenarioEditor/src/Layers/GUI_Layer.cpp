@@ -98,6 +98,9 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		menu_key = 11;
 		create_line_manager();
 		break;
+	case Type::LineEditor:
+		menu_key = 12;
+		create_line_editor();
 	default:
 		break;
 	}
@@ -238,9 +241,16 @@ void GUI_Layer::render(bool render)
 		case GUI_Layer::Type::LineManager:
 			m_render = true;
 			break;
+		case GUI_Layer::Type::LineEditor:
+			m_render = true;
+			break;
 		default:
 			break;
 		}
+	}
+	if (!render)
+	{
+		m_render = false;
 	}
 }
 
@@ -1016,6 +1026,15 @@ void GUI_Layer::create_line_manager()
 	button_id++;
 }
 
+void GUI_Layer::create_line_editor()
+{
+	int button_id = 0;
+	m_render = false;
+	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
+	add_scriptable_object(popup);
+}
+
 void GUI_Layer::setting_exit_func()
 {
 	bool not_complete = false;
@@ -1329,6 +1348,18 @@ void GUI_Layer::close_transport_overlay()
 	Event_Call_back(event);
 }
 
+void GUI_Layer::open_line_editor()
+{
+	Events::GUI_Line_Editor_Event event(true);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::close_line_editor()
+{
+	Events::GUI_Line_Editor_Event event(false);
+	Event_Call_back(event);
+}
+
 void GUI_Layer::new_line()
 {
 	//glm::vec2 menu_size(0);
@@ -1385,10 +1416,11 @@ void GUI_Layer::new_line()
 	new_line->selected_colour = new_line->base_colour;
 	new_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	new_line->rendering_layer = m_base_layer + 6;
-	//new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_overlay));
+	new_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_line_editor));
 	add_scriptable_object(new_line);
 
 	menu->add_object(new_line);
+	open_line_editor();
 }
 
 void GUI_Layer::open_public_sub()

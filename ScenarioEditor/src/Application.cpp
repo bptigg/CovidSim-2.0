@@ -69,6 +69,7 @@ void app::On_Event(Events::Event& e)
                 if (dynamic_cast<editor*>(m_stack[i]) != nullptr)
                 {
                     m_stack[i]->On_Attach({});
+                    return;
                 }
             }
         }
@@ -86,16 +87,19 @@ void app::On_Event(Events::Event& e)
                         if (overlay->get_attached())
                         {
                             overlay->enable_overlay();
+                            return;
                         }
                         else
                         {
                             m_stack[i]->On_Attach({});
                             m_stack[i]->render(true);
+                            return;
                         }
                     }
                     else
                     {
                         overlay->disable_overlay();
+                        return;
                     }
                 }
             }
@@ -115,6 +119,7 @@ void app::On_Event(Events::Event& e)
                         m_stack[i]->On_Attach({});
                         temp_layer->set_caller(ev->get_caller());
                         m_stack[i]->render(true);
+                        return;
                     }
                 }
             }
@@ -134,6 +139,7 @@ void app::On_Event(Events::Event& e)
                         temp_layer->set_menu(ev->get_menu());
                         temp_layer->set_caller(ev->get_caller());
                         m_stack[i]->render(true);
+                        return;
                     }
                 }
             }
@@ -153,6 +159,7 @@ void app::On_Event(Events::Event& e)
                         temp_layer->set_menu(ev->get_menu());
                         temp_layer->set_caller(ev->get_caller());
                         m_stack[i]->render(true);
+                        return;
                     }
                 }
             }
@@ -178,6 +185,29 @@ void app::On_Event(Events::Event& e)
                     {
                         m_stack[i]->On_Attach({});
                         m_stack[i]->render(true);
+                        return;
+                    }
+                }
+            }
+        }
+
+        if (e.Get_Event_Type() == Events::Event_Type::Transport_Line_Editor)
+        {
+            Events::GUI_Line_Editor_Event* ev = dynamic_cast<Events::GUI_Line_Editor_Event*>(&e);
+            if (ev->get_layer() != nullptr)
+            {
+                for (int i = 0; i < m_stack.size(); i++)
+                {
+                    GUI_Layer* temp_layer = dynamic_cast<GUI_Layer*>(m_stack[i]);
+                    if (temp_layer != nullptr)
+                    {
+                        Events::GUI_Line_Editor_Event* ev = dynamic_cast<Events::GUI_Line_Editor_Event*>(&e);
+                        if (temp_layer->get_type() == GUI_Layer::Type::LineEditor)
+                        {
+                            m_stack[i]->On_Attach({});
+                            m_stack[i]->render(true);
+                            return;
+                        }
                     }
                 }
             }
@@ -348,6 +378,9 @@ void app::init()
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::LineManager, 18, m_camera));
     m_stack[12]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::LineEditor, 18, m_camera));
+    m_stack[13]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

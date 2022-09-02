@@ -4,6 +4,21 @@
 #include "../Entity/scriptable_object.h"
 #include "../Entity/Scrollable_Menu.h"
 
+
+struct Line
+{
+	enum class Transport_Type
+	{
+		BUS,
+		LIGHT_RAIL,
+		RAPID_TRANSIT,
+		TRAINS
+	};
+
+	std::vector<uint32_t> stops;
+	Transport_Type type;
+};
+
 class Transport_Layer : public Layer
 {
 private:
@@ -34,6 +49,7 @@ public:
 
 private:
 	bool open_line_manager(Events::Key_Pressed_Event& e);
+	void open_line_editor();
 };
 
 //Idea for this layer is to highlight all the transport all the transport zones and disable clicking on none transport zones

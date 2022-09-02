@@ -96,6 +96,7 @@ private:
                         temp_layer->set_caller(ev->get_caller());
                         m_stack[i]->On_Attach({});
                         m_stack[i]->render(true);
+                        return;
                     }
                 }
             }

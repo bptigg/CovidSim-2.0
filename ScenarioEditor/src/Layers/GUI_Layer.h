@@ -30,7 +30,8 @@ public:
 		OpeningPopup,
 		SettingsMenu,
 		SetupMenu,
-		LineManager
+		LineManager,
+		LineEditor
 	};
 
 	//const bool dialog_box = &m_dialog_box;
@@ -123,6 +124,7 @@ private:
 	void create_opening_popup();
 
 	void create_line_manager();
+	void create_line_editor();
 
 	std::vector<scriptable_object*>& get_objects() { return m_objects; }
 
@@ -151,6 +153,9 @@ private:
 	void open_transport_overlay();
 	void close_transport_overlay();
 
+	void open_line_editor();
+	void close_line_editor();
+
 	void new_line();
 
 #pragma region sub_menus
@@ -160,6 +165,7 @@ private:
 	void open_staff_popup();
 	void open_capacity_popup();
 	void open_opening_popup();
+
 #pragma endregion
 
 	void defualt_func();
