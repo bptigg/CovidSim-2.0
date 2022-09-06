@@ -34,6 +34,13 @@ public:
 		LineEditor
 	};
 
+	enum class Side
+	{
+		LEFT,
+		RIGHT,
+		NONE
+	};
+
 	//const bool dialog_box = &m_dialog_box;
 private:
 	Type m_type;
@@ -42,6 +49,7 @@ private:
 	std::unordered_map<std::string, unsigned int> m_textures;
 
 	unsigned int m_base_layer;
+	Side m_side;
 
 	
 	//bool m_dialog_box = false;
@@ -60,6 +68,10 @@ private:
 	scriptable_object* m_caller;
 	scriptable_object* m_prev_menu;
 #pragma endregion;
+
+#pragma region transport
+	Layer* m_call_layer;
+#pragma endregiom
 
 #pragma region size_menu
 	scriptable_object* m_menu_button;
@@ -86,6 +98,7 @@ public:
 	void set_caller(scriptable_object* caller);
 	void set_prev_menu(scriptable_object* caller);
 	void set_menu(scriptable_object* p_menu);
+	void set_call_layer(Layer* layer);
 	void change_box_colour();
 	void change_box_texture();
 	//void change_box_colour_sub_menu(); 
@@ -101,6 +114,8 @@ public:
 	{
 
 	}
+
+	void update_line_manager();
 #pragma endregion
 
 private:
@@ -169,6 +184,8 @@ private:
 #pragma endregion
 
 	void defualt_func();
+	void side_check();
+	void menu_close();
 
 	//void save_data();
 };

@@ -7,6 +7,8 @@
 
 #define EVENT_KEY 0
 
+static bool s_rmenu_active = false;
+static bool s_lmenu_active = false;
 
 #if _DEBUG
 #define BYPASS 1
@@ -23,6 +25,7 @@ GUI_Layer::GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Ca
 	
 	m_orthographic_controller = std::move(ortho_controll);
 	m_camera_block = false;
+	m_side = Side::NONE;
 }
 
 GUI_Layer::~GUI_Layer()
@@ -197,9 +200,15 @@ void GUI_Layer::On_Event(Events::Event& e)
 
 void GUI_Layer::render(bool render)
 {
+	if (m_render)
+	{
+		return;
+	}
+
 	if (!editor::get()->get_only_transport())
 	{
 		m_render = true;
+		side_check();
 	}
 	else
 	{
@@ -207,6 +216,7 @@ void GUI_Layer::render(bool render)
 		{
 		case GUI_Layer::Type::Overlay:
 			m_render = true;
+			side_check();
 			break;
 		case GUI_Layer::Type::BuildingSelectMenu:
 			m_render = false;
@@ -234,15 +244,18 @@ void GUI_Layer::render(bool render)
 			break;
 		case GUI_Layer::Type::SettingsMenu:
 			m_render = true;
+			side_check();
 			break;
 		case GUI_Layer::Type::SetupMenu:
 			m_render = false;
 			break;
 		case GUI_Layer::Type::LineManager:
 			m_render = true;
+			side_check();
 			break;
 		case GUI_Layer::Type::LineEditor:
 			m_render = true;
+			side_check();
 			break;
 		default:
 			break;
@@ -267,6 +280,11 @@ void GUI_Layer::set_prev_menu(scriptable_object* caller)
 void GUI_Layer::set_menu(scriptable_object* p_menu)
 {
 	m_prev_menu = p_menu;
+}
+
+void GUI_Layer::set_call_layer(Layer* layer)
+{
+	m_call_layer = layer;
 }
 
 void GUI_Layer::change_box_colour()
@@ -450,6 +468,7 @@ void GUI_Layer::create_building_menu()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::RIGHT;
 	Menu_Background* settings = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
@@ -557,6 +576,7 @@ void GUI_Layer::create_public_building_sub_menu()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::LEFT;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_pb_menu));
 	add_scriptable_object(settings);
@@ -713,6 +733,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::LEFT;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_tb_menu));
 	add_scriptable_object(settings);
@@ -817,6 +838,7 @@ void GUI_Layer::create_settings_menu()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::LEFT;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
@@ -913,6 +935,7 @@ void GUI_Layer::create_capacity_popup()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::RIGHT;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
@@ -939,6 +962,7 @@ void GUI_Layer::create_staff_popup()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::RIGHT;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
@@ -965,6 +989,7 @@ void GUI_Layer::create_opening_popup()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::RIGHT;
 	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_popup));
 	add_scriptable_object(popup);
@@ -1004,6 +1029,7 @@ void GUI_Layer::create_line_manager()
 {
 	int button_id = 0;
 	m_render = false;
+	m_side = Side::LEFT;
 	Menu_Background* settings = new Menu_Background({ -430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
 	add_scriptable_object(settings);
@@ -1030,9 +1056,67 @@ void GUI_Layer::create_line_editor()
 {
 	int button_id = 0;
 	m_render = false;
-	Menu_Background* popup = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
-	popup->Bind_function(BIND_FUNCTION(GUI_Layer::close_menu));
-	add_scriptable_object(popup);
+	m_side = Side::RIGHT;
+	Menu_Background* settings = new Menu_Background({ 430,0 }, { 420, 640 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	settings->Bind_function(BIND_FUNCTION(GUI_Layer::close_line_editor));
+	add_scriptable_object(settings);
+
+	Text title_text("Line Editor", { 0 + settings->get_position().x , 280 + settings->get_position().y }, 60.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* title = new Text_Menu_object(title_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(title);
+
+	Text name_text("Line name", { 0 + settings->get_position().x , 240 + settings->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* name_t = new Text_Menu_object(name_text, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(name_t);
+
+	Text_Box* name = new Text_Box({ 0 + settings->get_position().x, 210 + settings->get_position().y }, { 200, 30 }, this, false, m_base_layer, true, button_id);
+	add_scriptable_object(name);
+	button_id++;
+
+	Button* line_colour = new Button({ -105.0f + settings->get_position().x, 160.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
+	line_colour->base_colour = building_constants::PLACE_OF_WORSHIP;
+	line_colour->selected_colour = line_colour->base_colour;
+	line_colour->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	line_colour->rendering_layer = m_base_layer;
+	//line_colour->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	add_scriptable_object(line_colour);
+	button_id++;
+
+	Text line_c("Line colour", { 50 + settings->get_position().x , 160 + settings->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* line_c_holder = new Text_Menu_object(line_c, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	add_scriptable_object(line_c_holder);
+
+	Button* show_line = new Button("Toggle line view", { settings->get_position().x, 90.0f + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
+	show_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	show_line->selected_colour = show_line->base_colour;
+	show_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	show_line->rendering_layer = m_base_layer + 6;
+	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	add_scriptable_object(show_line);
+	button_id++;
+
+	Scrollable_Menu* menu = new Scrollable_Menu({ settings->get_position().x, -50.0f + settings->get_position().y }, { 320, 200 }, this, 0, 0);
+	add_scriptable_object(menu);
+
+	Button* add_stop = new Button("add station", { settings->get_position().x, -200 + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
+	add_stop->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	add_stop->selected_colour = show_line->base_colour;
+	add_stop->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	add_stop->rendering_layer = m_base_layer + 6;
+	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	add_scriptable_object(add_stop);
+	button_id++;
+
+	Button* remove_stop = new Button("remove station", { settings->get_position().x, -270 + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
+	remove_stop->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	remove_stop->selected_colour = show_line->base_colour;
+	remove_stop->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	remove_stop->rendering_layer = m_base_layer + 6;
+	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	add_scriptable_object(remove_stop);
+	button_id++;
+	
+
 }
 
 void GUI_Layer::setting_exit_func()
@@ -1350,14 +1434,79 @@ void GUI_Layer::close_transport_overlay()
 
 void GUI_Layer::open_line_editor()
 {
+	if (m_orthographic_controller->get_block())
+	{
+		m_camera_block = false;
+	}
+	else
+	{
+		m_orthographic_controller->block_camera(true, menu_key);
+		m_camera_block = true;
+	}
+
 	Events::GUI_Line_Editor_Event event(true);
 	Event_Call_back(event);
 }
 
+void GUI_Layer::update_line_manager()
+{
+	auto transport = dynamic_cast<Transport_Layer*>(m_call_layer);
+	
+	auto lines = transport->get_lines();
+	std::vector<scriptable_object*> objects; 
+
+	for (auto obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::SCROLLABLE_MENU)
+		{
+			objects = dynamic_cast<Scrollable_Menu*>(obj)->get_list();
+		}
+	}
+
+	int i = 0;
+	for (auto it = lines.begin(); it != lines.end(); it++)
+	{
+		auto button = dynamic_cast<Button*>(objects[i]);
+		if (button->get_text() == "new line")
+		{
+			button->change_text(it->first);
+		}
+		i++;
+
+	}
+}
+
 void GUI_Layer::close_line_editor()
 {
-	Events::GUI_Line_Editor_Event event(false);
-	Event_Call_back(event);
+	//Events::GUI_Line_Editor_Event event(false);
+	//Event_Call_back(event);
+
+	Transport_Layer* transport = dynamic_cast<Transport_Layer*>(m_call_layer);
+	std::shared_ptr<Line> line;
+
+	for (scriptable_object* obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::TEXT_BOX)
+		{
+			std::string name = dynamic_cast<Text_Box*>(obj)->get_string();
+			line = transport->update_line(name);
+			line->name = name;
+		}
+		else if (obj->get_type() == entity_type::BUTTON && obj->get_id() == 1)
+		{
+			line->colour = dynamic_cast<Button*>(obj)->base_colour;
+		}
+		else if (obj->get_type() == entity_type::SCROLLABLE_MENU)
+		{
+			std::vector<scriptable_object*> list = dynamic_cast<Scrollable_Menu*>(obj)->get_list();
+			for (int i = 0; i < list.size(); i++)
+			{
+				line->stops.push_back(list[i]->get_id());
+			}
+		}
+	}
+
+	close_menu();
 }
 
 void GUI_Layer::new_line()
@@ -1504,9 +1653,59 @@ void GUI_Layer::defualt_func()
 	//a empty function
 }
 
+void GUI_Layer::side_check()
+{
+	if (m_side == Side::LEFT && s_lmenu_active == true)
+	{
+		m_render = false;
+
+		if (m_camera_block)
+		{
+			m_orthographic_controller->block_camera(false, menu_key);
+		}
+
+		return;
+	}
+	else if (m_side == Side::LEFT && s_lmenu_active == false)
+	{
+		s_lmenu_active = true;
+		return;
+	}
+	
+	if (m_side == Side::RIGHT && s_rmenu_active == true)
+	{
+		m_render = false;
+
+		if (m_camera_block)
+		{
+			m_orthographic_controller->block_camera(false, menu_key);
+		}
+
+		return;
+	}
+	else if (m_side == Side::RIGHT && s_rmenu_active == false)
+	{
+		s_rmenu_active = true;
+		return;
+	}
+}
+
+void GUI_Layer::menu_close()
+{
+	if (m_side == Side::LEFT)
+	{
+		s_lmenu_active = false;
+	}
+	else if (m_side == Side::RIGHT)
+	{
+		s_rmenu_active = false;
+	}
+}
+
 void GUI_Layer::close_menu()
 {
 	m_render = false;
+	menu_close();
 
 	if (m_camera_block)
 	{
@@ -1518,11 +1717,21 @@ void GUI_Layer::close_menu()
 	{
 		caller_button->change_state(false);
 	}
+
+	for (scriptable_object* obj : m_objects)
+	{
+		Text_Box* text_box = dynamic_cast<Text_Box*>(obj);
+		if (text_box != nullptr)
+		{
+			text_box->clear_box();
+		}
+	}
 }
 
 void GUI_Layer::close_pb_menu()
 {
 	m_render = false;
+	menu_close();
 	Button* caller_button = dynamic_cast<Button*>(m_caller);
 	if (caller_button != nullptr)
 	{
@@ -1537,6 +1746,7 @@ void GUI_Layer::close_pb_menu()
 void GUI_Layer::close_tb_menu()
 {
 	m_render = false;
+	//menu_close();
 	Button* caller_button = dynamic_cast<Button*>(m_caller);
 	if (caller_button != nullptr)
 	{

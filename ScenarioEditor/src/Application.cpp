@@ -185,6 +185,8 @@ void app::On_Event(Events::Event& e)
                     {
                         m_stack[i]->On_Attach({});
                         m_stack[i]->render(true);
+                        temp_layer->set_call_layer(ev->get_layer());
+                        temp_layer->update_line_manager();
                         return;
                     }
                 }
@@ -206,6 +208,7 @@ void app::On_Event(Events::Event& e)
                         {
                             m_stack[i]->On_Attach({});
                             m_stack[i]->render(true);
+                            temp_layer->set_call_layer(ev->get_layer());
                             return;
                         }
                     }

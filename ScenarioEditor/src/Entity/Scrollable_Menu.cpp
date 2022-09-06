@@ -5,6 +5,7 @@ Scrollable_Menu::Scrollable_Menu(glm::vec2 pos, glm::vec2 size, Layer* layer, un
 {
 	m_menu_object = true;
 	full = false;
+	m_type = entity_type::SCROLLABLE_MENU;
 }
 
 Scrollable_Menu::~Scrollable_Menu()

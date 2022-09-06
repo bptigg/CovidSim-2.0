@@ -99,6 +99,16 @@ void Transport_Layer::enable_overlay()
 	m_render = true;
 }
 
+std::shared_ptr<Line> Transport_Layer::update_line(std::string key)
+{
+	if (m_lines.find(key) == m_lines.end())
+	{
+		m_lines[key] = std::shared_ptr<Line>(new Line);
+	}
+
+	return m_lines[key];
+}
+
 bool Transport_Layer::open_line_manager(Events::Key_Pressed_Event& e)
 {
 	Events::GUI_Line_Manager_Event event(this);

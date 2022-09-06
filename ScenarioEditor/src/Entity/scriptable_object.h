@@ -15,6 +15,7 @@ enum class entity_type
 	TEXT_MENU_OBJECT,
 	TEXT_BOX,
 	DIALOUGE_BOX,
+	SCROLLABLE_MENU,
 	NONE
 };
 

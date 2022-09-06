@@ -17,6 +17,9 @@ struct Line
 
 	std::vector<uint32_t> stops;
 	Transport_Type type;
+
+	std::string name;
+	glm::vec4 colour;
 };
 
 class Transport_Layer : public Layer
@@ -32,6 +35,7 @@ private:
 	unsigned int m_selected;
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
+	std::unordered_map<std::string, std::shared_ptr<Line>> m_lines;
 public:
 	Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll);
 	virtual ~Transport_Layer() override;
@@ -44,6 +48,9 @@ public:
 
 	void disable_overlay();
 	void enable_overlay();
+
+	std::shared_ptr<Line> update_line(std::string key);
+	const std::unordered_map<std::string, std::shared_ptr<Line>> get_lines() const { return m_lines; }
 
 	inline bool get_attached() { return m_attached; }
 

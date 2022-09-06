@@ -28,6 +28,8 @@ public:
 	void add_object(scriptable_object* obj);
 	void remove_object(scriptable_object* obj);
 
+	std::vector<scriptable_object*> get_list() { return m_menu_objects; }
+
 	inline float get_top() { return m_menu_objects[0]->get_position().y; }
 	inline float get_bottom() { return m_menu_objects[m_menu_objects.size() - 1]->get_position().y; }
 

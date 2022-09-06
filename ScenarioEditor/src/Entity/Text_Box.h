@@ -46,6 +46,8 @@ public:
 	inline const std::string get_string() const { return text; }
 	inline std::string get_string() { return text; }
 
+	inline void clear_box() { text = ""; m_text.update_string(text); }
+
 private:
 
 	void key_to_char(uint32_t key);

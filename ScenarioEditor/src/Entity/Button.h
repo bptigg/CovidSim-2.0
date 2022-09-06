@@ -70,6 +70,8 @@ public:
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
 	virtual void change_position(const glm::vec2& pos) override;
 
+	inline void change_text(std::string new_text) { m_text.update_string(new_text); }
+
 	void change_state(bool state) { m_hover = state; m_state = (!m_hover) ? State::None : State::Press; }
 	void persist_hover(bool persist) { m_persist = persist; }
 	const std::string get_text() const { return m_text.m_text; }
