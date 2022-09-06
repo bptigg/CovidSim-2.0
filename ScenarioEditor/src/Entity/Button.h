@@ -17,6 +17,7 @@ public:
 	glm::vec4 base_colour;
 	glm::vec4 box_colour;
 	glm::vec4 selected_colour;
+	glm::vec2 relative_position;
 
 	bool textured;
 
@@ -44,6 +45,7 @@ protected:
 	float m_zoom;
 	glm::vec2 m_camera_position;
 	glm::mat4 m_camera_matrix;
+
 
 public:
 	Button(const glm::vec2& location, const glm::vec2& size, Layer* layer, bool menu, int id = 0);
@@ -76,12 +78,14 @@ public:
 	void persist_hover(bool persist) { m_persist = persist; }
 	const std::string get_text() const { return m_text.m_text; }
 
+	void p_is_mouse_over() { is_mouse_over(true); }
+
 private:
 	void m_default_function();
 
 	bool on_mouse_move(Events::Mouse_Moved_Event& e);
 	bool on_mouse_click(Events::Mouse_Button_Pressed_Event& e);
 
-	bool is_mouse_over();
+	bool is_mouse_over(bool position = false);
 };
 

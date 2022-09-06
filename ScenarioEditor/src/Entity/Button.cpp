@@ -232,7 +232,7 @@ bool Button::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 	return false;
 }
 
-bool Button::is_mouse_over()
+bool Button::is_mouse_over(bool position)
 {
 	glm::vec2 pos = Input::Get_Mouse_Position();
 	std::pair<float, float> loc = std::make_pair(pos.x, pos.y);
@@ -274,6 +274,34 @@ bool Button::is_mouse_over()
 		if (mouse_loc_new.y >= vec1.y && mouse_loc_new.y <= vec2.y)
 		{
 			//m_state = State::Hover;
+
+			if (position)
+			{
+				float dist = 1 / (vec2.x - vec1.x);
+				float x_dist = mouse_loc_new.x - vec1.x;
+				if (x_dist != 0)
+				{
+					float x_rel = x_dist * dist;
+					relative_position.x = x_rel;
+				}
+				else
+				{
+					relative_position.x = 0;
+				}
+
+				dist = 1 / (vec2.y - vec1.y);
+				float y_dist = mouse_loc_new.y - vec1.y;
+				if (y_dist != 0)
+				{
+					float y_rel = y_dist * dist;
+					relative_position.y = y_rel;
+				}
+				else
+				{
+					relative_position.y = 0;
+				}
+			}
+
 			return true;
 		}
 	}

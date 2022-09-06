@@ -170,6 +170,7 @@ void app::On_Event(Events::Event& e)
         GUI_event<Events::Popup_Capacity_Event>(e, GUI_Layer::Type::CapacityPopup, Events::Event_Type::Popup_Capacity);
         GUI_event<Events::Popup_Opening_Event>(e, GUI_Layer::Type::OpeningPopup, Events::Event_Type::Popup_Opening);
         GUI_event<Events::Popup_Staff_Event>(e, GUI_Layer::Type::StaffPopup, Events::Event_Type::Popup_Staff);
+        GUI_event<Events::GUI_Colour_Event>(e, GUI_Layer::Type::ColourSelect, Events::Event_Type::GUI_Colour_Select);
 
         GUI_event<Events::GUI_Settings_Event>(e, GUI_Layer::Type::SettingsMenu, Events::Event_Type::GUI_Settings_Select);
        
@@ -384,6 +385,9 @@ void app::init()
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::LineEditor, 18, m_camera));
     m_stack[13]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::ColourSelect, 18, m_camera));
+    m_stack[14]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

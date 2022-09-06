@@ -184,6 +184,23 @@ namespace Events
 		scriptable_object* m_caller;
 	};
 
+	class GUI_Colour_Event : public Event
+	{
+	public:
+		GUI_Colour_Event(scriptable_object* caller)
+		{
+			m_caller = caller;
+		}
+
+		scriptable_object* get_caller() { return m_caller; }
+
+		EVENT_CLASS_TYPE(GUI_Colour_Select)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+
+	private:
+		scriptable_object* m_caller;
+	};
+
 	class Popup_Staff_Event : public Event
 	{
 	public:

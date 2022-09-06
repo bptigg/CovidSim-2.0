@@ -16,6 +16,7 @@ enum class entity_type
 	TEXT_BOX,
 	DIALOUGE_BOX,
 	SCROLLABLE_MENU,
+	COLOUR_PALETTE,
 	NONE
 };
 

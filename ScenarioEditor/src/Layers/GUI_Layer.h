@@ -8,6 +8,7 @@
 #include "../Entity/Text_Menu_object.h"
 #include "../Entity/dialouge_box.h"
 #include "../Entity/Scrollable_Menu.h"
+#include "../Entity/colour_palette.h"
 
 #include "../Events/Gui_Events.h"
 #include "../Events/Transport_Events.h"
@@ -31,7 +32,8 @@ public:
 		SettingsMenu,
 		SetupMenu,
 		LineManager,
-		LineEditor
+		LineEditor,
+		ColourSelect
 	};
 
 	enum class Side
@@ -56,6 +58,7 @@ private:
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 	bool m_camera_block;
+	bool m_event_block;
 
 	uint32_t menu_key;
 
@@ -71,7 +74,7 @@ private:
 
 #pragma region transport
 	Layer* m_call_layer;
-#pragma endregiom
+#pragma endregion
 
 #pragma region size_menu
 	scriptable_object* m_menu_button;
@@ -100,6 +103,7 @@ public:
 	void set_menu(scriptable_object* p_menu);
 	void set_call_layer(Layer* layer);
 	void change_box_colour();
+	void change_line_colour() override;
 	void change_box_texture();
 	//void change_box_colour_sub_menu(); 
 
@@ -118,6 +122,9 @@ public:
 	void update_line_manager();
 #pragma endregion
 
+	void disable_events() { m_event_block = true; }
+	void enable_events() { m_event_block = false; }
+
 private:
 	void add_scriptable_object(scriptable_object* obj);
 	inline std::vector<scriptable_object*> reverse_vector(std::vector<scriptable_object*> vec)
@@ -133,6 +140,7 @@ private:
 	void create_building_size_sub_menu();
 	void create_settings_menu();
 	void create_button_dropdown();
+	void create_colour_dropdown();
 
 	void create_capacity_popup();
 	void create_staff_popup();
@@ -155,6 +163,7 @@ private:
 	void close_tb_menu();
 	void close_size_menu();
 	void close_dropdown();
+	void close_colour_sub();
 
 	void save_popup();
 	void close_popup();
@@ -180,6 +189,7 @@ private:
 	void open_staff_popup();
 	void open_capacity_popup();
 	void open_opening_popup();
+	void open_colour_sub();
 
 #pragma endregion
 

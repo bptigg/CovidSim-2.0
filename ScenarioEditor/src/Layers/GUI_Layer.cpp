@@ -26,6 +26,7 @@ GUI_Layer::GUI_Layer(Type menu_type, unsigned int base_layer, std::shared_ptr<Ca
 	m_orthographic_controller = std::move(ortho_controll);
 	m_camera_block = false;
 	m_side = Side::NONE;
+	m_event_block = false;
 }
 
 GUI_Layer::~GUI_Layer()
@@ -38,7 +39,7 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 
 	if (m_attached)
 	{
-		if (m_type != Type::BuildingSizeSubMenu && m_type != Type::ButtonDropDown)
+		if (m_type != Type::BuildingSizeSubMenu && m_type != Type::ButtonDropDown && m_type != Type::ColourSelect)
 		{
 			return;
 		}
@@ -104,6 +105,11 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 	case Type::LineEditor:
 		menu_key = 12;
 		create_line_editor();
+		break;
+	case Type::ColourSelect:
+		menu_key = 13;
+		create_colour_dropdown();
+		break;
 	default:
 		break;
 	}
@@ -163,6 +169,11 @@ void GUI_Layer::On_ImGui_Render()
 
 void GUI_Layer::On_Event(Events::Event& e)
 {
+	if (m_event_block)
+	{
+		return;
+	}
+
 	if (m_render)
 	{
 		//bool dont_unblock = m_orthographic_controller->get_block();
@@ -257,6 +268,9 @@ void GUI_Layer::render(bool render)
 			m_render = true;
 			side_check();
 			break;
+		case GUI_Layer::Type::ColourSelect:
+			m_render = true;
+			side_check();
 		default:
 			break;
 		}
@@ -318,6 +332,19 @@ void GUI_Layer::change_box_colour()
 				m_caller = nullptr;
 				break;
 			}
+		}
+	}
+}
+
+void GUI_Layer::change_line_colour()
+{
+	for (auto obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::COLOUR_PALETTE)
+		{
+			auto button = dynamic_cast<Button*>(m_caller);
+			button->base_colour = dynamic_cast<colour_palette*>(obj)->get_colour();
+			button->selected_colour = button->base_colour;
 		}
 	}
 }
@@ -931,6 +958,23 @@ void GUI_Layer::create_button_dropdown()
 	button_id++;
 }
 
+void GUI_Layer::create_colour_dropdown()
+{
+	int button_id = 0;
+	m_render = false;
+	float y_pos = m_caller->get_position().y;
+	float x_pos = m_caller->get_position().x;
+
+	dynamic_cast<GUI_Layer*>(m_caller->get_layer())->disable_events();
+
+	Menu_Background* menu = new Menu_Background({ 40 , y_pos - 180 }, { 340, 320 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
+	menu->Bind_function(BIND_FUNCTION(GUI_Layer::close_colour_sub));
+	add_scriptable_object(menu);
+
+	colour_palette* colour = new colour_palette({ menu->get_position().x - 10.0f, menu->get_position().y + 8.0f }, this, m_base_layer, button_id);
+	add_scriptable_object(colour);
+}
+
 void GUI_Layer::create_capacity_popup()
 {
 	int button_id = 0;
@@ -1078,7 +1122,7 @@ void GUI_Layer::create_line_editor()
 	line_colour->selected_colour = line_colour->base_colour;
 	line_colour->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	line_colour->rendering_layer = m_base_layer;
-	//line_colour->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_size_sub));
+	line_colour->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_colour_sub));
 	add_scriptable_object(line_colour);
 	button_id++;
 
@@ -1116,7 +1160,6 @@ void GUI_Layer::create_line_editor()
 	add_scriptable_object(remove_stop);
 	button_id++;
 	
-
 }
 
 void GUI_Layer::setting_exit_func()
@@ -1648,6 +1691,19 @@ void GUI_Layer::open_opening_popup()
 	Event_Call_back(event);
 }
 
+void GUI_Layer::open_colour_sub()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Events::GUI_Colour_Event event(obj);
+			Event_Call_back(event);
+		}
+	}
+}
+
 void GUI_Layer::defualt_func()
 {
 	//a empty function
@@ -1770,7 +1826,6 @@ void GUI_Layer::close_size_menu()
 
 void GUI_Layer::close_dropdown()
 {
-
 	Button* caller_button = dynamic_cast<Button*>(m_caller);
 	if (caller_button != nullptr)
 	{
@@ -1783,6 +1838,22 @@ void GUI_Layer::close_dropdown()
 	}
 	m_render = false;
 
+}
+
+void GUI_Layer::close_colour_sub()
+{
+	Button* caller_button = dynamic_cast<Button*>(m_caller);
+	if (caller_button != nullptr)
+	{
+		caller_button->change_state(false);
+	}
+
+	for (scriptable_object* obj : m_objects)
+	{
+		obj->delete_obj(true);
+	}
+	m_render = false;
+	dynamic_cast<GUI_Layer*>(m_caller->get_layer())->enable_events();
 }
 
 void GUI_Layer::save_popup()
