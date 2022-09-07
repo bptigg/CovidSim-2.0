@@ -74,8 +74,8 @@ void colour_palette::get_blue()
 void colour_palette::get_rgb()
 {
 	m_main.p_is_mouse_over();
-	red = m_main.relative_position.x * 256;
-	green = m_main.relative_position.y * 256;
+	red = m_main.relative_position.y * 256;
+	green = m_main.relative_position.x * 256;
 
 	m_Layer->change_line_colour();
 }

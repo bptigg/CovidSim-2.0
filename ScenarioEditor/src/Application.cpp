@@ -210,6 +210,11 @@ void app::On_Event(Events::Event& e)
                             m_stack[i]->On_Attach({});
                             m_stack[i]->render(true);
                             temp_layer->set_call_layer(ev->get_layer());
+
+                            if (ev->get_key() != "")
+                            {
+                                temp_layer->pload_line(ev->get_key());
+                            }
                             return;
                         }
                     }

@@ -120,6 +120,7 @@ public:
 	}
 
 	void update_line_manager();
+	inline void pload_line(std::string key) { load_line(key); }
 #pragma endregion
 
 	void disable_events() { m_event_block = true; }
@@ -181,6 +182,7 @@ private:
 	void close_line_editor();
 
 	void new_line();
+	void load_line(std::string key);
 
 #pragma region sub_menus
 	void open_public_sub();

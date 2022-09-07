@@ -78,7 +78,12 @@ void Transport_Layer::On_Event(Events::Event& e)
 		}
 		if (e.Get_Event_Type() == Events::Event_Type::Transport_Line_Editor)
 		{
-			open_line_editor();
+			std::string key = "";
+			if (dynamic_cast<Events::GUI_Line_Editor_Event*>(&e)->get_key() != "")
+			{
+				key = dynamic_cast<Events::GUI_Line_Editor_Event*>(&e)->get_key();
+			}
+			open_line_editor(key);
 			e.Handled = true; 
 		}
 
@@ -116,9 +121,10 @@ bool Transport_Layer::open_line_manager(Events::Key_Pressed_Event& e)
 	return true;
 }
 
-void Transport_Layer::open_line_editor()
+void Transport_Layer::open_line_editor(std::string key)
 {
 	Events::GUI_Line_Editor_Event event(true);
 	event.add_layer(this);
+	event.add_key(key);
 	Event_Call_back(event);
 }

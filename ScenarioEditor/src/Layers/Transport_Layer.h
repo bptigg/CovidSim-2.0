@@ -56,7 +56,7 @@ public:
 
 private:
 	bool open_line_manager(Events::Key_Pressed_Event& e);
-	void open_line_editor();
+	void open_line_editor(std::string key);
 };
 
 //Idea for this layer is to highlight all the transport all the transport zones and disable clicking on none transport zones

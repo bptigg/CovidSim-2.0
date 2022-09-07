@@ -153,11 +153,15 @@ namespace Events
 		{
 			m_active = open;
 			m_layer = nullptr;
+			m_key = "";
 		}
 
 		void add_layer(Transport_Layer* layer) { m_layer = layer; }
 		Transport_Layer* get_layer() { return m_layer; }
 		bool get_active() { return m_active; }
+
+		void add_key(std::string key) { m_key = key; }
+		std::string get_key() { return m_key; }
 
 		EVENT_CLASS_TYPE(Transport_Line_Editor)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
@@ -165,6 +169,7 @@ namespace Events
 	private:
 		Transport_Layer* m_layer;
 		bool m_active;
+		std::string m_key;
 	};
 
 	class GUI_Dropdown_Event : public Event

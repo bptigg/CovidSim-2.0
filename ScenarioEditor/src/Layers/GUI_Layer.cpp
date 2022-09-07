@@ -1487,7 +1487,31 @@ void GUI_Layer::open_line_editor()
 		m_camera_block = true;
 	}
 
+	std::string key = "";
+	for (auto obj : m_objects)
+	{
+		if (obj->get_id() == m_selected && obj->get_type() == entity_type::BUTTON)
+		{
+			key = dynamic_cast<Button*>(obj)->get_text();
+
+			if (key != "Add new line" && key != "")
+			{
+				break;
+			}
+			else if(key == "Add new line")
+			{
+				key = "";
+			}
+		}
+	}
+
 	Events::GUI_Line_Editor_Event event(true);
+	
+	if (key != "")
+	{
+		event.add_key(key);
+	}
+
 	Event_Call_back(event);
 }
 
@@ -1613,6 +1637,32 @@ void GUI_Layer::new_line()
 
 	menu->add_object(new_line);
 	open_line_editor();
+}
+
+void GUI_Layer::load_line(std::string key)
+{
+	if (m_type != Type::LineEditor)
+	{
+		return;
+	}
+
+	auto lines = dynamic_cast<Transport_Layer*>(m_call_layer)->get_lines();
+	auto line = lines[key];
+
+	for (auto obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::TEXT_BOX)
+		{
+			Text_Box* text_box = dynamic_cast<Text_Box*>(obj);
+			text_box->set_string(line->name);
+		}
+		else if (obj->get_type() == entity_type::BUTTON && obj->get_id() == 1)
+		{
+			Button* button = dynamic_cast<Button*>(obj);
+			button->base_colour = line->colour;
+			button->selected_colour = button->base_colour;
+		}
+	}
 }
 
 void GUI_Layer::open_public_sub()
