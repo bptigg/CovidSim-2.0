@@ -44,5 +44,6 @@ public:
 
 private:
 	bool on_mouse_scroll(Events::Mouse_Scrolled_Event& e);
+	bool is_mouse_over();
 };
 

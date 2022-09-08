@@ -95,6 +95,8 @@ public:
 	inline Type get_type() { return m_type; }
 	inline virtual unsigned int get_selected() override { return m_selected; }
 
+	//inline void Set_Text_Box(bool box) override { m_text_box = box; (m_text_box) ? lock_camera() : unlock_camera(); }
+
 #pragma region zone_menu
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
 
@@ -127,6 +129,10 @@ public:
 	void enable_events() { m_event_block = false; }
 
 private:
+
+	void lock_camera();
+	void unlock_camera();
+
 	void add_scriptable_object(scriptable_object* obj);
 	inline std::vector<scriptable_object*> reverse_vector(std::vector<scriptable_object*> vec)
 	{

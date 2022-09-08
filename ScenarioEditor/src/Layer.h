@@ -55,7 +55,8 @@ public:
 	}
 
 	inline void Set_Event_Callback(const Event_Call_back_fn& callback) { Event_Call_back = callback; }
-	inline void Set_Text_Box(bool box) { m_text_box = box; }
+	inline virtual void Set_Text_Box(bool box) { m_text_box = box;}
+
 
 	const std::string& GetName() const { return m_debug_name; }
 

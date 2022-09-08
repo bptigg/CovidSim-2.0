@@ -104,6 +104,11 @@ void Scrollable_Menu::insert_below(scriptable_object* obj)
 
 bool Scrollable_Menu::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 {
+	if (!is_mouse_over())
+	{
+		return false;
+	}
+
 	float offset = e.GetYOffset() * m_step;
 
 	m_position += offset;
@@ -146,4 +151,51 @@ bool Scrollable_Menu::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 	}
 
 	return true;
+}
+
+bool Scrollable_Menu::is_mouse_over()
+{
+	glm::vec2 pos = Input::Get_Mouse_Position();
+	std::pair<float, float> loc = std::make_pair(pos.x, pos.y);
+
+	glm::vec4 mouse_loc_new;
+	{
+		std::pair<float, float> loc = std::make_pair(pos.x, pos.y);
+
+		glm::vec2 size = Input::Get_Window_Size();
+
+		float x_scaler = size.x / 1280;
+		float y_scaler = size.y / 720;
+
+		float mouse_x, mouse_y;
+
+
+		if (!m_menu_object)
+		{
+			mouse_x = (loc.first - (size.x / 2.0f) + m_camera_position.x) * m_zoom;
+			mouse_y = ((size.y / 2.0f - loc.second) + m_camera_position.y) * m_zoom;
+			glm::vec4 mouse_loc = glm::vec4(mouse_x, mouse_y, 1.0f, 1.0f);
+			mouse_loc_new = (mouse_loc * m_camera_matrix * m_zoom);
+		}
+		else
+		{
+			mouse_x = loc.first - (size.x / 2.0f);
+			mouse_y = (size.y / 2.0f - loc.second);
+			glm::vec4 mouse_loc = glm::vec4(mouse_x, mouse_y, 1.0f, 1.0f);
+			mouse_loc_new = (mouse_loc * m_camera_matrix * m_zoom) / glm::vec4(x_scaler, y_scaler, 1.0f, 1.0f);
+		}
+
+	}
+
+	glm::vec4 vec1 = glm::vec4(m_collison_box.lower_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
+	glm::vec4 vec2 = glm::vec4(m_collison_box.upper_bound, 1.0f, 1.0f) * (m_camera_matrix * m_zoom);
+
+	if (mouse_loc_new.x >= vec1.x && mouse_loc_new.x <= vec2.x)
+	{
+		if (mouse_loc_new.y >= vec1.y && mouse_loc_new.y <= vec2.y)
+		{
+			return true;
+		}
+	}
+	return false;
 }

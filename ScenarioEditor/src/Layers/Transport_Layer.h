@@ -8,12 +8,14 @@
 struct Line
 {
 	std::vector<uint32_t> stops = {};
+	std::vector<glm::vec2> positions = {};
 	Transport_Type type = Transport_Type::NONE;
 
 	std::string name = "";
 	glm::vec4 colour = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	bool render = false;
+	bool changed = false;
 };
 
 class Transport_Layer : public Layer
@@ -22,6 +24,7 @@ private:
 	std::vector<scriptable_object*> m_objects;
 	std::unordered_map<std::string, unsigned int> m_textures;
 	std::vector<glm::vec4> m_overlay;
+	std::unordered_map<std::string, std::vector<std::pair <glm::vec4, glm::vec4>>> m_line_overlay;
 
 	unsigned int m_base_layer;
 
@@ -57,6 +60,8 @@ public:
 private:
 	bool open_line_manager(Events::Key_Pressed_Event& e);
 	void open_line_editor(std::string key);
+
+	void draw_lines();
 };
 
 //Idea for this layer is to highlight all the transport all the transport zones and disable clicking on none transport zones

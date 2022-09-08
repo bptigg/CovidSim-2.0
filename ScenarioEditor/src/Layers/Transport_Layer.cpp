@@ -59,6 +59,8 @@ void Transport_Layer::On_Update(Timestep ts)
 			float y_pos = (rec.w + rec.y) / 2.0f;
 			Renderer::draw_rectangle_color({ x_pos, y_pos }, { rec.z - rec.x, rec.w - rec.y }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
 		}
+
+		draw_lines();
 	}
 
 	//Renderer::draw_rectangle_color({ 600, 360 }, { 60,60 }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
@@ -136,4 +138,70 @@ void Transport_Layer::open_line_editor(std::string key)
 	event.add_layer(this);
 	event.add_key(key);
 	Event_Call_back(event);
+}
+
+void Transport_Layer::draw_lines()
+{
+	bool y_first = true;
+	for (auto line : m_lines)
+	{
+		if (line.second->changed == true)
+		{
+			if (line.second->stops.size() <= 1)
+			{
+				continue;
+			}
+
+			for (int i = 1; i < line.second->stops.size(); i++)
+			{
+				float y_diff = line.second->positions[i].y - line.second->positions[i - 1].y;
+				float x_diff = line.second->positions[i].x - line.second->positions[i - 1].x;
+				y_first = true;
+
+				if (y_first)
+				{
+					if (y_diff == 0)
+					{
+					}
+					else
+					{
+						float y_center = line.second->positions[i].y - y_diff / 2.0f;
+						float x_center = line.second->positions[i - 1].x;
+
+						std::pair<glm::vec4, glm::vec4> rec = {{ x_center, y_center, 10.0f, std::abs(y_diff) + 10.0f }, line.second->colour};
+
+						m_line_overlay[line.first].push_back(rec);
+					}
+
+					if (x_diff == 0)
+					{
+					}
+					else
+					{
+						float x_center = line.second->positions[i].x - x_diff / 2.0f;
+						float y_center = line.second->positions[i].y;
+
+						std::pair<glm::vec4, glm::vec4> rec = {{ x_center, y_center, std::abs(x_diff) + 10.0f, 10.0f }, line.second->colour};
+
+						m_line_overlay[line.first].push_back(rec);
+					}
+				}
+
+			}
+			line.second->changed = false;
+		}
+	}
+
+	for (auto line_key : m_line_overlay)
+	{
+		int render_layer = m_base_layer;
+		if(m_active_line == line_key.first)
+		{
+			render_layer++;
+		}
+		for (auto line : line_key.second)
+		{
+			Renderer::draw_rectangle_color({ line.first.x, line.first.y }, { line.first.z, line.first.w }, line.second, render_layer, false);
+		}
+	}
 }
