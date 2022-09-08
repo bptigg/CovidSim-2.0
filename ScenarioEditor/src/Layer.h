@@ -13,6 +13,15 @@
 
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
+enum class Transport_Type
+{
+	BUS,
+	LIGHT_RAIL,
+	RAPID_TRANSIT,
+	TRAINS,
+	NONE
+};
+
 class Layer
 {
 public:

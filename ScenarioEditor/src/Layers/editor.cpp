@@ -1,5 +1,7 @@
 #include "editor.h"
 
+#include "../Events/Transport_Events.h"
+
 static editor* e_instance;
 
 editor::editor(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_control)
@@ -65,23 +67,26 @@ void editor::On_Update(Timestep ts)
 	{
 		obj->update_position(m_orthographic_controller->Get_Zoom_Level(), m_orthographic_controller->get_position(), m_orthographic_controller->get_camera().Get_View_Projection_Matrix());
 		
-		if (!m_disable_non_transport_events)
+		if (m_world_data[obj->get_id()]->render)
 		{
-			obj->update();
-		}
-		else
-		{
-			if (m_world_data[obj->get_id()]->transport_building)
+			if (!m_disable_non_transport_events)
 			{
 				obj->update();
 			}
-				
-		}
+			else
+			{
+				if (m_world_data[obj->get_id()]->transport_building)
+				{
+					obj->update();
+				}
 
-		auto button = dynamic_cast<Button*>(obj);
-		if (button != nullptr)
-		{
-			button->action_needed = m_world_data[button->get_id()]->action_needed;
+			}
+
+			auto button = dynamic_cast<Button*>(obj);
+			if (button != nullptr)
+			{
+				button->action_needed = m_world_data[button->get_id()]->action_needed;
+			}
 		}
 	}
 
@@ -122,6 +127,10 @@ void editor::On_Event(Events::Event& e)
 				}
 
 			}
+		}
+		if (e.Handled)
+		{
+			break;
 		}
 	}
 }
@@ -231,6 +240,32 @@ void editor::only_transport(bool arg)
 	m_disable_non_transport_events = arg;
 }
 
+void editor::bind_transport_select(bool arg)
+{
+	if (arg)
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->render == true && m_world_data[obj->get_id()]->transport_building == true)
+			{
+				auto button = dynamic_cast<Button*>(obj);
+				button->Bind_function(BIND_BUTTON_FN(editor::stop_selected));
+			};
+		}
+	}
+	else
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->render == true && m_world_data[obj->get_id()]->transport_building == true)
+			{
+				auto button = dynamic_cast<Button*>(obj);
+				button->Bind_function(BIND_BUTTON_FN(editor::open_zone_selector));
+			};
+		}
+	}
+}
+
 void editor::add_scriptable_object(scriptable_object* object)
 {
 	m_objects.push_back(object);
@@ -266,6 +301,7 @@ void editor::draw_buttons(int amount)
 			m_world_data[m_button_num]->button_id = m_button_num;
 			m_world_data[m_button_num]->building_type = -1;
 			m_world_data[m_button_num]->transport_building = false;
+			m_world_data[m_button_num]->type = Transport_Type::NONE;
 			add_scriptable_object(tile);
 
 			x = x + size;
@@ -288,6 +324,13 @@ void editor::open_drop_down()
 {
 	Events::GUI_Dropdown_Event event(m_objects[m_selected]);
 	Event_Call_back(event);
+}
+
+void editor::stop_selected()
+{
+	Events::Transport_stop_select event(m_objects[m_selected]);
+	Event_Call_back(event);
+	bind_transport_select(false);
 }
 
 bool editor::open_settings_panel(Events::Key_Pressed_Event& e)

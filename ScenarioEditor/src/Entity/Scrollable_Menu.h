@@ -7,6 +7,8 @@
 
 class Scrollable_Menu : public scriptable_object
 {
+public:
+	bool no_bounds;
 private:
 	std::vector<scriptable_object*> m_menu_objects;
 
@@ -27,6 +29,8 @@ public:
 
 	void add_object(scriptable_object* obj);
 	void remove_object(scriptable_object* obj);
+
+	void insert_below(scriptable_object* obj);
 
 	std::vector<scriptable_object*> get_list() { return m_menu_objects; }
 

@@ -17,7 +17,7 @@ namespace Events {
 		Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled,
 		GUI_Overlay, GUI_Building_Select, GUI_Public_Select, GUI_Transport_Select, GUI_Settings, GUI_Editor, GUI_Size_Select, GUI_Dropdown, GUI_Settings_Select,GUI_Colour_Select,
 		Popup_Capacity, Popup_Staff, Popup_Opening,
-		Transport_Overlay_Select, Transport_Line_Manager, Transport_Line_Editor
+		Transport_Overlay_Select, Transport_Line_Manager, Transport_Line_Editor, Transport_Stop_Select
 
 	};
 

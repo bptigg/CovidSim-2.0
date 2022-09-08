@@ -7,19 +7,13 @@
 
 struct Line
 {
-	enum class Transport_Type
-	{
-		BUS,
-		LIGHT_RAIL,
-		RAPID_TRANSIT,
-		TRAINS
-	};
+	std::vector<uint32_t> stops = {};
+	Transport_Type type = Transport_Type::NONE;
 
-	std::vector<uint32_t> stops;
-	Transport_Type type;
+	std::string name = "";
+	glm::vec4 colour = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-	std::string name;
-	glm::vec4 colour;
+	bool render = false;
 };
 
 class Transport_Layer : public Layer
@@ -36,6 +30,7 @@ private:
 
 	std::shared_ptr<Camera_Controller> m_orthographic_controller;
 	std::unordered_map<std::string, std::shared_ptr<Line>> m_lines;
+	std::string m_active_line;
 public:
 	Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll);
 	virtual ~Transport_Layer() override;
@@ -51,8 +46,13 @@ public:
 
 	std::shared_ptr<Line> update_line(std::string key);
 	const std::unordered_map<std::string, std::shared_ptr<Line>> get_lines() const { return m_lines; }
+	std::shared_ptr<Line> get_line(std::string key) { return m_lines[key];}
 
 	inline bool get_attached() { return m_attached; }
+
+	static Transport_Layer* get();
+	const std::string get_active_line() const { return m_active_line; }
+	void set_active_line(std::string line) { m_active_line = line; }
 
 private:
 	bool open_line_manager(Events::Key_Pressed_Event& e);

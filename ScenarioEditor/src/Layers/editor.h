@@ -15,7 +15,9 @@ public:
 	int32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
 	uint32_t size; //small - 0, medium - 1, large - 2, ''
 
-	bool transport_building; 
+	bool transport_building;
+	Transport_Type type = Transport_Type::NONE;
+	//std::vector<Transport_Type> types;
 
 	uint32_t staff;
 	uint32_t capacity;
@@ -26,6 +28,8 @@ public:
 	bool opening_action_needed = false;
 	bool action_needed = false;
 
+	//rendering stuff
+	bool render = true;
 };
 
 class editor : public Layer
@@ -56,11 +60,14 @@ public:
 	virtual void On_Update(Timestep ts) override;
 	virtual void On_ImGui_Render() override;
 	virtual void On_Event(Events::Event& e) override;
-
+	
+	
+	inline unsigned int selected() { return m_selected; }
 	inline virtual void set_selected(unsigned int num) override { m_selected = num; }
 	inline void delete_transport_cache() { m_cached_transport_overlay = false; }
 
 	inline std::shared_ptr<button_data> get_world_data(uint32_t key) { return m_world_data[key]; };
+	inline std::unordered_map<uint32_t, std::shared_ptr<button_data>> get_world_data_list() { return m_world_data; }
 
 	static editor* get();
 
@@ -69,6 +76,10 @@ public:
 
 	void only_transport(bool arg);
 	inline bool get_only_transport() { return m_disable_non_transport_events; }
+	void bind_transport_select(bool arg);
+
+	glm::vec2 get_position(int button_id) { return m_objects[button_id]->get_position(); }
+ 
 
 private:
 	void add_scriptable_object(scriptable_object* object);
@@ -78,6 +89,7 @@ private:
 
 	void open_zone_selector();
 	void open_drop_down();
+	void stop_selected();
 	bool open_settings_panel(Events::Key_Pressed_Event& e);
 };
 

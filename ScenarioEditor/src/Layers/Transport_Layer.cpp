@@ -2,6 +2,8 @@
 
 #include "editor.h"
 
+static Transport_Layer* t_instance;
+
 Transport_Layer::Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera_Controller> ortho_controll)
 {
 	m_base_layer = base_layer;
@@ -9,6 +11,8 @@ Transport_Layer::Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera
 
 	m_render = false;
 	m_dialog_box = false;
+
+	t_instance = this;
 }
 
 Transport_Layer::~Transport_Layer()
@@ -112,6 +116,11 @@ std::shared_ptr<Line> Transport_Layer::update_line(std::string key)
 	}
 
 	return m_lines[key];
+}
+
+Transport_Layer* Transport_Layer::get()
+{
+	return t_instance;
 }
 
 bool Transport_Layer::open_line_manager(Events::Key_Pressed_Event& e)

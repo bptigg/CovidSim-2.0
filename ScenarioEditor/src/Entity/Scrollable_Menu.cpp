@@ -6,6 +6,10 @@ Scrollable_Menu::Scrollable_Menu(glm::vec2 pos, glm::vec2 size, Layer* layer, un
 	m_menu_object = true;
 	full = false;
 	m_type = entity_type::SCROLLABLE_MENU;
+	no_bounds = false;
+
+	bounds.y = m_location.y + m_size.y / 2.0f;
+	bounds.x = m_location.y - m_size.y / 2.0f;
 }
 
 Scrollable_Menu::~Scrollable_Menu()
@@ -78,6 +82,26 @@ void Scrollable_Menu::remove_object(scriptable_object* obj)
 	m_menu_objects.erase(std::remove(m_menu_objects.begin(), m_menu_objects.end(), obj), m_menu_objects.end());
 }
 
+void Scrollable_Menu::insert_below(scriptable_object* obj)
+{
+	m_menu_objects.push_back(obj);
+
+	if (m_menu_objects.size() == 1)
+	{
+		obj->change_position({ m_location.x, m_location.y + (m_size.y / 2.0f) - obj->get_size().y});
+	}
+	else
+	{
+		obj->change_position({ m_location.x, m_menu_objects[m_menu_objects.size() - 2]->get_position().y - 80.0f });
+	}
+	
+	if (obj->get_position().y >= m_location.y + (m_size.y / 2.0f) || obj->get_position().y <= m_location.y - (m_size.y / 2.0f))
+	{
+		obj->render_obj(false);
+	}
+
+}
+
 bool Scrollable_Menu::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 {
 	float offset = e.GetYOffset() * m_step;
@@ -89,15 +113,18 @@ bool Scrollable_Menu::on_mouse_scroll(Events::Mouse_Scrolled_Event& e)
 		return true;
 	}
 
-	if (m_menu_objects[0]->get_position().y + offset < bounds.y)
+	if (!no_bounds)
 	{
-		m_position = m_position - offset;
-		offset = 0;
-	}
-	else if (m_menu_objects[m_menu_objects.size() - 1]->get_position().y + offset > bounds.x)
-	{
-		m_position = m_position - offset;
-		offset = 0;
+		if (m_menu_objects[0]->get_position().y + offset < bounds.y)
+		{
+			m_position = m_position - offset;
+			offset = 0;
+		}
+		else if (m_menu_objects[m_menu_objects.size() - 1]->get_position().y + offset > bounds.x)
+		{
+			m_position = m_position - offset;
+			offset = 0;
+		}
 	}
 
 	for (scriptable_object* obj : m_menu_objects)

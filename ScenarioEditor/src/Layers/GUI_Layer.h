@@ -184,6 +184,10 @@ private:
 	void new_line();
 	void load_line(std::string key);
 
+	void add_stop(bool start);
+	void add_stop_fn() { add_stop(true); }
+	void remove_stop();
+
 #pragma region sub_menus
 	void open_public_sub();
 	void open_transport_sub();

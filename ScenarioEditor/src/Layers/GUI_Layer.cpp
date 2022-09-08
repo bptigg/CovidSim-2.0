@@ -174,10 +174,19 @@ void GUI_Layer::On_Event(Events::Event& e)
 		return;
 	}
 
+	if (e.Get_Event_Type() == Events::Event_Type::Transport_Stop_Select)
+	{
+		if (m_type == Type::LineEditor)
+		{
+			add_stop(false);
+		}
+	}
+
 	if (m_render)
 	{
 		//bool dont_unblock = m_orthographic_controller->get_block();
 		//m_orthographic_controller->block_camera(true, EVENT_KEY);
+
 		if (m_dialog_box)
 		{
 			for (scriptable_object* obj : m_objects)
@@ -1141,13 +1150,14 @@ void GUI_Layer::create_line_editor()
 
 	Scrollable_Menu* menu = new Scrollable_Menu({ settings->get_position().x, -50.0f + settings->get_position().y }, { 320, 200 }, this, 0, 0);
 	add_scriptable_object(menu);
+	menu->no_bounds = true;
 
 	Button* add_stop = new Button("add station", { settings->get_position().x, -200 + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
 	add_stop->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
 	add_stop->selected_colour = show_line->base_colour;
 	add_stop->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	add_stop->rendering_layer = m_base_layer + 6;
-	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	add_stop->Bind_function(BIND_BUTTON_FN(GUI_Layer::add_stop_fn));
 	add_scriptable_object(add_stop);
 	button_id++;
 
@@ -1556,6 +1566,10 @@ void GUI_Layer::close_line_editor()
 		if (obj->get_type() == entity_type::TEXT_BOX)
 		{
 			std::string name = dynamic_cast<Text_Box*>(obj)->get_string();
+			if (name == "")
+			{
+				break;
+			}
 			line = transport->update_line(name);
 			line->name = name;
 		}
@@ -1646,8 +1660,15 @@ void GUI_Layer::load_line(std::string key)
 		return;
 	}
 
+	if (key == "new line")
+	{
+		return;
+	}
+
 	auto lines = dynamic_cast<Transport_Layer*>(m_call_layer)->get_lines();
 	auto line = lines[key];
+
+	Transport_Layer::get()->set_active_line(key);
 
 	for (auto obj : m_objects)
 	{
@@ -1663,6 +1684,82 @@ void GUI_Layer::load_line(std::string key)
 			button->selected_colour = button->base_colour;
 		}
 	}
+}
+
+void GUI_Layer::add_stop(bool start)
+{
+	Transport_Layer* t_overlay = Transport_Layer::get();
+
+	if (t_overlay->get_active_line() == "")
+	{
+		return;
+	}
+
+	std::shared_ptr<Line> active_line = t_overlay->get_line(t_overlay->get_active_line());
+	auto e_overlay = editor::get();
+
+	if (start)
+	{
+		if (active_line->type != Transport_Type::NONE)
+		{
+			//will need to rework this when transport get's reworked
+
+			std::unordered_map<uint32_t, std::shared_ptr<button_data>> button_data = e_overlay->get_world_data_list();
+			for (auto it = button_data.begin(); it != button_data.end(); it++)
+			{
+				if (!it->second->transport_building)
+				{
+					continue;
+				}
+
+				if (it->second->type == active_line->type)
+				{
+					continue;
+				}
+
+				it->second->render = false;
+			}
+
+		}
+
+		e_overlay->bind_transport_select(true);
+		return;
+	}
+	
+	if (!start)
+	{
+		active_line->stops.push_back(e_overlay->selected());
+
+		for (auto obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::SCROLLABLE_MENU)
+			{
+				auto menu = dynamic_cast<Scrollable_Menu*>(obj);
+				
+				Button* new_line = new Button("", { 0, 0 }, { 320, 60 }, this, true, 50.0f, 0);
+				new_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+				new_line->selected_colour = new_line->base_colour;
+				new_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+				new_line->rendering_layer = m_base_layer + 6;
+
+				glm::vec2 pos = e_overlay->get_position(e_overlay->selected());
+				
+				std::stringstream ss;
+				ss << "( " << pos.x << " , " << pos.y << " )";
+				std::string text = ss.str();
+
+				new_line->change_text(text);
+				menu->insert_below(new_line);
+				add_scriptable_object(new_line);
+			}
+		}
+
+	}
+
+}
+
+void GUI_Layer::remove_stop()
+{
 }
 
 void GUI_Layer::open_public_sub()
@@ -1862,6 +1959,8 @@ void GUI_Layer::close_tb_menu()
 	Menu_Background* temp_menu = dynamic_cast<Menu_Background*>(m_prev_menu);
 	GUI_Layer* menu_layer = dynamic_cast<GUI_Layer*>(temp_menu->get_layer());
 	temp_menu->Bind_function(std::bind(&GUI_Layer::close_menu, menu_layer));
+
+	close_menu();
 }
 
 
