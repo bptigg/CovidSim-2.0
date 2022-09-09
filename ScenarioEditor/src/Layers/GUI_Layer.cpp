@@ -1200,7 +1200,7 @@ void GUI_Layer::create_line_editor()
 	show_line->selected_colour = show_line->base_colour;
 	show_line->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	show_line->rendering_layer = m_base_layer + 6;
-	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::toggle_line_view));
 	add_scriptable_object(show_line);
 	button_id++;
 
@@ -1222,7 +1222,7 @@ void GUI_Layer::create_line_editor()
 	remove_stop->selected_colour = show_line->base_colour;
 	remove_stop->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	remove_stop->rendering_layer = m_base_layer + 6;
-	//show_line->Bind_function(BIND_BUTTON_FN(GUI_Layer::new_line));
+	remove_stop->Bind_function(BIND_BUTTON_FN(GUI_Layer::remove_stop_fn));
 	add_scriptable_object(remove_stop);
 	button_id++;
 	
@@ -1848,7 +1848,7 @@ void GUI_Layer::add_stop(bool start)
 			if (obj->get_type() == entity_type::SCROLLABLE_MENU)
 			{
 				auto menu = dynamic_cast<Scrollable_Menu*>(obj);
-				
+
 				Button* new_line = new Button("", { 0, 0 }, { 260, 60 }, this, true, 30.0f, 0);
 				new_line->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
 				new_line->selected_colour = new_line->base_colour;
@@ -1857,7 +1857,7 @@ void GUI_Layer::add_stop(bool start)
 
 				glm::vec2 pos = e_overlay->get_position(e_overlay->selected());
 				active_line->positions.push_back(pos);
-				
+
 				std::stringstream ss;
 				ss << "( " << pos.x << " , " << pos.y << " )";
 				std::string text = ss.str();
@@ -1872,31 +1872,90 @@ void GUI_Layer::add_stop(bool start)
 				auto menu = dynamic_cast<Menu_Background*>(obj);
 				menu->Bind_function(BIND_FUNCTION(GUI_Layer::close_line_editor));
 			}
-
-			std::unordered_map<uint32_t, std::shared_ptr<button_data>> button_data = e_overlay->get_world_data_list();
-			for (auto it = button_data.begin(); it != button_data.end(); it++)
+		}
+		
+		std::unordered_map<uint32_t, std::shared_ptr<button_data>> button_data = e_overlay->get_world_data_list();
+		for (auto it = button_data.begin(); it != button_data.end(); it++)
+		{
+			if (!it->second->transport_building)
 			{
-				if (!it->second->transport_building)
-				{
-					continue;
-				}
-
-				if (it->second->type == active_line->type)
-				{
-					continue;
-				}
-
-				it->second->render = true;
+				continue;
 			}
+
+			if (it->second->type == active_line->type)
+			{
+				continue;
+			}
+
+			it->second->render = true;
 		}
 
+		return;
 	}
 
 }
 
-void GUI_Layer::remove_stop()
+void GUI_Layer::remove_stop(bool start)
 {
-	//active_line->changed = true;
+	Transport_Layer* t_overlay = Transport_Layer::get();
+
+	if (t_overlay->get_active_line() == "")
+	{
+		return;
+	}
+
+	std::shared_ptr<Line> active_line = t_overlay->get_line(t_overlay->get_active_line());
+	auto e_overlay = editor::get();
+
+	std::unordered_map<uint32_t, std::shared_ptr<button_data>> button_data = e_overlay->get_world_data_list();
+	for (auto it = button_data.begin(); it != button_data.end(); it++)
+	{
+		if (!it->second->transport_building)
+		{
+			it->second->render = false;
+			continue;
+		}
+
+		if (it->second->type != active_line->type)
+		{
+			it->second->render = false;
+			continue;
+		}
+
+		if (std::find(active_line->stops.begin(), active_line->stops.end(), it->second->button_id) == active_line->stops.end())
+		{
+			it->second->render = false;
+			continue;
+		}
+
+	}
+
+	e_overlay->bind_transport_remove(true);
+
+	for (scriptable_object* obj : m_objects)
+	{
+		if (obj->get_type() == entity_type::BACKGROUND)
+		{
+			auto menu = dynamic_cast<Menu_Background*>(obj);
+			menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
+
+		}
+	}
+	return;
+}
+
+void GUI_Layer::toggle_line_view()
+{
+
+	Transport_Layer* t_overlay = Transport_Layer::get();
+
+	if (t_overlay->get_active_line() == "")
+	{
+		return;
+	}
+
+	std::shared_ptr<Line> active_line = t_overlay->get_line(t_overlay->get_active_line());
+	active_line->render = !active_line->render;
 }
 
 void GUI_Layer::open_public_sub()

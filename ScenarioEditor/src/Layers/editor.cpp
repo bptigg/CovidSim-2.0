@@ -266,6 +266,10 @@ void editor::bind_transport_select(bool arg)
 	}
 }
 
+void editor::bind_transport_remove(bool arg)
+{
+}
+
 void editor::add_scriptable_object(scriptable_object* object)
 {
 	m_objects.push_back(object);

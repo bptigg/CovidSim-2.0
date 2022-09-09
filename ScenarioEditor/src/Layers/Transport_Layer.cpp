@@ -115,6 +115,7 @@ std::shared_ptr<Line> Transport_Layer::update_line(std::string key)
 	if (m_lines.find(key) == m_lines.end())
 	{
 		m_lines[key] = std::shared_ptr<Line>(new Line);
+		m_lines[key]->render = true;
 	}
 
 	return m_lines[key];
@@ -195,13 +196,16 @@ void Transport_Layer::draw_lines()
 	for (auto line_key : m_line_overlay)
 	{
 		int render_layer = m_base_layer;
-		if(m_active_line == line_key.first)
+		if (m_lines[line_key.first]->render)
 		{
-			render_layer++;
-		}
-		for (auto line : line_key.second)
-		{
-			Renderer::draw_rectangle_color({ line.first.x, line.first.y }, { line.first.z, line.first.w }, line.second, render_layer, false);
+			if (m_active_line == line_key.first)
+			{
+				render_layer++;
+			}
+			for (auto line : line_key.second)
+			{
+				Renderer::draw_rectangle_color({ line.first.x, line.first.y }, { line.first.z, line.first.w }, line.second, render_layer, false);
+			}
 		}
 	}
 }

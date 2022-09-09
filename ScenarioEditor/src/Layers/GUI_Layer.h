@@ -192,7 +192,10 @@ private:
 
 	void add_stop(bool start);
 	void add_stop_fn() { add_stop(true); }
-	void remove_stop();
+	void remove_stop_fn() { remove_stop(true); }
+	void remove_stop(bool start);
+
+	void toggle_line_view();
 
 #pragma region sub_menus
 	void open_public_sub();

@@ -77,6 +77,7 @@ public:
 	void only_transport(bool arg);
 	inline bool get_only_transport() { return m_disable_non_transport_events; }
 	void bind_transport_select(bool arg);
+	void bind_transport_remove(bool arg);
 
 	glm::vec2 get_position(int button_id) { return m_objects[button_id]->get_position(); }
  
