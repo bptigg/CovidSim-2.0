@@ -9,6 +9,26 @@
 
 static bool s_rmenu_active = false;
 static bool s_lmenu_active = false;
+static int s_mode = 0;
+
+static auto s_vector_compare = [](std::vector<Transport_Type>& vec_1, std::vector<Transport_Type>& vec_2) {
+
+	std::vector<int> matches;
+
+	for (int i = 0; i < vec_1.size(); i++)
+	{
+		for (int e = 0; e < vec_2.size(); e++)
+		{
+			if (vec_1[i] == vec_2[e])
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+};
+
+
 
 #if _DEBUG
 #define BYPASS 1
@@ -36,11 +56,27 @@ GUI_Layer::~GUI_Layer()
 
 void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textures)
 {
-
 	if (m_attached)
 	{
-		if (m_type != Type::BuildingSizeSubMenu && m_type != Type::ButtonDropDown && m_type != Type::ColourSelect)
+		if (m_type != Type::BuildingSizeSubMenu && m_type != Type::ButtonDropDown && m_type != Type::ColourSelect && m_type != Type::PublicTransportSubMenu)
 		{
+			return;
+		}
+
+		if (m_type == Type::PublicTransportSubMenu)
+		{
+			for (auto obj : m_objects)
+			{
+				if (s_mode == 1 && obj->get_type() == entity_type::BUTTON)
+				{
+					dynamic_cast<Button*>(obj)->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+				}
+				else if (s_mode == 2 && obj->get_type() == entity_type::BUTTON)
+				{
+					dynamic_cast<Button*>(obj)->Bind_function(BIND_BUTTON_FN(GUI_Layer::remove_transport_type));
+				}
+
+			}
 			return;
 		}
 	}
@@ -69,7 +105,7 @@ void GUI_Layer::On_Attach(std::vector<std::pair<std::string, std::string>> textu
 		break;
 	case Type::PublicTransportSubMenu:
 		menu_key = 4;
-		create_public_transport_sub_menu();
+		create_public_transport_sub_menu(s_mode);
 		break;
 	case Type::BuildingSizeSubMenu:
 		menu_key = 5;
@@ -361,6 +397,13 @@ void GUI_Layer::change_box_colour()
 						data->staff_action_needed = false;
 						data->opening_action_needed = false;
 					}
+					else
+					{
+						data->capacity_action_needed = true;
+						data->staff_action_needed = true;
+						data->opening_action_needed = true;
+						data->action_needed = (data->capacity_action_needed || data->staff_action_needed || data->opening_action_needed);
+					}
 				}
 				m_caller = nullptr;
 				break;
@@ -419,33 +462,37 @@ void GUI_Layer::set_transport_type()
 			Button* caller_button = dynamic_cast<Button*>(m_caller);
 			if (caller_button != nullptr)
 			{
-				caller_button->base_colour = temp_button->base_colour;
-				caller_button->selected_colour = temp_button->selected_colour;
 				caller_button->change_state(false);
 
 				{
 					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
 					temp_layer->delete_transport_cache();
 					auto data = temp_layer->get_world_data(caller_button->get_id());
-					data->building_type = get_building_code(caller_button->base_colour);
+					int code = get_building_code(temp_button->base_colour);
 					data->transport_building = true;
 
-					switch (data->building_type)
+					Transport_Type type = Transport_Type::NONE;
+					switch (code)
 					{
-					case 17:
-						data->type = Transport_Type::BUS;
-						break;
 					case 18:
-						data->type = Transport_Type::LIGHT_RAIL;
+						type = Transport_Type::BUS;
 						break;
 					case 19:
-						data->type = Transport_Type::RAPID_TRANSIT;
+						type = Transport_Type::LIGHT_RAIL;
 						break;
 					case 20:
-						data->type = Transport_Type::TRAINS;
+						type = Transport_Type::RAPID_TRANSIT;
+						break;
+					case 21:
+						type = Transport_Type::TRAINS;
 						break;
 					default:
 						break;
+					}
+
+					if (std::find(data->types.begin(), data->types.end(), type) == data->types.end())
+					{
+						data->types.push_back(type);
 					}
 
 					data->capacity_action_needed = true;
@@ -458,6 +505,58 @@ void GUI_Layer::set_transport_type()
 			}
 		}
 	}
+	close_tb_menu();
+}
+
+void GUI_Layer::remove_transport_type()
+{
+	for (scriptable_object* obj : m_objects)
+	{
+		Button* temp_button = dynamic_cast<Button*>(obj);
+		if (temp_button != nullptr && temp_button->get_id() == m_selected)
+		{
+			Button* caller_button = dynamic_cast<Button*>(m_caller);
+			if (caller_button != nullptr)
+			{
+				caller_button->change_state(false);
+
+				{
+					editor* temp_layer = dynamic_cast<editor*>(caller_button->get_layer());
+					temp_layer->delete_transport_cache();
+					auto data = temp_layer->get_world_data(caller_button->get_id());
+					int code = get_building_code(temp_button->base_colour);
+					data->transport_building = true;
+
+					Transport_Type type = Transport_Type::NONE;
+					switch (code)
+					{
+					case 18:
+						type = Transport_Type::BUS;
+						break;
+					case 19:
+						type = Transport_Type::LIGHT_RAIL;
+						break;
+					case 20:
+						type = Transport_Type::RAPID_TRANSIT;
+						break;
+					case 21:
+						type = Transport_Type::TRAINS;
+						break;
+					default:
+						break;
+					}
+
+					if (std::find(data->types.begin(), data->types.end(), type) != data->types.end())
+					{
+						data->types.erase(std::remove(data->types.begin(), data->types.end(), type), data->types.end());
+					}
+				}
+				m_caller = nullptr;
+				break;
+			}
+		}
+	}
+	close_tb_menu();
 }
 
 void GUI_Layer::set_zone_size()
@@ -659,7 +758,7 @@ void GUI_Layer::create_building_menu()
 	transport_zone->selected_colour = transport_zone->base_colour;
 	transport_zone->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	transport_zone->rendering_layer = m_base_layer;
-	transport_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_sub));
+	transport_zone->Bind_function(BIND_BUTTON_FN(GUI_Layer::change_box_colour));
 	add_scriptable_object(transport_zone);
 	button_id++;
 
@@ -828,7 +927,7 @@ void GUI_Layer::create_public_building_sub_menu()
 	add_scriptable_object(arena_zone_holder);
 }
 
-void GUI_Layer::create_public_transport_sub_menu()
+void GUI_Layer::create_public_transport_sub_menu(int mode)
 {
 	int button_id = 0;
 	m_render = false;
@@ -846,7 +945,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Bus->selected_colour = Bus->base_colour;
 	Bus->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Bus->rendering_layer = m_base_layer;
-	Bus->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+	//Bus->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Bus);
 	button_id++;
 
@@ -859,7 +958,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Light_Rail->selected_colour = Light_Rail->base_colour;
 	Light_Rail->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Light_Rail->rendering_layer = m_base_layer;
-	Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+	//Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Light_Rail);
 	button_id++;
 
@@ -872,7 +971,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Rapid_Transit->selected_colour = Rapid_Transit->base_colour;
 	Rapid_Transit->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Rapid_Transit->rendering_layer = m_base_layer;
-	Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+	//Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Rapid_Transit);
 	button_id++;
 
@@ -885,13 +984,34 @@ void GUI_Layer::create_public_transport_sub_menu()
 	Trains->selected_colour = Trains->base_colour;
 	Trains->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Trains->rendering_layer = m_base_layer;
-	Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+	//Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
 	add_scriptable_object(Trains);
 	button_id++;
 
 	Text train_zone_text("train", { 50 + settings->get_position().x , 80 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* train_zone_holder = new Text_Menu_object(train_zone_text, { 50 + settings->get_position().x, -70 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(train_zone_holder);
+
+	if (mode == 1)
+	{
+		for (auto obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::BUTTON)
+			{
+				dynamic_cast<Button*>(obj)->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
+			}
+		}
+	}
+	else
+	{
+		for (auto obj : m_objects)
+		{
+			if (obj->get_type() == entity_type::BUTTON)
+			{
+				dynamic_cast<Button*>(obj)->Bind_function(BIND_BUTTON_FN(GUI_Layer::remove_transport_type));
+			}
+		}
+	}
 }
 
 void GUI_Layer::create_building_size_sub_menu()
@@ -1028,6 +1148,31 @@ void GUI_Layer::create_button_dropdown()
 	opening_hours->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_opening_popup));
 	add_scriptable_object(opening_hours);
 	button_id++;
+
+	if (data->building_type == 17)
+	{
+		//add transport specific menu's;
+		
+		//add type
+		Button* transport_add = new Button("add transport type", { menu_x_pos, -60 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+		transport_add->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+		transport_add->selected_colour = transport_add->base_colour;
+		transport_add->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+		transport_add->rendering_layer = m_base_layer + 6;
+		transport_add->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_sub));
+		add_scriptable_object(transport_add);
+		button_id++;
+		
+		//remove type
+		Button* transport_remove = new Button("remove transport type", { menu_x_pos, -90 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+		transport_remove->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
+		transport_remove->selected_colour = transport_remove->base_colour;
+		transport_remove->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+		transport_remove->rendering_layer = m_base_layer + 6;
+		transport_remove->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_transport_sub_remove));
+		add_scriptable_object(transport_remove);
+		button_id++;
+	}
 }
 
 void GUI_Layer::create_colour_dropdown()
@@ -1198,8 +1343,8 @@ void GUI_Layer::create_line_editor()
 	add_scriptable_object(line_colour);
 	button_id++;
 
-	Text line_c("Line colour", { 50 + settings->get_position().x , 160 + settings->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
-	Text_Menu_object* line_c_holder = new Text_Menu_object(line_c, { 0 + settings->get_position().x, 280 + settings->get_position().y }, this, m_base_layer + 2);
+	Text line_c("Line Type", { 50 + settings->get_position().x , 160 + settings->get_position().y }, 40.0f, { (float)220 / (float)256, (float)220 / (float)256, (float)220 / (float)256, 1.0f }, true);
+	Text_Menu_object* line_c_holder = new Text_Menu_object(line_c, { line_c.pos.x, line_c.pos.y }, this, m_base_layer + 2);
 	add_scriptable_object(line_c_holder);
 
 	Button* show_line = new Button("Toggle line view", { settings->get_position().x, 90.0f + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
@@ -1649,6 +1794,11 @@ void GUI_Layer::close_line_editor()
 		}
 	}
 
+	if (line->type.size() == 1)
+	{
+		line->determined_type = line->type[0];
+	}
+
 	close_menu();
 }
 
@@ -1773,6 +1923,39 @@ void GUI_Layer::load_line(std::string key)
 				add_scriptable_object(new_line);
 			}
 		}
+		else if (obj->get_type() == entity_type::TEXT_MENU_OBJECT)
+		{
+			if (obj->get_position().y == 160.0f)
+			{
+				auto text_obj = dynamic_cast<Text_Menu_object*>(obj);
+				auto text = text_obj->get_text();
+
+				if (line->type.size() == 1)
+				{
+					switch (line->determined_type)
+					{
+					case Transport_Type::BUS:
+						text->update_string("BUS");
+						break;
+					case Transport_Type::LIGHT_RAIL:
+						text->update_string("LIGHT RAIL");
+						break;
+					case Transport_Type::RAPID_TRANSIT:
+						text->update_string("RAPID TRANSIT");
+						break;
+					case Transport_Type::TRAINS:
+						text->update_string("TRAIN");
+						break;
+					default:
+						break;
+					}
+				}
+				else
+				{
+					text->update_string("LINE TYPE");
+				}
+			}
+		}
 	}
 }
 
@@ -1806,7 +1989,8 @@ void GUI_Layer::add_stop(bool start)
 			return;
 		}
 
-		if (active_line->type != Transport_Type::NONE)
+		int removed = 0;
+		if (active_line->type.size() != 0)
 		{
 			//will need to rework this when transport get's reworked
 
@@ -1817,14 +2001,29 @@ void GUI_Layer::add_stop(bool start)
 					continue;
 				}
 
-				if (it->second->type == active_line->type)
+				if (s_vector_compare(it->second->types, active_line->type))
 				{
 					continue;
 				}
 
 				it->second->render = false;
+				removed++;
 			}
 
+		}
+
+		if (active_line->stops.size() + removed == num)
+		{
+			for (auto it = button_data.begin(); it != button_data.end(); it++)
+			{
+				if (!it->second->transport_building)
+				{
+					continue;
+				}
+
+				it->second->render = true;
+			}
+			return;
 		}
 
 		e_overlay->bind_transport_select(true);
@@ -1846,7 +2045,34 @@ void GUI_Layer::add_stop(bool start)
 	{
 		active_line->stops.push_back(e_overlay->selected());
 		active_line->changed = true;
-		active_line->type = e_overlay->get_world_data(e_overlay->selected())->type;
+
+		if (active_line->type.size() == 0)
+		{
+			active_line->type = e_overlay->get_world_data(e_overlay->selected())->types;
+		}
+		else
+		{
+			int size = active_line->type.size();
+			int removed = 0;
+			auto types = e_overlay->get_world_data(e_overlay->selected())->types;
+			for (int i = 0; i < size; i++)
+			{
+				int e = 0;
+				for (e = 0; e < types.size(); e++)
+				{
+					if (active_line->type[i-removed] == types[e])
+					{
+						break;
+					}
+				}
+				if (e == types.size())
+				{
+					active_line->type.erase(std::remove(active_line->type.begin(), active_line->type.end(), active_line->type[i-removed]), active_line->type.end());
+					removed++;
+				}
+
+			}
+		}
 
 		int obj_size = m_objects.size();
 		for (int i = 0; i < obj_size; i++)
@@ -1889,10 +2115,10 @@ void GUI_Layer::add_stop(bool start)
 				continue;
 			}
 
-			if (it->second->type == active_line->type)
-			{
-				continue;
-			}
+			//if (it->second->type == active_line->type)
+			//{
+			//	continue;
+			//}
 
 			it->second->render = true;
 		}
@@ -1932,11 +2158,11 @@ void GUI_Layer::remove_stop(bool start)
 				continue;
 			}
 
-			if (it->second->type != active_line->type)
-			{
-				it->second->render = false;
-				continue;
-			}
+			//if (it->second->type != active_line->type)
+			//{
+			//	it->second->render = false;
+			//	continue;
+			//}
 
 			if (std::find(active_line->stops.begin(), active_line->stops.end(), it->second->button_id) == active_line->stops.end())
 			{
@@ -2064,6 +2290,24 @@ void GUI_Layer::open_transport_sub()
 		}
 	}
 
+	s_mode = 1;
+	Events::GUI_Transport_Building_Event event(m_caller, temp_menu);
+	Event_Call_back(event);
+}
+
+void GUI_Layer::open_transport_sub_remove()
+{
+	Menu_Background* temp_menu = nullptr;
+	for (scriptable_object* obj : m_objects)
+	{
+		temp_menu = dynamic_cast<Menu_Background*>(obj);
+		if (temp_menu != nullptr)
+		{
+			temp_menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
+			break;
+		}
+	}
+	s_mode = 2;
 	Events::GUI_Transport_Building_Event event(m_caller, temp_menu);
 	Event_Call_back(event);
 }
@@ -2229,7 +2473,7 @@ void GUI_Layer::close_tb_menu()
 
 	Menu_Background* temp_menu = dynamic_cast<Menu_Background*>(m_prev_menu);
 	GUI_Layer* menu_layer = dynamic_cast<GUI_Layer*>(temp_menu->get_layer());
-	temp_menu->Bind_function(std::bind(&GUI_Layer::close_menu, menu_layer));
+	temp_menu->Bind_function(std::bind(&GUI_Layer::close_dropdown, menu_layer));
 
 	close_menu();
 }

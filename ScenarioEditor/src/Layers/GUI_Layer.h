@@ -110,6 +110,7 @@ public:
 	//void change_box_colour_sub_menu(); 
 
 	void set_transport_type();
+	void remove_transport_type();
 	void set_zone_size();
 	inline void close_public_menu()
 	{
@@ -143,7 +144,7 @@ private:
 	void create_settings_menu(unsigned int menu);
 	void create_building_menu();
 	void create_public_building_sub_menu();
-	void create_public_transport_sub_menu();
+	void create_public_transport_sub_menu(int mode);
 	void create_building_size_sub_menu();
 	void create_settings_menu();
 	void create_button_dropdown();
@@ -200,6 +201,7 @@ private:
 #pragma region sub_menus
 	void open_public_sub();
 	void open_transport_sub();
+	void open_transport_sub_remove();
 	void open_size_sub();
 	void open_staff_popup();
 	void open_capacity_popup();

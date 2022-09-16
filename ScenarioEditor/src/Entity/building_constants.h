@@ -23,6 +23,7 @@ namespace building_constants
 	const glm::vec4 NIGHTCLUB = {57.0f / 255.0f, 39.0f / 255.0f, 102.0f / 255.0f, 1.0f};
 	const glm::vec4 ARENA = {213.0f / 255.0f, 220.0f / 255.0f, 95.0f / 255.0f, 1.0f};
 
+	const glm::vec4 TRANSPORT = { 255.0f / 255.0f, 144.0f / 255.0f, 0.0f, 1.0f };
 	const glm::vec4 BUS = {0.2f, 0.4f, 0.1f, 1.0f};
 	const glm::vec4 LIGHT_RAIL = {0.45f, 0.23f, 0.9f, 1.0f};
 	const glm::vec4 RAPID_TRANSIT = {0.9f, 0.2f, 0.5f, 1.0f};
@@ -100,21 +101,25 @@ unsigned int get_building_code(glm::vec4 colour)
 	{
 		return 16;
 	}
-	else if (colour == building_constants::BUS)
+	else if (colour == building_constants::TRANSPORT)
 	{
 		return 17;
 	}
-	else if (colour == building_constants::LIGHT_RAIL)
+	else if (colour == building_constants::BUS)
 	{
 		return 18;
 	}
-	else if (colour == building_constants::RAPID_TRANSIT)
+	else if (colour == building_constants::LIGHT_RAIL)
 	{
 		return 19;
 	}
-	else if (colour == building_constants::TRAINS)
+	else if (colour == building_constants::RAPID_TRANSIT)
 	{
 		return 20;
+	}
+	else if (colour == building_constants::TRAINS)
+	{
+		return 21;
 	}
 	else
 	{

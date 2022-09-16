@@ -17,7 +17,7 @@ public:
 
 	bool transport_building;
 	Transport_Type type = Transport_Type::NONE;
-	//std::vector<Transport_Type> types;
+	std::vector<Transport_Type> types;
 
 	uint32_t staff;
 	uint32_t capacity;

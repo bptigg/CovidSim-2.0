@@ -9,7 +9,8 @@ struct Line
 {
 	std::vector<uint32_t> stops = {};
 	std::vector<glm::vec2> positions = {};
-	Transport_Type type = Transport_Type::NONE;
+	Transport_Type determined_type = Transport_Type::NONE;
+	std::vector<Transport_Type>type = {};
 
 	std::string name = "";
 	glm::vec4 colour = { 0.0f, 0.0f, 0.0f, 1.0f };

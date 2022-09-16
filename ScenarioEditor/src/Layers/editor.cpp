@@ -172,7 +172,7 @@ std::vector<glm::vec4> editor::get_overlay()
 		for (int i = 0; i < m_objects.size();)
 		{
 			glm::vec4 current_rectangle(0.0f);
-			if (m_world_data[i]->transport_building)
+			if (m_world_data[i]->types.size() > 0 && m_world_data[i]->transport_building)
 			{
 				x = m_objects[i]->get_position().x - (m_objects[i]->get_size().x / 2.0f);
 				y = m_objects[i]->get_position().y - (m_objects[i]->get_size().y / 2.0f);

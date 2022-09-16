@@ -16,5 +16,7 @@ public:
 	virtual void event_callback(Events::Event& e) override;
 
 	virtual void update_position(const float& zoom, const glm::vec2& camera_pos, const glm::mat4& camera_mat) override;
+
+	Text* get_text() { return &m_text; }
 };
 
