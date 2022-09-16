@@ -148,6 +148,7 @@ void Transport_Layer::draw_lines()
 	{
 		if (line.second->changed == true)
 		{
+			m_line_overlay[line.first].clear();
 			if (line.second->stops.size() <= 1)
 			{
 				continue;

@@ -268,6 +268,28 @@ void editor::bind_transport_select(bool arg)
 
 void editor::bind_transport_remove(bool arg)
 {
+	if (arg)
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->render == true && m_world_data[obj->get_id()]->transport_building == true)
+			{
+				auto button = dynamic_cast<Button*>(obj);
+				button->Bind_function(BIND_BUTTON_FN(editor::stop_removed));
+			};
+		}
+	}
+	else
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->render == true && m_world_data[obj->get_id()]->transport_building == true)
+			{
+				auto button = dynamic_cast<Button*>(obj);
+				button->Bind_function(BIND_BUTTON_FN(editor::open_zone_selector));
+			};
+		}
+	}
 }
 
 void editor::add_scriptable_object(scriptable_object* object)
@@ -333,6 +355,13 @@ void editor::open_drop_down()
 void editor::stop_selected()
 {
 	Events::Transport_stop_select event(m_objects[m_selected]);
+	Event_Call_back(event);
+	bind_transport_select(false);
+}
+
+void editor::stop_removed()
+{
+	Events::Transport_stop_select event(m_objects[m_selected], true);
 	Event_Call_back(event);
 	bind_transport_select(false);
 }

@@ -195,7 +195,14 @@ void GUI_Layer::On_Event(Events::Event& e)
 	{
 		if (m_type == Type::LineEditor)
 		{
-			add_stop(false);
+			if (dynamic_cast<Events::Transport_stop_select*>(&e)->get_remove() == false)
+			{
+				add_stop(false);
+			}
+			else
+			{
+				remove_stop(false);
+			}
 		}
 	}
 
@@ -849,7 +856,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 
 	Button* Light_Rail = new Button({ -105.0f + settings->get_position().x, 180.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
 	Light_Rail->base_colour = building_constants::LIGHT_RAIL;
-	Light_Rail->selected_colour = Bus->base_colour;
+	Light_Rail->selected_colour = Light_Rail->base_colour;
 	Light_Rail->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Light_Rail->rendering_layer = m_base_layer;
 	Light_Rail->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
@@ -862,7 +869,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 
 	Button* Rapid_Transit = new Button({ -105.0f + settings->get_position().x, 130.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
 	Rapid_Transit->base_colour = building_constants::RAPID_TRANSIT;
-	Rapid_Transit->selected_colour = Bus->base_colour;
+	Rapid_Transit->selected_colour = Rapid_Transit->base_colour;
 	Rapid_Transit->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Rapid_Transit->rendering_layer = m_base_layer;
 	Rapid_Transit->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
@@ -875,7 +882,7 @@ void GUI_Layer::create_public_transport_sub_menu()
 
 	Button* Trains = new Button({ -105.0f + settings->get_position().x, 80.0f + settings->get_position().y }, { 40.0f, 40.f }, this, true, button_id);
 	Trains->base_colour = building_constants::TRAINS;
-	Trains->selected_colour = Bus->base_colour;
+	Trains->selected_colour = Trains->base_colour;
 	Trains->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Trains->rendering_layer = m_base_layer;
 	Trains->Bind_function(BIND_BUTTON_FN(GUI_Layer::set_transport_type));
@@ -1904,44 +1911,112 @@ void GUI_Layer::remove_stop(bool start)
 		return;
 	}
 
+
 	std::shared_ptr<Line> active_line = t_overlay->get_line(t_overlay->get_active_line());
+
+	if (active_line->positions.size() == 0)
+	{
+		return;
+	}
+
 	auto e_overlay = editor::get();
 
 	std::unordered_map<uint32_t, std::shared_ptr<button_data>> button_data = e_overlay->get_world_data_list();
-	for (auto it = button_data.begin(); it != button_data.end(); it++)
+	if (start)
 	{
-		if (!it->second->transport_building)
+		for (auto it = button_data.begin(); it != button_data.end(); it++)
 		{
-			it->second->render = false;
-			continue;
+			if (!it->second->transport_building)
+			{
+				it->second->render = false;
+				continue;
+			}
+
+			if (it->second->type != active_line->type)
+			{
+				it->second->render = false;
+				continue;
+			}
+
+			if (std::find(active_line->stops.begin(), active_line->stops.end(), it->second->button_id) == active_line->stops.end())
+			{
+				it->second->render = false;
+				continue;
+			}
+
 		}
 
-		if (it->second->type != active_line->type)
-		{
-			it->second->render = false;
-			continue;
-		}
+		e_overlay->bind_transport_remove(true);
 
-		if (std::find(active_line->stops.begin(), active_line->stops.end(), it->second->button_id) == active_line->stops.end())
+		for (scriptable_object* obj : m_objects)
 		{
-			it->second->render = false;
-			continue;
-		}
+			if (obj->get_type() == entity_type::BACKGROUND)
+			{
+				auto menu = dynamic_cast<Menu_Background*>(obj);
+				menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
 
+			}
+		}
+		return;
 	}
 
-	e_overlay->bind_transport_remove(true);
-
-	for (scriptable_object* obj : m_objects)
+	if (!start)
 	{
-		if (obj->get_type() == entity_type::BACKGROUND)
-		{
-			auto menu = dynamic_cast<Menu_Background*>(obj);
-			menu->Bind_function(BIND_FUNCTION(GUI_Layer::defualt_func));
+		//active_line->stops.(e_overlay->selected());
+		active_line->stops.erase(std::remove(active_line->stops.begin(), active_line->stops.end(), e_overlay->selected()), active_line->stops.end());
+		active_line->changed = true;
 
+		int obj_size = m_objects.size();
+		for (int i = 0; i < obj_size; i++)
+		{
+			auto obj = m_objects[i];
+			if (obj->get_type() == entity_type::SCROLLABLE_MENU)
+			{
+				auto menu = dynamic_cast<Scrollable_Menu*>(obj);
+				Button* stop = nullptr;
+
+				glm::vec2 pos = e_overlay->get_position(e_overlay->selected());
+				active_line->positions.erase(std::remove(active_line->positions.begin(), active_line->positions.end(), pos), active_line->positions.end());
+
+				std::stringstream ss;
+				ss << "( " << pos.x << " , " << pos.y << " )";
+				std::string text = ss.str();
+
+				for (auto button : menu->get_list())
+				{
+					if (button->get_type() == entity_type::BUTTON)
+					{
+						stop = dynamic_cast<Button*>(button);
+						if (stop->get_text() == text)
+						{
+							break;
+						}
+					}
+				}
+
+				menu->remove_object(stop);
+				stop->delete_obj(true);
+			}
+
+			if (obj->get_type() == entity_type::BACKGROUND)
+			{
+				auto menu = dynamic_cast<Menu_Background*>(obj);
+				menu->Bind_function(BIND_FUNCTION(GUI_Layer::close_line_editor));
+			}
 		}
+
+		for (auto it = button_data.begin(); it != button_data.end(); it++)
+		{
+			if (!it->second->transport_building)
+			{
+				continue;
+			}
+
+			it->second->render = true;
+		}
+
+		return;
 	}
-	return;
 }
 
 void GUI_Layer::toggle_line_view()

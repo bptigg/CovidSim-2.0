@@ -25,17 +25,20 @@ namespace Events
 	class Transport_stop_select : public Event
 	{
 	public:
-		Transport_stop_select(scriptable_object* caller)
+		Transport_stop_select(scriptable_object* caller, bool remove = false)
 		{
 			m_caller = caller;
+			m_remove = remove;
 		}
 
 		scriptable_object* get_caller() { return m_caller; }
+		bool get_remove() { return m_remove; }
 
 		EVENT_CLASS_TYPE(Transport_Stop_Select)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Transport)
 	private:
 		scriptable_object* m_caller;
+		bool m_remove;
 	};
 
 

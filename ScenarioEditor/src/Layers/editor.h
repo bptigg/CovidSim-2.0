@@ -91,6 +91,7 @@ private:
 	void open_zone_selector();
 	void open_drop_down();
 	void stop_selected();
+	void stop_removed();
 	bool open_settings_panel(Events::Key_Pressed_Event& e);
 };
 
