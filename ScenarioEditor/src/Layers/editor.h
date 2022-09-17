@@ -93,5 +93,6 @@ private:
 	void stop_selected();
 	void stop_removed();
 	bool open_settings_panel(Events::Key_Pressed_Event& e);
+	bool export_scenario(Events::Key_Pressed_Event& e);
 };
 

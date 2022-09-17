@@ -83,7 +83,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\GLFW\lib-vc2022;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\Freetype\objs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;User32.lib;opengl32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;User32.lib;opengl32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;freetype.lib;Urlmon.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,7 +103,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\GLFW\lib-vc2022;$(SolutionDir)dependencies\GLEW\lib\Release\Win32;$(SolutionDir)dependencies\Freetype\objs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;User32.lib;opengl32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;freetype.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;User32.lib;opengl32.lib;Gdi32.lib;Shell32.lib;glew32s.lib;freetype.lib;Urlmon.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

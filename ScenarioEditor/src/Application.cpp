@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include <Windows.h>
+
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 #define FALSE 0
@@ -339,9 +341,39 @@ void app::init()
         std::filesystem::create_directory("data");
         if (std::filesystem::exists("data"))
             std::cout << "Created directory\n";
-        std::cout << "Terminating Program" << std::endl;
-        Log::info("TERMINATING PROGRAM DUE TO LACK OF DATA FOLDER");
-        return;
+        else
+        {
+            std::cout << "Terminating Program" << std::endl;
+            Log::info("TERMINATING PROGRAM DUE TO LACK OF DATA FOLDER");
+            return;
+        }
+    }
+
+    if (std::filesystem::exists("user modifiable files") == FALSE)
+    {
+        std::cout << "user modifiable files directory doesn't exist... creating one\n";
+        std::filesystem::create_directory("user modifiable files");
+        if (std::filesystem::exists("user modifiable files"))
+        {
+            std::cout << "Created directory\n";
+
+            //const wchar_t* src_url = L"https://raw.githubusercontent.com/bptigg/CovidSim/master/Scenarios/EMC.cvsn";
+            //const wchar_t* dest_file = L"test.cvsn";
+
+            //if (S_OK == URLDownloadToFile(NULL, src_url, dest_file, 0, NULL))
+            //{
+            //
+            //    printf("Saved to 'myfile.txt'");
+            //
+            //}
+
+        }
+        else
+        {
+            std::cout << "Terminating Program" << std::endl;
+            Log::info("TERMINATING PROGRAM DUE TO LACK OF USER MODIFIABLE FILES FOLDER");
+            return;
+        }
     }
 
     m_camera->get_camera().Set_Position({ 0.0f,0.0f,0.0f });

@@ -109,6 +109,13 @@ void editor::On_Event(Events::Event& e)
 			Events::Event_Dispatcher dispatch(e);
 			dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(editor::open_settings_panel));
 		}
+		else if (dynamic_cast<Events::Key_Pressed_Event*>(&e)->Get_Key_Code() == CS_KEY_ESCAPE)
+		{
+			Events::Event_Dispatcher dispatch(e);
+			dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(editor::export_scenario));
+
+		}
+		
 	}
 
 	for (scriptable_object* obj : m_objects)
@@ -370,6 +377,11 @@ bool editor::open_settings_panel(Events::Key_Pressed_Event& e)
 {
 	Events::GUI_Settings_Event event(m_objects[m_selected]);
 	Event_Call_back(event);
+	return true;
+}
+
+bool editor::export_scenario(Events::Key_Pressed_Event& e)
+{
 	return true;
 }
 
