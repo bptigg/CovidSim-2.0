@@ -382,6 +382,8 @@ bool editor::open_settings_panel(Events::Key_Pressed_Event& e)
 
 bool editor::export_scenario(Events::Key_Pressed_Event& e)
 {
+	Events::AppExportEvent event;
+	Event_Call_back(event);
 	return true;
 }
 

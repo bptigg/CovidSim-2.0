@@ -20,6 +20,15 @@ namespace Events
 		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
 	};
 
+	class GUI_Export_Event : public Event
+	{
+	public:
+		GUI_Export_Event() {}
+
+		EVENT_CLASS_TYPE(GUI_Export_Select)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Menu)
+	};
+
 	class GUI_Building_Select_Event : public Event
 	{
 	public:

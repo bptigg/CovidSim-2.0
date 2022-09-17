@@ -12,10 +12,10 @@ namespace Events {
 	{
 		None = 0,
 		Window_Close, Window_Resize, Window_Focus, Window_Lost_Focus, Window_Moved,
-		App_Tick, App_Update, App_Render,
+		App_Tick, App_Update, App_Render, App_Export,
 		Key_Pressed, Key_Released,Key_Typed,
 		Mouse_Button_Pressed, Mouse_Button_Released, Mouse_Moved, Mouse_Scrolled,
-		GUI_Overlay, GUI_Building_Select, GUI_Public_Select, GUI_Transport_Select, GUI_Settings, GUI_Editor, GUI_Size_Select, GUI_Dropdown, GUI_Settings_Select,GUI_Colour_Select,
+		GUI_Overlay, GUI_Building_Select, GUI_Public_Select, GUI_Transport_Select, GUI_Settings, GUI_Editor, GUI_Size_Select, GUI_Dropdown, GUI_Settings_Select, GUI_Colour_Select, GUI_Export_Select,
 		Popup_Capacity, Popup_Staff, Popup_Opening,
 		Transport_Overlay_Select, Transport_Line_Manager, Transport_Line_Editor, Transport_Stop_Select
 

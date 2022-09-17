@@ -40,6 +40,11 @@ void app::On_Event(Events::Event& e)
     bool skip = false;
     bool skip_gui = false;
 
+    if (e.Get_Event_Type() == Events::Event_Type::App_Export)
+    {
+        dispatch.Dispatch<Events::AppExportEvent>(BIND_EVENT_FN(app::export_scenario));
+    }
+
     for (auto it = m_stack.r_begin(); it < m_stack.rend(); ++it)
     {
         if ((*it)->dialog_box == true)
@@ -319,6 +324,12 @@ bool app::OnWindowResize(Events::Window_Resize_Event& e)
 
     return false;
 }
+
+bool app::export_scenario(Events::AppExportEvent& e)
+{
+    return true;
+}
+
 void app::Camera(Events::Event& e)
 {
     //m_camera.On_Event(e);

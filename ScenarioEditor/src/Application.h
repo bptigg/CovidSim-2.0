@@ -68,6 +68,7 @@ public:
 
     bool OnWindowClose(Events::Window_Close_Event& e);
     bool OnWindowResize(Events::Window_Resize_Event& e);
+    bool export_scenario(Events::AppExportEvent& e);
     
     void Camera(Events::Event& e);
     

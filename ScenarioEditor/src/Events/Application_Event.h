@@ -61,4 +61,13 @@ namespace Events {
 		EVENT_CLASS_TYPE(App_Render)
 		EVENT_CLASS_CATEGORY(Event_Catagory_Application)
 	};
+
+	class AppExportEvent : public Event
+	{
+	public:
+		AppExportEvent() {}
+
+		EVENT_CLASS_TYPE(App_Export)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Application)
+	};
 }
