@@ -7,6 +7,8 @@
 
 #include "../Entity/Button.h"
 
+#include "../buildings_data.h"
+
 class button_data
 {
 public:
@@ -15,9 +17,12 @@ public:
 	int32_t building_type; //pow - 0, park - 1, ....., arena - 10, cba to write a enum for this given it will be passed into covid sim via a text file and so will be a integer anyway
 	uint32_t size; //small - 0, medium - 1, large - 2, ''
 
-	bool transport_building;
+	bool transport_building = false;
 	Transport_Type type = Transport_Type::NONE;
 	std::vector<Transport_Type> types;
+
+	bool education_building = false;
+	SCHOOLS edu_type = SCHOOLS::NONE;
 
 	uint32_t staff;
 	uint32_t capacity;

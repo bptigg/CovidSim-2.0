@@ -327,6 +327,35 @@ bool app::OnWindowResize(Events::Window_Resize_Event& e)
 
 bool app::export_scenario(Events::AppExportEvent& e)
 {
+    file_data* scenario_file = &file_data::get_file();
+    auto editor_overlay = editor::get();
+    
+    int grid_size = scenario_file->world_buildings.num_of_tiles;
+
+    //scenario_file->world_buildings.transport
+
+    for (auto tb : editor_overlay->get_world_data_list())
+    {
+        if (tb.second->building_type > 0)
+        {
+            std::pair<int, int> location;
+            location.first = tb.first % grid_size;
+            location.second = (tb.first - location.first) / grid_size;
+            if (tb.second->transport_building)
+            {
+
+            }
+            if (tb.second->education_building)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+    }
+
     return true;
 }
 

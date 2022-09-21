@@ -15,7 +15,7 @@
 
 enum class Transport_Type
 {
-	BUS,
+	BUS = 0,
 	LIGHT_RAIL,
 	RAPID_TRANSIT,
 	TRAINS,
