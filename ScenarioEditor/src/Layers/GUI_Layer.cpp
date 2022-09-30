@@ -11,6 +11,8 @@ static bool s_rmenu_active = false;
 static bool s_lmenu_active = false;
 static int s_mode = 0;
 
+static int s_active_overlay = 0; //Editor = 0, Transport = 1, Education = 2;
+
 static auto s_vector_compare = [](std::vector<Transport_Type>& vec_1, std::vector<Transport_Type>& vec_2) {
 
 	std::vector<int> matches;
@@ -246,6 +248,15 @@ void GUI_Layer::On_Event(Events::Event& e)
 	{
 		//bool dont_unblock = m_orthographic_controller->get_block();
 		//m_orthographic_controller->block_camera(true, EVENT_KEY);
+
+		if (m_type == Type::LineEditor)
+		{
+			if (e.Get_Event_Type() == Events::Event_Type::Transport_Make_Loop)
+			{
+				make_loop();
+				e.Handled = true;
+			}
+		}
 
 		if (m_dialog_box)
 		{
@@ -1080,8 +1091,17 @@ void GUI_Layer::create_settings_menu()
 	Editor_overlay->selected_colour = Editor_overlay->base_colour;
 	Editor_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Editor_overlay->rendering_layer = m_base_layer + 6;
-	Editor_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::close_transport_overlay));
+	Editor_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::close_current_overlay));
 	add_scriptable_object(Editor_overlay);
+	button_id++;
+
+	Button* School_overlay = new Button("Education overlay", { settings->get_position().x, 80 + settings->get_position().y }, { 320, 60 }, this, true, 50.0f, button_id);
+	School_overlay->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
+	School_overlay->selected_colour = Editor_overlay->base_colour;
+	School_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+	School_overlay->rendering_layer = m_base_layer + 6;
+	//School_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_education_overlay));
+	add_scriptable_object(School_overlay);
 	button_id++;
 }
 
@@ -1120,9 +1140,10 @@ void GUI_Layer::create_button_dropdown()
 
 	Menu_Background* dropdown = new Menu_Background({menu_x_pos, y_pos + (y_size / 2.0f) - 45.0f }, { 160, 90 }, this, { 0.09375f, 0.09375f, 0.09375f, 1.0f }, nullptr, m_base_layer);
 	dropdown->Bind_function(BIND_FUNCTION(GUI_Layer::close_dropdown));
+	dropdown->menu_object(false);
 	add_scriptable_object(dropdown);
 
-	Button* capacity = new Button("set building capacity", { menu_x_pos, 30 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	Button* capacity = new Button("set building capacity", { menu_x_pos, 30 + dropdown->get_position().y }, { 160, 30 }, this, false , 30.0f, button_id);
 	capacity->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 	capacity->selected_colour = capacity->base_colour;
 	capacity->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1131,7 +1152,7 @@ void GUI_Layer::create_button_dropdown()
 	add_scriptable_object(capacity);
 	button_id++;
 
-	Button* staff = new Button("set staff", { menu_x_pos, dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	Button* staff = new Button("set staff", { menu_x_pos, dropdown->get_position().y }, { 160, 30 }, this, false, 30.0f, button_id);
 	staff->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 	staff->selected_colour = staff->base_colour;
 	staff->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1140,7 +1161,7 @@ void GUI_Layer::create_button_dropdown()
 	add_scriptable_object(staff);
 	button_id++;
 	
-	Button* opening_hours = new Button("set opening hours", { menu_x_pos, -30 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+	Button* opening_hours = new Button("set opening hours", { menu_x_pos, -30 + dropdown->get_position().y }, { 160, 30 }, this, false, 30.0f, button_id);
 	opening_hours->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 	opening_hours->selected_colour = opening_hours->base_colour;
 	opening_hours->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1154,7 +1175,7 @@ void GUI_Layer::create_button_dropdown()
 		//add transport specific menu's;
 		
 		//add type
-		Button* transport_add = new Button("add transport type", { menu_x_pos, -60 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+		Button* transport_add = new Button("add transport type", { menu_x_pos, -60 + dropdown->get_position().y }, { 160, 30 }, this, false, 30.0f, button_id);
 		transport_add->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 		transport_add->selected_colour = transport_add->base_colour;
 		transport_add->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1164,7 +1185,7 @@ void GUI_Layer::create_button_dropdown()
 		button_id++;
 		
 		//remove type
-		Button* transport_remove = new Button("remove transport type", { menu_x_pos, -90 + dropdown->get_position().y }, { 160, 30 }, this, true, 30.0f, button_id);
+		Button* transport_remove = new Button("remove transport type", { menu_x_pos, -90 + dropdown->get_position().y }, { 160, 30 }, this, false, 30.0f, button_id);
 		transport_remove->base_colour = { 0.09375f, 0.09375f, 0.09375f, 1.0f };
 		transport_remove->selected_colour = transport_remove->base_colour;
 		transport_remove->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1684,6 +1705,7 @@ void GUI_Layer::open_transport_overlay()
 {
 	Events::Transport_Overlay_Event event(true);
 	Event_Call_back(event);
+	s_active_overlay = 1;
 }
 
 void GUI_Layer::close_transport_overlay()
@@ -1691,6 +1713,29 @@ void GUI_Layer::close_transport_overlay()
 	//editor::get()->get_overlay();
 	Events::Transport_Overlay_Event event(false);
 	Event_Call_back(event);
+}
+
+void GUI_Layer::close_current_overlay()
+{
+	if (s_active_overlay == 0)
+	{
+		Log::error("CAN'T CLOSE EDITOR LAYER", __FILE__, __LINE__);
+	}
+	else if (s_active_overlay == 1)
+	{
+		Events::Transport_Overlay_Event event(false);
+		Event_Call_back(event);
+	}
+
+	else if (s_active_overlay == 2)
+	{
+		//close schools overlay
+	}
+	else
+	{
+		Log::error("NO OVERLAY EXISTS", __FILE__, __LINE__);
+	}
+
 }
 
 void GUI_Layer::open_line_editor()
@@ -1990,6 +2035,7 @@ void GUI_Layer::add_stop(bool start)
 		}
 
 		int removed = 0;
+		int available = 0;
 		if (active_line->type.size() != 0)
 		{
 			//will need to rework this when transport get's reworked
@@ -2003,6 +2049,7 @@ void GUI_Layer::add_stop(bool start)
 
 				if (s_vector_compare(it->second->types, active_line->type))
 				{
+					available++;
 					continue;
 				}
 
@@ -2012,7 +2059,7 @@ void GUI_Layer::add_stop(bool start)
 
 		}
 
-		if (active_line->stops.size() + removed == num)
+		if (active_line->stops.size() == available + 1)
 		{
 			for (auto it = button_data.begin(); it != button_data.end(); it++)
 			{
@@ -2038,6 +2085,7 @@ void GUI_Layer::add_stop(bool start)
 			}
 		}
 
+		Transport_Layer::get()->m_mode = MODE::ADD;
 		return;
 	}
 	
@@ -2123,9 +2171,51 @@ void GUI_Layer::add_stop(bool start)
 			it->second->render = true;
 		}
 
+		if (active_line->type.size() == 1)
+		{
+			for (auto obj : m_objects)
+			{
+				if (obj->get_type() == entity_type::TEXT_MENU_OBJECT)
+				{
+					if (obj->get_position().y == 160.0f)
+					{
+						auto text_obj = dynamic_cast<Text_Menu_object*>(obj);
+						auto text = text_obj->get_text();
+
+						switch (active_line->type[0])
+						{
+						case Transport_Type::BUS:
+							text->update_string("BUS");
+							break;
+						case Transport_Type::LIGHT_RAIL:
+							text->update_string("LIGHT RAIL");
+							break;
+						case Transport_Type::RAPID_TRANSIT:
+							text->update_string("RAPID TRANSIT");
+							break;
+						case Transport_Type::TRAINS:
+							text->update_string("TRAIN");
+							break;
+						default:
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		Transport_Layer::get()->m_mode = MODE::DEFAULT;
 		return;
 	}
 
+}
+
+bool GUI_Layer::make_loop()
+{
+	std::shared_ptr<Line> active_line = Transport_Layer::get()->get_line(Transport_Layer::get()->get_active_line());
+	editor::get()->set_selected(active_line->stops[0]);
+	add_stop(false);
+	return true;
 }
 
 void GUI_Layer::remove_stop(bool start)
@@ -2183,13 +2273,19 @@ void GUI_Layer::remove_stop(bool start)
 
 			}
 		}
+
+		Transport_Layer::get()->m_mode = MODE::REMOVE;
 		return;
 	}
 
 	if (!start)
 	{
 		//active_line->stops.(e_overlay->selected());
-		active_line->stops.erase(std::remove(active_line->stops.begin(), active_line->stops.end(), e_overlay->selected()), active_line->stops.end());
+		auto last_instance = std::find(active_line->stops.rbegin(), active_line->stops.rend(), e_overlay->selected());
+		if (last_instance != active_line->stops.rend())
+		{
+			active_line->stops.erase(--last_instance.base());
+		}
 		active_line->changed = true;
 
 		int obj_size = m_objects.size();
@@ -2202,13 +2298,20 @@ void GUI_Layer::remove_stop(bool start)
 				Button* stop = nullptr;
 
 				glm::vec2 pos = e_overlay->get_position(e_overlay->selected());
-				active_line->positions.erase(std::remove(active_line->positions.begin(), active_line->positions.end(), pos), active_line->positions.end());
+
+				auto last_instance = std::find(active_line->positions.rbegin(), active_line->positions.rend(), pos);
+				if (last_instance != active_line->positions.rend())
+				{
+					active_line->positions.erase(--last_instance.base());
+				}
 
 				std::stringstream ss;
 				ss << "( " << pos.x << " , " << pos.y << " )";
 				std::string text = ss.str();
 
-				for (auto button : menu->get_list())
+				std::vector<scriptable_object*> temp_vec = menu->get_list();
+				std::reverse(temp_vec.begin(), temp_vec.end());
+				for (auto button : temp_vec)
 				{
 					if (button->get_type() == entity_type::BUTTON)
 					{
@@ -2241,6 +2344,7 @@ void GUI_Layer::remove_stop(bool start)
 			it->second->render = true;
 		}
 
+		Transport_Layer::get()->m_mode = MODE::DEFAULT;
 		return;
 	}
 }

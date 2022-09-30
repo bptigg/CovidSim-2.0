@@ -78,4 +78,5 @@ bool dialouge_box::on_mouse_click(Events::Mouse_Button_Pressed_Event& e)
 void dialouge_box::close()
 {
 	m_delete_object = true;
+	
 }

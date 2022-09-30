@@ -1,6 +1,7 @@
 #include "Transport_Layer.h"
 
 #include "editor.h"
+#include "../Application.h"
 
 static Transport_Layer* t_instance;
 
@@ -13,6 +14,7 @@ Transport_Layer::Transport_Layer(unsigned int base_layer, std::shared_ptr<Camera
 	m_dialog_box = false;
 
 	t_instance = this;
+	MODE m_mode = MODE::DEFAULT;
 }
 
 Transport_Layer::~Transport_Layer()
@@ -61,9 +63,21 @@ void Transport_Layer::On_Update(Timestep ts)
 		}
 
 		draw_lines();
-	}
 
-	//Renderer::draw_rectangle_color({ 600, 360 }, { 60,60 }, { 0.8f, 0.8f, 0.8f, 1.0f }, m_base_layer, false);
+		if (m_mode == MODE::DEFAULT)
+		{
+			return;
+		}
+
+		if (m_mode == MODE::ADD)
+		{
+			Renderer::draw_box({ 0.0f, 0.0f }, { 1280.0f, 720.0f }, 5.0f, { 1.0f, 0.0f, 1.0f, 1.0f }, m_base_layer + 10, true);
+		}
+		else if (m_mode == MODE::REMOVE)
+		{
+			Renderer::draw_box({ 0.0f, 0.0f }, { 1280.0f, 720.0f }, 5.0f, { 0.5f, 0.2f, 0.8f, 1.0f }, m_base_layer + 10, true);
+		}
+	}
 }
 
 void Transport_Layer::On_ImGui_Render()
@@ -78,8 +92,17 @@ void Transport_Layer::On_Event(Events::Event& e)
 		{
 			if (Input::Is_Key_Pressed(CS_KEY_L))
 			{
-				Events::Event_Dispatcher dispatch(e);
-				dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Transport_Layer::open_line_manager));
+				if (m_mode != MODE::ADD)
+				{
+					Events::Event_Dispatcher dispatch(e);
+					dispatch.Dispatch<Events::Key_Pressed_Event>(BIND_EVENT_FN(Transport_Layer::open_line_manager));
+				}
+				else
+				{
+					//create a event that makes a loop in the current line
+					Events::Transport_make_loop event;
+					Event_Call_back(event);
+				}
 			}
 		}
 		if (e.Get_Event_Type() == Events::Event_Type::Transport_Line_Editor)

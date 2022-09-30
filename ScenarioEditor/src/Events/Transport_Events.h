@@ -41,5 +41,18 @@ namespace Events
 		bool m_remove;
 	};
 
+	class Transport_make_loop : public Event
+	{
+	public:
+		Transport_make_loop()
+		{
+
+		}
+
+		EVENT_CLASS_TYPE(Transport_Make_Loop)
+		EVENT_CLASS_CATEGORY(Event_Catagory_Transport)
+
+	};
+
 
 };

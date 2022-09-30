@@ -185,6 +185,8 @@ private:
 	void open_transport_overlay();
 	void close_transport_overlay();
 
+	void close_current_overlay();
+
 	void open_line_editor();
 	void close_line_editor();
 
@@ -193,6 +195,7 @@ private:
 
 	void add_stop(bool start);
 	void add_stop_fn() { add_stop(true); }
+	bool make_loop();
 	void remove_stop_fn() { remove_stop(true); }
 	void remove_stop(bool start);
 

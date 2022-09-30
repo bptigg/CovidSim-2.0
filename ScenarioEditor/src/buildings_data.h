@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <vector>
 
 enum class SCHOOLS
 {
@@ -41,7 +42,7 @@ enum class PUBLIC_BUILDINGS
 
 struct public_buildings
 {
-	PUBLIC_BUILDINGS type;
+	int zone_code;
 	std::pair<int, int> location;
 	int staff_amount;
 	int capacity;
@@ -58,8 +59,7 @@ enum class TRANSPORT_BUILDINGS
 
 struct transport_buildings
 {
-
-	TRANSPORT_BUILDINGS type;
+	std::vector<TRANSPORT_BUILDINGS> types;
 	std::pair<int, int> location;
 	int staff_amount;
 	int capacity;

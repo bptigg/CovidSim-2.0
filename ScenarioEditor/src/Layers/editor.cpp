@@ -245,6 +245,25 @@ std::vector<glm::vec4> editor::get_overlay()
 void editor::only_transport(bool arg)
 {
 	m_disable_non_transport_events = arg;
+
+	if (arg == false)
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->transport_building != true) {
+				m_world_data[obj->get_id()]->render = true;
+			}
+		}
+	}
+	else
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->transport_building != true) {
+				m_world_data[obj->get_id()]->render = false;
+			}
+		}
+	}
 }
 
 void editor::bind_transport_select(bool arg)

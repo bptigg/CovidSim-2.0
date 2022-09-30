@@ -14,54 +14,55 @@ void Camera_Controller::On_Update(Timestep ts)
 {
 	m_camera_translation_speed = 100.0f;
 	m_camera_translation_speed = m_zoom_level * m_camera_translation_speed;
-	bool changed = false;
-	if (!m_block)
-	{
-		if (Input::Is_Key_Pressed(CS_KEY_A))
-		{
-			m_camera_position.x -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			m_camera_position.y -= sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			changed = true;
-		}
-		else if (Input::Is_Key_Pressed(CS_KEY_D))
-		{
-			m_camera_position.x += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			m_camera_position.y += sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			changed = true;
-		}
-
-		if (Input::Is_Key_Pressed(CS_KEY_W))
-		{
-			m_camera_position.x += -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			m_camera_position.y += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			changed = true;
-		}
-		else if (Input::Is_Key_Pressed(CS_KEY_S))
-		{
-			m_camera_position.x -= -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			m_camera_position.y -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
-			changed = true;
-		}
-	}
-
-	if (m_rotation)
-	{
-		if (Input::Is_Key_Pressed(CS_KEY_Q))
-			m_camera_rotation += m_rotation_speed;
-		if (Input::Is_Key_Pressed(CS_KEY_E))
-			m_camera_rotation -= m_rotation_speed;
-
-		if (m_camera_rotation > 180.0f)
-			m_camera_rotation -= 360.0f;
-		else if (m_camera_rotation <= -180.0f)
-			m_camera_rotation += 360.0f;
-		changed = true;
-	}
-
-	if (changed)
-	{
-		m_camera.Set_Position(m_camera_position * m_zoom_level);
-	}
+	m_frame_time = ts;
+	//bool changed = false;
+	//if (!m_block)
+	//{
+	//	if (Input::Is_Key_Pressed(CS_KEY_A))
+	//	{
+	//		m_camera_position.x -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		m_camera_position.y -= sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		changed = true;
+	//	}
+	//	else if (Input::Is_Key_Pressed(CS_KEY_D))
+	//	{
+	//		m_camera_position.x += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		m_camera_position.y += sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		changed = true;
+	//	}
+	//
+	//	if (Input::Is_Key_Pressed(CS_KEY_W))
+	//	{
+	//		m_camera_position.x += -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		m_camera_position.y += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		changed = true;
+	//	}
+	//	else if (Input::Is_Key_Pressed(CS_KEY_S))
+	//	{
+	//		m_camera_position.x -= -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		m_camera_position.y -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * ts;
+	//		changed = true;
+	//	}
+	//}
+	//
+	//if (m_rotation)
+	//{
+	//	if (Input::Is_Key_Pressed(CS_KEY_Q))
+	//		m_camera_rotation += m_rotation_speed;
+	//	if (Input::Is_Key_Pressed(CS_KEY_E))
+	//		m_camera_rotation -= m_rotation_speed;
+	//
+	//	if (m_camera_rotation > 180.0f)
+	//		m_camera_rotation -= 360.0f;
+	//	else if (m_camera_rotation <= -180.0f)
+	//		m_camera_rotation += 360.0f;
+	//	changed = true;
+	//}
+	//
+	//if (changed)
+	//{
+	//	m_camera.Set_Position(m_camera_position * m_zoom_level);
+	//}
 
 }
 
@@ -75,7 +76,7 @@ void Camera_Controller::On_Event(Events::Event& e)
 
 bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
 {
-	if (Input::Is_Key_Pressed(CS_KEY_R) && m_block == false)
+	if (e.Get_Key_Code() == CS_KEY_R)
 	{
 		m_camera_position = { 0.0f,0.0f,0.0f };
 		m_camera.Set_Position(m_camera_position);
@@ -83,6 +84,46 @@ bool Camera_Controller::on_key_event(Events::Key_Pressed_Event& e)
 		m_camera.set_projection((-m_resolution.x / 2.0f) * m_zoom_level, (m_resolution.x / 2.0f) * m_zoom_level, (-m_resolution.y / 2.0f) * m_zoom_level, (m_resolution.y / 2.0f) * m_zoom_level);
 		return true;
 	}
+	else
+	{
+		if (e.Get_Key_Code() == CS_KEY_A)
+		{
+			m_camera_position.x -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+			m_camera_position.y -= sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+		}
+		else if (e.Get_Key_Code() == CS_KEY_D)
+		{
+			m_camera_position.x += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+			m_camera_position.y += sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+		}
+		else if (e.Get_Key_Code() == CS_KEY_W)
+		{
+			m_camera_position.x += -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+			m_camera_position.y += cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+		}
+		else if (e.Get_Key_Code() == CS_KEY_S)
+		{
+			m_camera_position.x -= -sin(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+			m_camera_position.y -= cos(glm::radians(m_camera_rotation)) * m_camera_translation_speed * m_frame_time;
+		}
+
+		if (m_rotation)
+		{
+			if (Input::Is_Key_Pressed(CS_KEY_Q))
+				m_camera_rotation += m_rotation_speed;
+			if (Input::Is_Key_Pressed(CS_KEY_E))
+				m_camera_rotation -= m_rotation_speed;
+
+			if (m_camera_rotation > 180.0f)
+				m_camera_rotation -= 360.0f;
+			else if (m_camera_rotation <= -180.0f)
+				m_camera_rotation += 360.0f;
+		}
+
+		m_camera.Set_Position(m_camera_position * m_zoom_level);
+		return true;
+	}
+
 	return false;
 }
 

@@ -21,6 +21,11 @@ public:
 		m_exit_func = func;
 	}
 
+	inline void menu_object(bool arg)
+	{
+		m_menu_object = arg;
+	}
+
 
 	bool is_mouse_over(float width, float height, float x, float y);
 	bool on_mouse_move(Events::Mouse_Moved_Event& e);

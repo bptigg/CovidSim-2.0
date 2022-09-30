@@ -343,7 +343,13 @@ bool app::export_scenario(Events::AppExportEvent& e)
             location.second = (tb.first - location.first) / grid_size;
             if (tb.second->transport_building)
             {
+                std::vector<TRANSPORT_BUILDINGS> transport_types;
+                for (auto type : tb.second->types)
+                {
+                    transport_types.push_back((TRANSPORT_BUILDINGS)type);
+                }
 
+                scenario_file->world_buildings.transport.push_back({ transport_types, location, (int)tb.second->staff, (int)tb.second->capacity, (transport_types.size() > 1) ? true : false });
             }
             if (tb.second->education_building)
             {
@@ -351,7 +357,7 @@ bool app::export_scenario(Events::AppExportEvent& e)
             }
             else
             {
-
+                scenario_file->world_buildings.pub_buildings.push_back({ tb.second->building_type, location, (int)tb.second->staff, (int)tb.second->capacity });
             }
         }
     }
@@ -420,12 +426,12 @@ void app::init()
     m_camera->Set_Resolution({ 1280.0f, 720.0f });
     Renderer::update_view(m_camera->get_camera().Get_View_Projection_Matrix());
 
-    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SetupMenu, 3, m_camera)); //WILL BE REMOVED AT SOMEPOINT
-    m_stack[0]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
-    m_stack[0]->On_Attach({});
-
     m_stack.Push_Layer(new editor(1, m_camera));
+    m_stack[0]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::SetupMenu, 3, m_camera)); //WILL BE REMOVED AT SOMEPOINT
     m_stack[1]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+    m_stack[1]->On_Attach({});
 
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::BuildingSelectMenu, 3, m_camera));
     m_stack[2]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));

@@ -14,7 +14,7 @@ Menu_Background::~Menu_Background()
 
 void Menu_Background::render()
 {
-	Renderer::draw_rectangle_color(m_location, m_size, m_background_color, m_rendering_layer, true);
+	Renderer::draw_rectangle_color(m_location, m_size, m_background_color, m_rendering_layer, m_menu_object);
 }
 
 void Menu_Background::update()

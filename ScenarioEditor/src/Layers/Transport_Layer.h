@@ -19,8 +19,17 @@ struct Line
 	bool changed = false;
 };
 
+enum class MODE
+{
+	ADD = 0,
+	REMOVE,
+	DEFAULT
+};
+
 class Transport_Layer : public Layer
 {
+public:
+	MODE m_mode = MODE::DEFAULT;
 private:
 	std::vector<scriptable_object*> m_objects;
 	std::unordered_map<std::string, unsigned int> m_textures;

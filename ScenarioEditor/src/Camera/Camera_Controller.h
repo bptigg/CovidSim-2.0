@@ -88,6 +88,7 @@ private:
 private:
 	float m_aspect_ratio;
 	float m_zoom_level = 1.0f;
+	Timestep m_frame_time;
 
 	bool m_rotation;
 
