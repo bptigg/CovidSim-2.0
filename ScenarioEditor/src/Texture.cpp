@@ -59,18 +59,20 @@ GLuint Texture::Create_Texture(unsigned int width, unsigned int height, unsigned
 GLuint Texture::Create_Texture(unsigned int width, unsigned height, unsigned char* buffer)
 {
 	GLuint renderer_id = 0;
-	GlCall(glCreateTextures(GL_TEXTURE_2D, 1, &renderer_id));
+	GlCall(glGenTextures(1, &renderer_id));
 	GlCall(glBindTexture(GL_TEXTURE_2D, renderer_id));
 
+	GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer));
 
 	GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 	GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 	GlCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-	GlCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, buffer));
-
-	GlCall(glGenerateTextureMipmap(renderer_id));
+	if (width != 0 && height != 0)
+	{
+		GlCall(glGenerateTextureMipmap(renderer_id));
+	}
 
 	GlCall(glBindTexture(GL_TEXTURE_2D, 0));
 

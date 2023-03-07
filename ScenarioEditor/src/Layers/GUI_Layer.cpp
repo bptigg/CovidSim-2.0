@@ -708,7 +708,7 @@ void GUI_Layer::create_building_menu()
 	add_scriptable_object(walking_zone);
 	button_id++;
 
-	Text walking_zone_text("undeveloped space", { 50 + settings->get_position().x , 170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
+	Text walking_zone_text("walking zone", { 50 + settings->get_position().x , 170 + settings->get_position().y }, 40.0f, { (float)200 / (float)256, (float)200 / (float)256, (float)200 / (float)256, 1.0f }, true);
 	Text_Menu_object* walking_zone_holder = new Text_Menu_object(walking_zone_text, { 50 + settings->get_position().x, 170 + settings->get_position().y }, this, m_base_layer + 2);
 	add_scriptable_object(walking_zone_holder);
 
@@ -1100,7 +1100,7 @@ void GUI_Layer::create_settings_menu()
 	School_overlay->selected_colour = Editor_overlay->base_colour;
 	School_overlay->box_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 	School_overlay->rendering_layer = m_base_layer + 6;
-	//School_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_education_overlay));
+	School_overlay->Bind_function(BIND_BUTTON_FN(GUI_Layer::open_education_overlay));
 	add_scriptable_object(School_overlay);
 	button_id++;
 }
@@ -1379,7 +1379,7 @@ void GUI_Layer::create_line_editor()
 
 	Scrollable_Menu* menu = new Scrollable_Menu({ settings->get_position().x, -50.0f + settings->get_position().y }, { 320, 200 }, this, 0, 0);
 	add_scriptable_object(menu);
-	menu->no_bounds = true;
+	menu->no_bounds = false;
 
 	Button* add_stop = new Button("add station", { settings->get_position().x, -200 + settings->get_position().y }, { 320.0f, 60.0f }, this, true, 50.0f, button_id);
 	add_stop->base_colour = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -1715,6 +1715,15 @@ void GUI_Layer::close_transport_overlay()
 	Event_Call_back(event);
 }
 
+void GUI_Layer::open_education_overlay()
+{
+	//editor::get()->only_education(true);
+
+	Events::Education_overlay_select event(true);
+	Event_Call_back(event);
+	s_active_overlay = 2;
+}
+
 void GUI_Layer::close_current_overlay()
 {
 	if (s_active_overlay == 0)
@@ -1730,6 +1739,8 @@ void GUI_Layer::close_current_overlay()
 	else if (s_active_overlay == 2)
 	{
 		//close schools overlay
+		Events::Education_overlay_select event(false);
+		Event_Call_back(event);
 	}
 	else
 	{

@@ -191,7 +191,7 @@ void Transport_Layer::draw_lines()
 					else
 					{
 						float y_center = line.second->positions[i].y - y_diff / 2.0f;
-						float x_center = line.second->positions[i - 1].x;
+						float x_center = line.second->positions[i-1].x;
 
 						std::pair<glm::vec4, glm::vec4> rec = {{ x_center, y_center, 10.0f, std::abs(y_diff) + 10.0f }, line.second->colour};
 

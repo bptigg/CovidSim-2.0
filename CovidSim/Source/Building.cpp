@@ -68,6 +68,7 @@ std::shared_ptr<Agent> base_building::get_occupant(const std::shared_ptr<Agent>&
     return m_in_building[occupant.second];
 }
 
+
 void base_building::add_to_building(std::shared_ptr<Agent> agent)
 {
     std::pair<bool, int> occupant = find(agent, m_in_building);

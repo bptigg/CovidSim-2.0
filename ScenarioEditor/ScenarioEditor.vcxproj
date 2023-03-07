@@ -160,6 +160,7 @@
     <ClCompile Include="src\Index_Buffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Layers\editor.cpp" />
+    <ClCompile Include="src\Layers\Education_Layer.cpp" />
     <ClCompile Include="src\Layers\GUI_Layer.cpp" />
     <ClCompile Include="src\Layers\Transport_Layer.cpp" />
     <ClCompile Include="src\Layer_Stack.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="src\Entity\building_constants.h" />
     <ClInclude Include="src\Entity\colour_palette.h" />
     <ClInclude Include="src\Entity\Scrollable_Menu.h" />
+    <ClInclude Include="src\Events\Education_Events.h" />
     <ClInclude Include="src\Events\Transport_Events.h" />
     <ClInclude Include="src\file.h" />
     <ClInclude Include="src\Application.h" />
@@ -208,6 +210,7 @@
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Layer.h" />
     <ClInclude Include="src\Layers\editor.h" />
+    <ClInclude Include="src\Layers\Education_Layer.h" />
     <ClInclude Include="src\Layers\GUI_Layer.h" />
     <ClInclude Include="src\Layers\Transport_Layer.h" />
     <ClInclude Include="src\Layer_Stack.h" />

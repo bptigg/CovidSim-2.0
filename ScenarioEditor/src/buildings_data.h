@@ -7,8 +7,7 @@ enum class SCHOOLS
 {
 	NURSARY = 0, 
 	PRIMARY, 
-	SECONDARY, 
-	COLLEGE, 
+	SECONDARY,  
 	UNI, 
 	NONE
 };

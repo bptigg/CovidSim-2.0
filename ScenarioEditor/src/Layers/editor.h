@@ -18,7 +18,6 @@ public:
 	uint32_t size; //small - 0, medium - 1, large - 2, ''
 
 	bool transport_building = false;
-	Transport_Type type = Transport_Type::NONE;
 	std::vector<Transport_Type> types;
 
 	bool education_building = false;
@@ -83,6 +82,8 @@ public:
 	inline bool get_only_transport() { return m_disable_non_transport_events; }
 	void bind_transport_select(bool arg);
 	void bind_transport_remove(bool arg);
+
+	void only_education(bool arg);
 
 	glm::vec2 get_position(int button_id) { return m_objects[button_id]->get_position(); }
  

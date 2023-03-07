@@ -112,6 +112,37 @@ void app::On_Event(Events::Event& e)
             }
         }
 
+        if (e.Get_Event_Type() == Events::Event_Type::Education_Overlay_Select)
+        {
+            for (int i = 0; i < m_stack.size(); i++)
+            {
+                auto overlay = dynamic_cast<Education_Layer*>(m_stack[i]);
+                if (overlay != nullptr)
+                {
+                    auto event = dynamic_cast<Events::Education_overlay_select*>(&e);
+                    if (event->get_enable())
+                    {
+                        if (overlay->get_attached())
+                        {
+                            overlay->enable_overlay();
+                            return;
+                        }
+                        else
+                        {
+                            m_stack[i]->On_Attach({});
+                            m_stack[i]->render(true);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        overlay->disable_overlay();
+                        return;
+                    }
+                }
+            }
+        }
+
         if (e.Get_Event_Type() == Events::Event_Type::GUI_Size_Select)
         {
             for (int i = 0; i < m_stack.size(); i++)
@@ -471,6 +502,9 @@ void app::init()
     
     m_stack.Push_Layer(new GUI_Layer(GUI_Layer::Type::ColourSelect, 18, m_camera));
     m_stack[14]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
+
+    m_stack.Push_Layer(new Education_Layer(16, m_camera));
+    m_stack[15]->Set_Event_Callback(BIND_EVENT_FN(app::On_Event));
 
     
     m_running = true;

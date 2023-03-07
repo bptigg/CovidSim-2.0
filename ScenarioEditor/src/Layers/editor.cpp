@@ -318,6 +318,32 @@ void editor::bind_transport_remove(bool arg)
 	}
 }
 
+void editor::only_education(bool arg)
+{
+	if (arg)
+	{
+		for (auto obj : m_objects)
+		{
+			if (m_world_data[obj->get_id()]->building_type == 2 || m_world_data[obj->get_id()]->education_building == true || m_world_data[obj->get_id()]->building_type == 0)
+			{
+				m_world_data[obj->get_id()]->render = true;
+			}
+			else
+			{
+				m_world_data[obj->get_id()]->render = false;
+			}
+		}
+	}
+	else
+	{
+
+		for (auto obj : m_objects)
+		{
+			m_world_data[obj->get_id()]->render = true;
+		}
+	}
+}
+
 void editor::add_scriptable_object(scriptable_object* object)
 {
 	m_objects.push_back(object);
@@ -351,9 +377,8 @@ void editor::draw_buttons(int amount)
 			std::shared_ptr<button_data> tile_data(new button_data);
 			m_world_data[m_button_num] = tile_data;
 			m_world_data[m_button_num]->button_id = m_button_num;
-			m_world_data[m_button_num]->building_type = -1;
+			m_world_data[m_button_num]->building_type = 0;
 			m_world_data[m_button_num]->transport_building = false;
-			m_world_data[m_button_num]->type = Transport_Type::NONE;
 			add_scriptable_object(tile);
 
 			x = x + size;

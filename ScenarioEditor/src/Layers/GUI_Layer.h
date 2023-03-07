@@ -12,6 +12,7 @@
 
 #include "../Events/Gui_Events.h"
 #include "../Events/Transport_Events.h"
+#include "../Events/Education_Events.h"
 
 
 
@@ -184,6 +185,8 @@ private:
 
 	void open_transport_overlay();
 	void close_transport_overlay();
+
+	void open_education_overlay();
 
 	void close_current_overlay();
 

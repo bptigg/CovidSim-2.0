@@ -25,6 +25,7 @@
 #include "Layers/GUI_Layer.h"
 #include "Layers/Transport_Layer.h"
 #include "Layers/editor.h"
+#include "Layers/Education_Layer.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
